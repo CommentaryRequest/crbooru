@@ -9,8 +9,14 @@ public class MediaAsset
 {
     public int Id { get; private set; }
     [MaxLength(32)]
-    public string Md5 { get; set; }
-    public string FileType { get; set; }
+    public string Md5 { get; private set; }
+    public string FileType { get; private set; }
+
+    public MediaAsset(string md5, string fileType)
+    {
+        Md5 = md5;
+        FileType = fileType;
+    }
 
     public string GetFilePath(string basePath)
     {

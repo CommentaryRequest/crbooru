@@ -19,10 +19,7 @@ using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
 
     if (!db.MediaAssets.Any()) {
-        db.MediaAssets.Add(new MediaAsset {
-            Md5 = "32bb5f07a3c4b8cf75c93bb60c9f8082",
-            FileType = "jpg"
-        });
+        db.MediaAssets.Add(new MediaAsset("32bb5f07a3c4b8cf75c93bb60c9f8082", "jpg"));
 
         await db.SaveChangesAsync();
     }
