@@ -10,5 +10,13 @@ public class CRbooruContext : DbContext
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .Property(u => u.Name)
+            .HasColumnType("TEXT COLLATE NOCASE"); // TODO this is sqlite only
+    }
+
     public DbSet<MediaAsset> MediaAssets { get; set; }
+    public DbSet<User> Users { get; set; }
 }
