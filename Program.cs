@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using CRbooru.Data;
 using CRbooru.Models;
+using CRbooru.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data Source=crbooru.db"));
+
+// Model services
+builder.Services.AddScoped<MediaAssetService>();
 
 var app = builder.Build();
 
