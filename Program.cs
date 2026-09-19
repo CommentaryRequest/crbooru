@@ -12,6 +12,7 @@ builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data
 // Model services
 builder.Services.AddScoped<MediaAssetService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TagService>();
 
 var app = builder.Build();
 
@@ -26,6 +27,16 @@ using (var scope = app.Services.CreateScope()) {
 
     if (!db.Users.Any()) {
         db.Users.Add(new User("CommentaryRequest"));
+        await db.SaveChangesAsync();
+    }
+
+    if (!db.Tags.Any()) {
+        db.Tags.Add(new Tag("1girl", 0, TagCategory.General, false));
+        db.Tags.Add(new Tag("solo", 0, TagCategory.General, false));
+        db.Tags.Add(new Tag("touhou", 0, TagCategory.Copyright, false));
+        db.Tags.Add(new Tag("konpaku_youmu", 0, TagCategory.Character, false));
+        db.Tags.Add(new Tag("kashuu", 0, TagCategory.Artist, false));
+        db.Tags.Add(new Tag("commentary_request", 0, TagCategory.Meta, false));
         await db.SaveChangesAsync();
     }
 }
