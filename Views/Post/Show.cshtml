@@ -8,49 +8,28 @@
     var characterTags = Model.Tags.Where(tag => tag.Category == TagCategory.Character);
     var generalTags = Model.Tags.Where(tag => tag.Category == TagCategory.General);
     var metaTags = Model.Tags.Where(tag => tag.Category == TagCategory.Meta);
+
+    void RenderTagList(string categoryName, IEnumerable<Tag> tagList)
+    {
+        @if (tagList.Count() != 0) {
+            <h4>@categoryName</h4>
+            <ul>
+            @foreach (var tag in tagList) {
+                <li>@tag.Name (@tag.PostCount)</li>
+            }
+            </ul>
+        }
+    }
 }
 
 <img src="@Model.MediaAsset.GetFilePath("/images")">
 <h3>Tags (@Model.Tags.Count())</h3>
-@if (artistTags.Count() != 0) {
-    <h4>Artist</h4>
-    <ul>
-    @foreach (var tag in artistTags) {
-        <li>@tag.Name</li>
-    }
-    </ul>
-}
-@if (copyrightTags.Count() != 0) {
-    <h4>Copyright</h4>
-    <ul>
-    @foreach (var tag in copyrightTags) {
-        <li>@tag.Name</li>
-    }
-    </ul>
-}
-@if (characterTags.Count() != 0) {
-    <h4>Character</h4>
-    <ul>
-    @foreach (var tag in characterTags) {
-        <li>@tag.Name</li>
-    }
-    </ul>
-}
-@if (generalTags.Count() != 0) {
-    <h4>General</h4>
-    <ul>
-    @foreach (var tag in generalTags) {
-        <li>@tag.Name</li>
-    }
-    </ul>
-}
-@if (metaTags.Count() != 0) {
-    <h4>Meta</h4>
-    <ul>
-    @foreach (var tag in metaTags) {
-        <li>@tag.Name</li>
-    }
-    </ul>
+@{
+    RenderTagList("Artist", artistTags);
+    RenderTagList("Copyright", copyrightTags);
+    RenderTagList("Character", characterTags);
+    RenderTagList("General", generalTags);
+    RenderTagList("Meta", metaTags);
 }
 <h3>Information</h3>
 <p><b>ID:</b> @Model.Id</p>
