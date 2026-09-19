@@ -15,9 +15,15 @@ public class CRbooruContext : DbContext
         modelBuilder.Entity<User>()
             .Property(u => u.Name)
             .HasColumnType("TEXT COLLATE NOCASE"); // TODO this is sqlite only
+
+        modelBuilder.Entity<Post>()
+            .HasMany(p => p.Tags)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("PostTags"));
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<Post> Posts { get; set; }
 }

@@ -13,21 +13,21 @@ builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data
 builder.Services.AddScoped<MediaAssetService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<PostService>();
 
 var app = builder.Build();
 
 // Create test items for testing
 using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
+    var tagService = scope.ServiceProvider.GetRequiredService<TagService>();
 
     if (!db.MediaAssets.Any()) {
         db.MediaAssets.Add(new MediaAsset("32bb5f07a3c4b8cf75c93bb60c9f8082", "jpg"));
-        await db.SaveChangesAsync();
     }
 
     if (!db.Users.Any()) {
         db.Users.Add(new User("CommentaryRequest"));
-        await db.SaveChangesAsync();
     }
 
     if (!db.Tags.Any()) {
@@ -37,6 +37,14 @@ using (var scope = app.Services.CreateScope()) {
         db.Tags.Add(new Tag("konpaku_youmu", 0, TagCategory.Character, false));
         db.Tags.Add(new Tag("kashuu", 0, TagCategory.Artist, false));
         db.Tags.Add(new Tag("commentary_request", 0, TagCategory.Meta, false));
+    }
+
+    await db.SaveChangesAsync();
+
+    if (!db.Posts.Any()) {
+        var user = await db.Users.FindAsync(1);
+        var asset = await db.MediaAssets.FindAsync(1);
+        db.Posts.Add(new Post(user, asset, await tagService.ResolveTags(["1girl", "solo", "touhou", "konpaku_youmu", "kashuu", "commentary_request"])));
         await db.SaveChangesAsync();
     }
 }

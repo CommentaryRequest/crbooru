@@ -1,0 +1,57 @@
+@model Post
+@using System.Linq
+@{
+    ViewData["Title"] = $"post #{Model.Id}";
+
+    var artistTags = Model.Tags.Where(tag => tag.Category == TagCategory.Artist);
+    var copyrightTags = Model.Tags.Where(tag => tag.Category == TagCategory.Copyright);
+    var characterTags = Model.Tags.Where(tag => tag.Category == TagCategory.Character);
+    var generalTags = Model.Tags.Where(tag => tag.Category == TagCategory.General);
+    var metaTags = Model.Tags.Where(tag => tag.Category == TagCategory.Meta);
+}
+
+<img src="@Model.MediaAsset.GetFilePath("/images")">
+<h3>Tags (@Model.Tags.Count())</h3>
+@if (artistTags.Count() != 0) {
+    <h4>Artist</h4>
+    <ul>
+    @foreach (var tag in artistTags) {
+        <li>@tag.Name</li>
+    }
+    </ul>
+}
+@if (copyrightTags.Count() != 0) {
+    <h4>Copyright</h4>
+    <ul>
+    @foreach (var tag in copyrightTags) {
+        <li>@tag.Name</li>
+    }
+    </ul>
+}
+@if (characterTags.Count() != 0) {
+    <h4>Character</h4>
+    <ul>
+    @foreach (var tag in characterTags) {
+        <li>@tag.Name</li>
+    }
+    </ul>
+}
+@if (generalTags.Count() != 0) {
+    <h4>General</h4>
+    <ul>
+    @foreach (var tag in generalTags) {
+        <li>@tag.Name</li>
+    }
+    </ul>
+}
+@if (metaTags.Count() != 0) {
+    <h4>Meta</h4>
+    <ul>
+    @foreach (var tag in metaTags) {
+        <li>@tag.Name</li>
+    }
+    </ul>
+}
+<h3>Information</h3>
+<p><b>ID:</b> @Model.Id</p>
+<p><b>Uploader:</b> @Html.UserLink(Model.Uploader)</p>

@@ -2,6 +2,7 @@
 using CRbooru.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRbooru.Migrations
 {
     [DbContext(typeof(CRbooruContext))]
-    partial class CRbooruContextModelSnapshot : ModelSnapshot
+    [Migration("20260919194537_AddPosts")]
+    partial class AddPosts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
@@ -79,7 +82,12 @@ namespace CRbooru.Migrations
                     b.Property<int>("PostCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("PostId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
 
                     b.ToTable("Tags");
                 });
@@ -103,21 +111,6 @@ namespace CRbooru.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PostTag", b =>
-                {
-                    b.Property<int>("PostId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TagsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("PostId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("PostTags", (string)null);
-                });
-
             modelBuilder.Entity("CRbooru.Models.Post", b =>
                 {
                     b.HasOne("CRbooru.Models.MediaAsset", "MediaAsset")
@@ -137,19 +130,16 @@ namespace CRbooru.Migrations
                     b.Navigation("Uploader");
                 });
 
-            modelBuilder.Entity("PostTag", b =>
+            modelBuilder.Entity("CRbooru.Models.Tag", b =>
                 {
                     b.HasOne("CRbooru.Models.Post", null)
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Tags")
+                        .HasForeignKey("PostId");
+                });
 
-                    b.HasOne("CRbooru.Models.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("CRbooru.Models.Post", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }
