@@ -17,41 +17,6 @@ builder.Services.AddScoped<PostService>();
 
 var app = builder.Build();
 
-// Create test items for testing
-using (var scope = app.Services.CreateScope()) {
-    var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
-    var tagService = scope.ServiceProvider.GetRequiredService<TagService>();
-    var postService = scope.ServiceProvider.GetRequiredService<PostService>();
-
-    if (!db.MediaAssets.Any()) {
-        db.MediaAssets.Add(new MediaAsset("32bb5f07a3c4b8cf75c93bb60c9f8082", "jpg"));
-    }
-
-    if (!db.Users.Any()) {
-        db.Users.Add(new User("CommentaryRequest"));
-    }
-
-    if (!db.Tags.Any()) {
-        db.Tags.Add(new Tag("1girl", 0, TagCategory.General, false));
-        db.Tags.Add(new Tag("solo", 0, TagCategory.General, false));
-        db.Tags.Add(new Tag("touhou", 0, TagCategory.Copyright, false));
-        db.Tags.Add(new Tag("konpaku_youmu", 0, TagCategory.Character, false));
-        db.Tags.Add(new Tag("kashuu", 0, TagCategory.Artist, false));
-        db.Tags.Add(new Tag("commentary_request", 0, TagCategory.Meta, false));
-    }
-
-    await db.SaveChangesAsync();
-
-    if (!db.Posts.Any()) {
-        var user = await db.Users.FindAsync(1);
-        var asset = await db.MediaAssets.FindAsync(1);
-        var post = new Post(user, asset, []);
-        db.Posts.Add(post);
-        await postService.UpdateTags(post, ["1girl", "solo", "touhou", "konpaku_youmu", "kashuu", "commentary_request"]);
-        await db.SaveChangesAsync();
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
