@@ -21,6 +21,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
     var tagService = scope.ServiceProvider.GetRequiredService<TagService>();
+    var postService = scope.ServiceProvider.GetRequiredService<PostService>();
 
     if (!db.MediaAssets.Any()) {
         db.MediaAssets.Add(new MediaAsset("32bb5f07a3c4b8cf75c93bb60c9f8082", "jpg"));
@@ -44,7 +45,9 @@ using (var scope = app.Services.CreateScope()) {
     if (!db.Posts.Any()) {
         var user = await db.Users.FindAsync(1);
         var asset = await db.MediaAssets.FindAsync(1);
-        db.Posts.Add(new Post(user, asset, await tagService.ResolveTags(["1girl", "solo", "touhou", "konpaku_youmu", "kashuu", "commentary_request"])));
+        var post = new Post(user, asset, []);
+        db.Posts.Add(post);
+        await postService.UpdateTags(post, ["1girl", "solo", "touhou", "konpaku_youmu", "kashuu", "commentary_request"]);
         await db.SaveChangesAsync();
     }
 }
