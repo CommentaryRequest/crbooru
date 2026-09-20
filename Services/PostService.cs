@@ -39,6 +39,13 @@ public class PostService
             tag.PostCount--;
         }
 
+        // If there are no tags left, add tagme.
+        if (newTags.Count() == 0) {
+            newTags = await _tags.ResolveTags(["tagme"]);
+            newTags.ElementAt(0).PostCount++;
+        }
+
         post.Tags = newTags;
+        await _context.SaveChangesAsync();
     }
 }
