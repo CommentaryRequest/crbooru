@@ -41,14 +41,14 @@ public class UserController : Controller
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string username, string password)
+    public async Task<IActionResult> Login(LoginModel model)
     {
         if (User.Identity?.IsAuthenticated == true) {
             return RedirectToAction("Index", "Post");
         }
 
         // Does the user exist?
-        var user = await _service.ByName(username);
+        var user = await _service.ByName(model.Username);
         if (user == null) {
             Response.StatusCode = 400;
             ViewData["Error"] = "User does not exist";
@@ -59,7 +59,7 @@ public class UserController : Controller
         var result = _passwordHasher.VerifyHashedPassword(
             user,
             user.PasswordHash,
-            password);
+            model.Password);
         if (result == PasswordVerificationResult.Failed) {
             Response.StatusCode = 401;
             ViewData["Error"] = "Incorrect password";
