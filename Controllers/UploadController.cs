@@ -46,7 +46,8 @@ public class UploadController : Controller
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Show(int id)
     {
-        if (await _users.GetCurrentUser(this.User) == null) {
+        var currentUser = await _users.GetCurrentUser(this.User);
+        if (currentUser == null) {
             return RedirectToAction("Login", "User");
         }
 
@@ -55,6 +56,18 @@ public class UploadController : Controller
             return NotFound();
         }
 
-        return View("ShowSingle", upload);
+        if (currentUser.Id != upload.Uploader.Id) {
+            return Unauthorized();
+        }
+
+        if (upload.MediaAssets.Count() == 1) {
+            var viewModel = new UploadViewModel(upload, upload.MediaAssets[0]);
+            return View("ShowSingle", viewModel);
+        } else if (upload.MediaAssets.Count() == 0) {
+            var viewModel = new UploadViewModel(upload, null);
+            return View("ShowSingle", viewModel);
+        }
+
+        throw new NotImplementedException();
     }
 }

@@ -1,15 +1,15 @@
-@model Upload
+@model UploadViewModel
 @{
     ViewData["Title"] = "Upload";
 }
 
-@if (Model.Status == UploadStatus.Pending) {
+@if (Model.Upload.Status == UploadStatus.Pending) {
     <p>This upload is still processing...</p>
-} else if (Model.Status == UploadStatus.Error) {
-    <p>Upload failed: @Model.StatusMessage</p>
+} else if (Model.Upload.Status == UploadStatus.Error) {
+    <p>Upload failed: @Model.Upload.StatusMessage</p>
 } else {
 <form asp-controller="Post" asp-action="Create" method="post">
-    <input type="hidden" name="mediaassetid" value="@Model.MediaAssets[0].Id">
+    <input type="hidden" name="mediaassetid" value="@Model.MediaAsset.Id">
     <label for="source">Source</label>
     <input type="text" name="source">
     <p></p>
@@ -26,6 +26,8 @@
     <p></p>
     <input type="submit" value="Post">
     <p></p>
-    <img src="@Model.MediaAssets[0].GetFilePath("/images", MediaAssetVariantType.Original)">
+    <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.MediaAsset.Id">@Html.MediaAssetSize(Model.MediaAsset)</a>
+    <p></p>
+    <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Original)">
 </form>
 }

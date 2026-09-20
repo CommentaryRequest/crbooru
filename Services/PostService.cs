@@ -18,10 +18,15 @@ public class PostService
     public Task<Post> Get(int id)
     {
         return _context.Posts
-            .Include(p => p.Uploader)
-            .Include(p => p.MediaAsset)
             .Include(p => p.Tags)
             .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public Task<Post> ByMediaAsset(int assetId)
+    {
+        return _context.Posts
+            .Include(p => p.Tags)
+            .FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
 
     public async Task UpdateTags(Post post, IEnumerable<string> tagList)
