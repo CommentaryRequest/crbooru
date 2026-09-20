@@ -21,7 +21,7 @@
                 <text>
                 <a asp-controller="User" asp-action="Index">Listing</a>
                 </text>
-                if (@Model?.Id == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))) {
+                if (User.Identity?.IsAuthenticated == true && @Model?.Id == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))) {
                     <text>
                     | <a asp-controller="User" asp-action="Logout">Logout</a>
                     </text>
