@@ -20,6 +20,11 @@ public class CRbooruContext : DbContext
             .HasMany(p => p.Tags)
             .WithMany()
             .UsingEntity(j => j.ToTable("PostTags"));
+
+        modelBuilder.Entity<Upload>()
+            .HasMany(u => u.MediaAssets)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("UploadMediaAssets"));
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }
