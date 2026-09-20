@@ -18,6 +18,7 @@ public class Post
     public MediaAsset MediaAsset { get; set; }
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public PostRating Rating { get; set; } = PostRating.General;
+    public string Source { get; set; } = "";
 
     private Post()
     {

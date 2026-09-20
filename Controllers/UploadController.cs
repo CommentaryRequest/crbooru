@@ -51,7 +51,6 @@ public class UploadController : Controller
         }
 
         var upload = await _service.Get(id);
-        Console.WriteLine(upload.MediaAssets == null);
         if (upload == null) {
             return NotFound();
         }
