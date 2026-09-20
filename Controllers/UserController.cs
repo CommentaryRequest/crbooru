@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using CRbooru.Services;
 using CRbooru.Models;
+using CRbooru.Logical;
 
 namespace CRbooru.Controllers;
 
@@ -77,7 +78,62 @@ public class UserController : Controller
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync("CRbooruSession", principal);
 
-        ViewData["Information"] = "You have been logged in";
         return RedirectToAction("Index", "Post");
+    }
+
+    [HttpGet("signup")]
+    public IActionResult ShowSignup()
+    {
+        if (User.Identity?.IsAuthenticated == true) {
+            return RedirectToAction("Index", "Post");
+        }
+
+        return View("Signup");
+    }
+
+    [HttpPost("signup")]
+    public async Task<IActionResult> Signup(SignupModel model)
+    {
+        // Is the username taken?
+        if (await _service.ByName(model.Username) != null) {
+            Response.StatusCode = 400;
+            ViewData["Error"] = "Name is already taken";
+            return View();
+        }
+
+        // Is the username valid?
+        string? validationResult = UserNameValidator.Validate(model.Username);
+        if (validationResult != null) {
+            Response.StatusCode = 400;
+            ViewData["Error"] = validationResult;
+            return View();
+        }
+
+        // Password confirmation check
+        if (model.Password != model.PasswordConfirmation) {
+            Response.StatusCode = 400;
+            ViewData["Error"] = "Passwords do not match";
+            return View();
+        }
+
+        // Create a new user
+        var user = new User();
+        user.Name = model.Username;
+        user.Role = _service.Any() ? UserRole.Member : UserRole.Admin;
+        user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+        await _service.Add(user);
+
+        // Log the user in
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.Name)
+        };
+
+        var identity = new ClaimsIdentity(claims, "CRbooruSession");
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync("CRbooruSession", principal);
+
+        return RedirectToAction("Show", new { id = user.Id });
     }
 }

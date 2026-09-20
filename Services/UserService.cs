@@ -22,4 +22,15 @@ public class UserService
     {
         return _context.Users.FirstOrDefaultAsync(u => name == u.Name);
     }
+
+    public bool Any()
+    {
+        return _context.Users.Any();
+    }
+
+    public async Task Add(User user)
+    {
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+    }
 }

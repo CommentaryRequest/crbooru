@@ -25,19 +25,6 @@ builder.Services.AddAuthentication("CRbooruSession")
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope()) {
-    var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
-    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
-    if (!db.Users.Any()) {
-        var user = new User();
-        user.Name = "CommentaryRequest";
-        user.Role = UserRole.Admin;
-        user.PasswordHash = passwordHasher.HashPassword(user, "12345");
-        db.Users.Add(user);
-        await db.SaveChangesAsync();
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
