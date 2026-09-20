@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 
@@ -12,6 +11,11 @@ public class PostController : Controller
     public PostController(PostService service)
     {
         _service = service;
+    }
+
+    public IActionResult Index()
+    {
+        return View();
     }
 
     [HttpGet("{id:int}")]

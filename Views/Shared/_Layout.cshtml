@@ -7,6 +7,16 @@
     <script type="importmap"></script>
 </head>
 <body>
+    @if (ViewData.ContainsKey("Error")) {
+        <div id="error-message">
+            <p><b>Error:</b> @ViewData["Error"]</p>
+        </div>
+    }
+    @if (ViewData.ContainsKey("Information")) {
+        <div id="info-message">
+            <p><b>Notice:</b> @ViewData["Information"]</p>
+        </div>
+    }
     <div id="container">
         @RenderBody()
     </div>

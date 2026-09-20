@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using CRbooru.Data;
+using Microsoft.AspNetCore.Identity;
 using CRbooru.Models;
+using CRbooru.Data;
 using CRbooru.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data Source=crbooru.db"));
 
@@ -15,7 +15,28 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<PostService>();
 
+// Authentication
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddAuthentication("CRbooruSession")
+    .AddCookie("CRbooruSession", options =>
+    {
+        options.LoginPath = "/users/login";
+    });
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) {
+    var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
+    if (!db.Users.Any()) {
+        var user = new User();
+        user.Name = "CommentaryRequest";
+        user.Role = UserRole.Admin;
+        user.PasswordHash = passwordHasher.HashPassword(user, "12345");
+        db.Users.Add(user);
+        await db.SaveChangesAsync();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) {
@@ -27,6 +48,7 @@ if (!app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
