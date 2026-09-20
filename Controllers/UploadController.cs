@@ -40,7 +40,7 @@ public class UploadController : Controller
         if (upload.Status == UploadStatus.Success) {
             return RedirectToAction("Show", new { id = upload.Id });
         } else {
-            ViewData["Error"] = $"Upload failed: {upload.StatusMessage}";
+            TempData["Error"] = $"Upload failed: {upload.StatusMessage}";
         }
         return View();
     }

@@ -42,7 +42,6 @@ public class UploadService
         } catch (Exception exc) {
             upload.Status = UploadStatus.Error;
             upload.StatusMessage = exc.Message;
-            Console.WriteLine($"failed upload: {exc.ToString()}");
         }
 
         await _context.SaveChangesAsync();
