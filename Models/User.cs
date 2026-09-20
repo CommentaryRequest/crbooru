@@ -23,4 +23,9 @@ public class User
     public string Name { get; set; }
     public string PasswordHash { get; set; }
     public UserRole Role { get; set; }
+
+    public bool IsPrivileged() => Role >= UserRole.Privileged;
+    public bool IsBuilder() => Role >= UserRole.Builder;
+    public bool IsModerator() => Role >= UserRole.Moderator;
+    public bool IsAdmin() => Role == UserRole.Admin;
 }
