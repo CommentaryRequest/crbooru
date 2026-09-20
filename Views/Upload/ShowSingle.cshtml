@@ -10,6 +10,7 @@
 } else {
 <form asp-controller="Post" asp-action="Create" method="post">
     <input type="hidden" name="mediaassetid" value="@Model.MediaAsset.Id">
+    <input type="hidden" name="uploadid" value="@Model.Upload.Id">
     <label for="source">Source</label>
     <input type="text" name="source">
     <p></p>
