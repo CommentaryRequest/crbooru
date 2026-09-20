@@ -21,9 +21,10 @@ public class TagService
 
     public async Task<ICollection<Tag>> ResolveTags(IEnumerable<string> names)
     {
+        IEnumerable<string> uniqueNames = names.Distinct();
         var tags = new List<Tag>();
 
-        foreach (var name in names) {
+        foreach (var name in uniqueNames) {
             var tag = await ByName(name);
             if (tag == null) {
                 tag = new Tag(name, 0, TagCategory.General, false);
