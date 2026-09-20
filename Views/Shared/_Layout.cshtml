@@ -44,7 +44,7 @@
 
     @if (TempData.ContainsKey("Error")) {
         <div id="error-message">
-            <p><b>Error:</b> @ViewData["Error"]</p>
+            <p><b>Error:</b> @TempData["Error"]</p>
         </div>
     }
     @if (TempData.ContainsKey("Information")) {
