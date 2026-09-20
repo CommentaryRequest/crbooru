@@ -92,6 +92,7 @@ public class UserController : Controller
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync("CRbooruSession", principal);
 
+        TempData["Information"] = $"You have been logged in as {user.Name}";
         return RedirectToAction("Index", "Post");
     }
 
@@ -156,6 +157,7 @@ public class UserController : Controller
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync("CRbooruSession", principal);
 
+        TempData["Information"] = $"You have signed up as {user.Name}";
         return RedirectToAction("Show", new { id = user.Id });
     }
 }
