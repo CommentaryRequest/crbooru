@@ -5,4 +5,7 @@
 <h1>@ViewData["Title"]</h1>
 <p><b>ID</b>: @Model.Id</p>
 <p><b>MD5</b>: @Model.Md5</p>
-<img src="@ViewData["ImagePath"]">
+<p><b>Pixel hash:</b> @Model.PixelHash</p>
+<p><b>File type:</b> @Model.FileType</p>
+<p><b>Size:</b> @(Model.Width)x@(Model.Height), @Model.FileSize bytes</p>
+<img src="@Model.GetFilePath("/images", MediaAssetVariantType.Original)">

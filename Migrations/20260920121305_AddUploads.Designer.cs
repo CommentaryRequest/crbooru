@@ -2,6 +2,7 @@
 using CRbooru.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRbooru.Migrations
 {
     [DbContext(typeof(CRbooruContext))]
-    partial class CRbooruContextModelSnapshot : ModelSnapshot
+    [Migration("20260920121305_AddUploads")]
+    partial class AddUploads
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
@@ -22,29 +25,16 @@ namespace CRbooru.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("FileSize")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("FileType")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Height")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Md5")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PixelHash")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("UploadId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Width")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -108,13 +98,13 @@ namespace CRbooru.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StatusMessage")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UploaderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte>("status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

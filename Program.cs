@@ -14,6 +14,7 @@ builder.Services.AddScoped<MediaAssetService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<UploadService>();
 
 // Authentication
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

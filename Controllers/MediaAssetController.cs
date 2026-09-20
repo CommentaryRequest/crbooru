@@ -8,10 +8,12 @@ namespace CRbooru.Controllers;
 public class MediaAssetController : Controller
 {
     private readonly MediaAssetService _service;
+    private readonly IWebHostEnvironment _webHostEnv;
 
-    public MediaAssetController(MediaAssetService service)
+    public MediaAssetController(MediaAssetService service, IWebHostEnvironment webHostEnv)
     {
         _service = service;
+        _webHostEnv = webHostEnv;
     }
 
     [HttpGet("{id:int}")]

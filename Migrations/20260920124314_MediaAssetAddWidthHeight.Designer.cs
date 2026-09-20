@@ -2,6 +2,7 @@
 using CRbooru.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRbooru.Migrations
 {
     [DbContext(typeof(CRbooruContext))]
-    partial class CRbooruContextModelSnapshot : ModelSnapshot
+    [Migration("20260920124314_MediaAssetAddWidthHeight")]
+    partial class MediaAssetAddWidthHeight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
@@ -20,9 +23,6 @@ namespace CRbooru.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("FileSize")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FileType")
@@ -35,10 +35,6 @@ namespace CRbooru.Migrations
                     b.Property<string>("Md5")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PixelHash")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("UploadId")
