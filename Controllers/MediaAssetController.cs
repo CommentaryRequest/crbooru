@@ -22,7 +22,6 @@ public class MediaAssetController : Controller
             return NotFound();
         }
 
-        ViewData["ImagePath"] = mediaAsset.GetFilePath("/images");
         return View(mediaAsset);
     }
 }
