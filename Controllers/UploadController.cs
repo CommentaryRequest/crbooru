@@ -9,11 +9,13 @@ public class UploadController : Controller
 {
     private readonly UploadService _service;
     private readonly UserService _users;
+    private readonly PostService _posts;
 
-    public UploadController(UploadService service, UserService users)
+    public UploadController(UploadService service, UserService users, PostService posts)
     {
         _service = service;
         _users = users;
+        _posts = posts;
     }
 
     [HttpGet("new")]
@@ -61,6 +63,12 @@ public class UploadController : Controller
         }
 
         if (upload.MediaAssets.Count() == 1) {
+            var existingPost = await _posts.ByMediaAsset(upload.MediaAssets[0].Id);
+            if (existingPost != null) {
+                TempData["Information"] = $"Duplicate of post #{existingPost.Id}";
+                return RedirectToAction("Show", "Post", new { id = existingPost.Id });
+            }
+
             var viewModel = new UploadViewModel(upload, upload.MediaAssets[0]);
             return View("ShowSingle", viewModel);
         } else if (upload.MediaAssets.Count() == 0) {

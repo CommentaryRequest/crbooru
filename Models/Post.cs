@@ -24,10 +24,12 @@ public class Post
     {
     }
 
-    public Post(User uploader, MediaAsset mediaAsset, ICollection<Tag> tags)
+    public Post(User uploader, MediaAsset mediaAsset, PostRating rating, string source)
     {
         Uploader = uploader;
         MediaAsset = mediaAsset;
-        Tags = tags;
+        Tags = new List<Tag>();
+        Rating = rating;
+        Source = source;
     }
 }
