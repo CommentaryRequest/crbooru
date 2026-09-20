@@ -42,7 +42,7 @@
     }
     <hr>
 
-    @if (ViewData.ContainsKey("Error")) {
+    @if (TempData.ContainsKey("Error")) {
         <div id="error-message">
             <p><b>Error:</b> @ViewData["Error"]</p>
         </div>

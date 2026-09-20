@@ -66,7 +66,7 @@ public class UserController : Controller
         var user = await _service.ByName(model.Username);
         if (user == null) {
             Response.StatusCode = 400;
-            ViewData["Error"] = "User does not exist";
+            TempData["Error"] = "User does not exist";
             return View();
         }
 
@@ -77,7 +77,7 @@ public class UserController : Controller
             model.Password);
         if (result == PasswordVerificationResult.Failed) {
             Response.StatusCode = 401;
-            ViewData["Error"] = "Incorrect password";
+            TempData["Error"] = "Incorrect password";
             return View();
         }
 
@@ -120,7 +120,7 @@ public class UserController : Controller
         // Is the username taken?
         if (await _service.ByName(model.Username) != null) {
             Response.StatusCode = 400;
-            ViewData["Error"] = "Name is already taken";
+            TempData["Error"] = "Name is already taken";
             return View();
         }
 
@@ -128,14 +128,14 @@ public class UserController : Controller
         string? validationResult = UserNameValidator.Validate(model.Username);
         if (validationResult != null) {
             Response.StatusCode = 400;
-            ViewData["Error"] = validationResult;
+            TempData["Error"] = validationResult;
             return View();
         }
 
         // Password confirmation check
         if (model.Password != model.PasswordConfirmation) {
             Response.StatusCode = 400;
-            ViewData["Error"] = "Passwords do not match";
+            TempData["Error"] = "Passwords do not match";
             return View();
         }
 
