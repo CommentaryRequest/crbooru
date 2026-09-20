@@ -20,9 +20,11 @@ public class PostController : Controller
         _mediaAssets = mediaAssets;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var posts = await _service.ListAsync(20);
+
+        return View(posts);
     }
 
     [HttpGet("{id:int}")]

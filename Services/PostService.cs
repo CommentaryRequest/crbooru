@@ -37,6 +37,17 @@ public class PostService
             .FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
 
+    public async Task<List<Post>> ListAsync(int limit)
+    {
+        return await _context.Posts
+            .Include(p => p.Tags)
+            .Include(p => p.MediaAsset)
+            .Include(p => p.Uploader)
+            .OrderByDescending(p => p.Id)
+            .Take(limit)
+            .ToListAsync();
+    }
+
     public async Task UpdateTags(Post post, IEnumerable<string> tagList)
     {
         var newTags = await _tags.ResolveTags(tagList);
