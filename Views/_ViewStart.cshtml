@@ -1,3 +1,5 @@
 ﻿@{
     Layout = "_Layout";
+    ViewData["Controller"] = ViewContext.RouteData.Values["controller"]?.ToString();
+    ViewData["Action"] = ViewContext.RouteData.Values["action"]?.ToString();
 }

@@ -7,14 +7,43 @@
     <script type="importmap"></script>
 </head>
 <body>
+    <h1>CRbooru</h1>
+    @if (User.Identity?.IsAuthenticated != true) {
+        <a asp-controller="User" asp-action="Login">Login</a>
+    } else {
+        <a asp-controller="User" asp-action="Profile">My Account</a>
+    }
+    | <a asp-controller="Post" asp-action="Index">Posts</a>
+    <hr>
+    @{
+        switch (ViewData["Controller"]) {
+            case "User":
+                <text>
+                <a asp-controller="User" asp-action="Index">Listing</a>
+                </text>
+                if (@Model?.Id == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))) {
+                    <text>
+                    | <a asp-controller="User" asp-action="Logout">Logout</a>
+                    </text>
+                }
+                break;
+            case "Post":
+                <text>
+                <a asp-controller="Post" asp-action="Index">Listing</a>
+                </text>
+                break;
+        }
+    }
+    <hr>
+
     @if (ViewData.ContainsKey("Error")) {
         <div id="error-message">
             <p><b>Error:</b> @ViewData["Error"]</p>
         </div>
     }
-    @if (ViewData.ContainsKey("Information")) {
+    @if (TempData.ContainsKey("Information")) {
         <div id="info-message">
-            <p><b>Notice:</b> @ViewData["Information"]</p>
+            <p><b>Notice:</b> @TempData["Information"]</p>
         </div>
     }
     <div id="container">

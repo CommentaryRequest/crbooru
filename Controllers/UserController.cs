@@ -20,6 +20,11 @@ public class UserController : Controller
         _passwordHasher = passwordHasher;
     }
 
+    public IActionResult Index()
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Show(int id)
     {
@@ -28,7 +33,16 @@ public class UserController : Controller
             return NotFound();
         }
 
-        return View(user);
+        return View("Show", user);
+    }
+
+    [HttpGet("profile")]
+    public async Task<IActionResult> Profile()
+    {
+        if (User.Identity?.IsAuthenticated == true) {
+            return await Show(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+        }
+        return RedirectToAction("ShowLogin");
     }
 
     [HttpGet("login")]
@@ -78,6 +92,14 @@ public class UserController : Controller
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync("CRbooruSession", principal);
 
+        return RedirectToAction("Index", "Post");
+    }
+
+    [HttpGet("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync("CRbooruSession");
+        TempData["Information"] = "You have been logged out";
         return RedirectToAction("Index", "Post");
     }
 
