@@ -56,7 +56,7 @@ public class UploadController : Controller
             return NotFound();
         }
 
-        if (currentUser.Id != upload.Uploader.Id) {
+        if (!currentUser.IsAdmin() && currentUser.Id != upload.Uploader.Id) {
             return Unauthorized();
         }
 
