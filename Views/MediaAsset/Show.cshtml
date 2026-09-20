@@ -1,3 +1,4 @@
+@model MediaAsset
 @{
     ViewData["Title"] = "Media Asset";
 }
@@ -7,5 +8,5 @@
 <p><b>MD5</b>: @Model.Md5</p>
 <p><b>Pixel hash:</b> @Model.PixelHash</p>
 <p><b>File type:</b> @Model.FileType</p>
-<p><b>Size:</b> @(Model.Width)x@(Model.Height), @Model.FileSize bytes</p>
+<p><b>Size:</b> @Html.MediaAssetSize(Model)</p>
 <img src="@Model.GetFilePath("/images", MediaAssetVariantType.Original)">
