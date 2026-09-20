@@ -36,10 +36,26 @@ public class UploadController : Controller
 
         var upload = await _service.CreateAsync(currentUser, model.Files);
         if (upload.Status == UploadStatus.Success) {
-            TempData["Information"] = "Upload created successfully";
+            return RedirectToAction("Show", new { id = upload.Id });
         } else {
             ViewData["Error"] = $"Upload failed: {upload.StatusMessage}";
         }
         return View();
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Show(int id)
+    {
+        if (await _users.GetCurrentUser(this.User) == null) {
+            return RedirectToAction("Login", "User");
+        }
+
+        var upload = await _service.Get(id);
+        Console.WriteLine(upload.MediaAssets == null);
+        if (upload == null) {
+            return NotFound();
+        }
+
+        return View("ShowSingle", upload);
     }
 }

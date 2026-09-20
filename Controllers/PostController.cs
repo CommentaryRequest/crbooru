@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
+using CRbooru.Models;
 
 namespace CRbooru.Controllers;
 
@@ -27,5 +28,11 @@ public class PostController : Controller
         }
 
         return View(post);
+    }
+
+    [HttpPost("new")]
+    public async Task<IActionResult> Create(PostFormModel model)
+    {
+        throw new NotImplementedException();
     }
 }

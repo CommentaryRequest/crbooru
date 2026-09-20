@@ -15,9 +15,11 @@ public class UploadService
         _assets = assets;
     }
 
-    public ValueTask<Upload> Get(int id)
+    public Task<Upload> Get(int id)
     {
-        return _context.Uploads.FindAsync(id);
+        return _context.Uploads
+            .Include(u => u.MediaAssets)
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<Upload> CreateAsync(User uploader, IEnumerable<IFormFile> files)
