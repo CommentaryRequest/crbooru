@@ -22,7 +22,7 @@
     }
 }
 
-<img src="@Model.MediaAsset.GetFilePath("/images")">
+<img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Original)">
 <h3>Tags (@Model.Tags.Count())</h3>
 @{
     RenderTagList("Artist", artistTags);
