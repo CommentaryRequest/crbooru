@@ -36,4 +36,13 @@
 <p><b>Uploader:</b> @Html.UserLink(Model.Uploader)</p>
 <p><b>Rating:</b> @Model.Rating</p>
 <p><b>Size:</b> @Html.MediaAssetSize(Model.MediaAsset)</p>
-<p><b>Source:</b> @Model.Source</p>
+<p><b>Source:</b>
+@if (!string.IsNullOrEmpty(Model.Source) && (Uri.TryCreate(Model.Source, UriKind.Absolute, out var uri)
+&& (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)))
+{
+    <a href="@Model.Source">@Model.Source</a>
+}
+else
+{
+    @Model.Source
+}</p>
