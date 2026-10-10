@@ -2,7 +2,7 @@
     ViewData["Title"] = $"@{Model.Name}";
 }
 
-<h1>@Model.Name</h1>
+<h1><partial name="_UserLink" model="Model" /></h1>
 <p><b>ID:</b> @Model.Id</p>
 <p><b>Join Date:</b> @Model.CreatedAt</p>
 <p><b>Role:</b> @Model.Role</p>

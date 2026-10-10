@@ -66,3 +66,23 @@ a:hover {
     height: 100%;
     object-fit: contain;
 }
+
+.user-member {
+    color: blue;
+}
+
+.user-privileged {
+    color: orange;
+}
+
+.user-builder {
+    color: purple;
+}
+
+.user-moderator {
+    color: green;
+}
+
+.user-admin {
+    color: red;
+}
