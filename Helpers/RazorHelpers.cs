@@ -6,11 +6,6 @@ namespace CRbooru.Helpers;
 
 public static class RazorHelpers
 {
-    public static IHtmlContent UserLink(this IHtmlHelper html, User user)
-    {
-        return html.ActionLink(user.Name, "Show", "User", new { id = user.Id });
-    }
-
     public static string MediaAssetSize(this IHtmlHelper html, MediaAsset asset)
     {
         string[] suffixes = { "Bytes", "KB", "MB", "GB", "TB" };
