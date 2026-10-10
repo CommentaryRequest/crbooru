@@ -8,6 +8,6 @@
 
 @foreach (var post in Model) {
 <a asp-controller="Post" asp-action="Show" asp-route-id="@post.Id">
-    <img src="@post.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Thumbnail)" alt="post #@post.Id">
+    <partial name="_PostThumbnail" model="post">
 </a>
 }

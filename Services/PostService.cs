@@ -48,6 +48,15 @@ public class PostService
             .FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
 
+    public IQueryable<Post> ByUser(int userId)
+    {
+        return _context.Posts
+            .Include(p => p.Tags)
+            .Include(p => p.MediaAsset)
+            .Include(p => p.Uploader)
+            .Where(p => p.Uploader.Id == userId);
+    }
+
     public async Task<List<Post>> ListAsync(int limit)
     {
         return await _context.Posts

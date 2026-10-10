@@ -12,11 +12,13 @@ namespace CRbooru.Controllers;
 public class UserController : Controller
 {
     private readonly UserService _service;
+    private readonly PostService _posts;
     private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserController(UserService service, IPasswordHasher<User> passwordHasher)
+    public UserController(UserService service, PostService posts, IPasswordHasher<User> passwordHasher)
     {
         _service = service;
+        _posts = posts;
         _passwordHasher = passwordHasher;
     }
 
@@ -32,6 +34,9 @@ public class UserController : Controller
         if (user == null) {
             return NotFound();
         }
+
+        ViewData["PostCount"] = _posts.ByUser(id).Count();
+        ViewData["RecentPosts"] = _posts.ByUser(id).OrderByDescending(p => p.Id).Take(6).ToList();
 
         return View("Show", user);
     }
