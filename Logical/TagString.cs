@@ -15,6 +15,13 @@ public static class TagString
         [TagCategory.Meta] = ["meta:"]
     };
 
+    private static readonly Dictionary<char, PostRating> RATING_MAP = new() {
+        ['g'] = PostRating.General,
+        ['s'] = PostRating.Sensitive,
+        ['q'] = PostRating.Questionable,
+        ['e'] = PostRating.Explicit
+    };
+
     private static void addTags(StringBuilder sb, IEnumerable<Tag> tags)
     {
         foreach (var tag in tags) {
@@ -57,7 +64,7 @@ public static class TagString
         return tagString.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
-    public static (TagCategory Category, string NormalizedName)? GetCategoryOverride(string tag)
+    public static (TagCategory, string)? GetCategoryOverride(string tag)
     {
         foreach (var (category, prefixes) in CATEGORY_PREFIXES) {
             var prefix = prefixes.FirstOrDefault(p => tag.StartsWith(p, StringComparison.OrdinalIgnoreCase));
@@ -69,5 +76,10 @@ public static class TagString
             return (category, tag[prefix.Length..]);
         }
         return null;
+    }
+
+    public static PostRating? ParseRatingValue(string value)
+    {
+        return RATING_MAP.GetValueOrDefault(char.ToLower(value[0]), null);
     }
 }
