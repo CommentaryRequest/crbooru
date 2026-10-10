@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: 50% minmax(0, 1fr);
     align-items: start;
+    gap: 1.25rem;
 }
 
 #upload-image {
