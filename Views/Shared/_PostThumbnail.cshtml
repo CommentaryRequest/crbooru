@@ -1,2 +1,4 @@
 @model Post
-<img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Thumbnail)" alt="post #@Model.Id">
+<div class="post-thumbnail">
+    <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Thumbnail)" alt="post #@Model.Id">
+</div>

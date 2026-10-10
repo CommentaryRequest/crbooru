@@ -1,0 +1,10 @@
+#post-view {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+#post-sidebar, #post-image {
+    min-width: 0;
+}

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | CRbooru</title>
     <script type="importmap"></script>
+    <link rel="stylesheet" href="/styles/common.css">
+    <link rel="stylesheet" href="/styles/@(ViewData["Controller"].ToString().ToLower()).css">
 </head>
 <body>
     <h1>CRbooru</h1>
@@ -43,13 +45,13 @@
     <hr>
 
     @if (TempData.ContainsKey("Error")) {
-        <div id="error-message">
-            <p><b>Error:</b> @TempData["Error"]</p>
+        <div id="error-message" class="notice">
+            <b>Error:</b> @TempData["Error"]
         </div>
     }
     @if (TempData.ContainsKey("Information")) {
-        <div id="info-message">
-            <p><b>Notice:</b> @TempData["Information"]</p>
+        <div id="info-message" class="notice">
+            <b>Notice:</b> @TempData["Information"]
         </div>
     }
     <div id="container">

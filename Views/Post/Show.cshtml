@@ -19,48 +19,62 @@
     void RenderTagList(string categoryName, IEnumerable<Tag> tagList)
     {
         @if (tagList.Count() != 0) {
-            <h4>@categoryName</h4>
+            <h4 class="category-heading">@categoryName</h4>
             <ul>
             @foreach (var tag in tagList) {
-                <li>@tag.Name (@tag.PostCount)</li>
+                <li><a class="tag-@(categoryName.ToLower())">@tag.Name</a> (@tag.PostCount)</li>
             }
             </ul>
         }
     }
 }
 
-<img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
-<h3>Tags (@Model.Tags.Count())</h3>
-@{
-    RenderTagList("Artist", artistTags);
-    RenderTagList("Copyright", copyrightTags);
-    RenderTagList("Character", characterTags);
-    RenderTagList("General", generalTags);
-    RenderTagList("Meta", metaTags);
-}
-@if (User.Identity?.IsAuthenticated == true) {
-<h3>Edit</h3>
-<form asp-controller="Post" asp-action="Edit" method="post">
-    <input type="hidden" name="postid" value="@Model.Id">
-    <partial name="_PostFields" model="formModel">
-    <input type="submit" value="Edit">
-</form>
-} else {
-<p><a asp-controller="User" asp-action="Login">Log in</a> to edit posts.</p>
-}
-<h3>Information</h3>
-<p><b>ID:</b> @Model.Id</p>
-<p><b>Uploader:</b> @Html.UserLink(Model.Uploader)</p>
-<p><b>Date:</b> @Model.CreatedAt</p>
-<p><b>Rating:</b> @Model.Rating</p>
-<p><b>Size:</b> <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.MediaAsset.Id">@Html.MediaAssetSize(Model.MediaAsset)</a></p>
-<p><b>Source:</b>
-@if (!string.IsNullOrEmpty(Model.Source) && (Uri.TryCreate(Model.Source, UriKind.Absolute, out var uri)
-&& (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)))
-{
-    <a href="@Model.Source">@Model.Source</a>
-}
-else
-{
-    @Model.Source
-}</p>
+<div id="post-view">
+    <div id="post-sidebar">
+        <div id="tag-list">
+            <h3>Tags (@Model.Tags.Count())</h3>
+            @{
+                RenderTagList("Artist", artistTags);
+                RenderTagList("Copyright", copyrightTags);
+                RenderTagList("Character", characterTags);
+                RenderTagList("General", generalTags);
+                RenderTagList("Meta", metaTags);
+            }
+        </div>
+        <div id="post-information">
+            <h3>Information</h3>
+            <ul>
+                <li><b>ID:</b> @Model.Id</li>
+                <li><b>Uploader:</b> @Html.UserLink(Model.Uploader)</li>
+                <li><b>Date:</b> @Model.CreatedAt</li>
+                <li><b>Rating:</b> @Model.Rating</li>
+                <li><b>Size:</b> <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.MediaAsset.Id">@Html.MediaAssetSize(Model.MediaAsset)</a></li>
+                <li><b>Source:</b>
+                @if (!string.IsNullOrEmpty(Model.Source) && (Uri.TryCreate(Model.Source, UriKind.Absolute, out var uri)
+                && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))) {
+                    <a href="@Model.Source">@Model.Source</a>
+                } else if (string.IsNullOrWhiteSpace(Model.Source)) {
+                    <i>none</i>
+                } else {
+                    @Model.Source
+                }
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="post-image">
+        <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
+
+        @if (User.Identity?.IsAuthenticated == true) {
+        <h3>Edit</h3>
+        <form asp-controller="Post" asp-action="Edit" method="post">
+            <input type="hidden" name="postid" value="@Model.Id">
+            <partial name="_PostFields" model="formModel">
+            <input type="submit" value="Edit">
+        </form>
+        } else {
+        <p><a asp-controller="User" asp-action="Login">Log in</a> to edit posts.</p>
+        }
+    </div>
+</div>
