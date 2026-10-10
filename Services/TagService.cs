@@ -25,7 +25,7 @@ public class TagService
         var tags = new List<Tag>();
 
         foreach (var name in uniqueNames) {
-            (TagCategory Category, string NormalizedName)? categoryOverride = TagString.GetCategoryOverride(name);
+            (TagCategory Category, string NormalizedName)? categoryOverride = TagParser.GetCategoryOverride(name);
             var tagName = categoryOverride?.NormalizedName ?? name;
 
             var tag = await ByName(tagName);

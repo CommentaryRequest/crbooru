@@ -74,7 +74,7 @@ public class PostService
             var value = tag[prefix.Length..];
             switch (type) {
                 case MetaTagType.Rating:
-                    post.Rating = TagString.ParseRatingValue(value) ?? post.Rating;
+                    post.Rating = TagParser.ParseRatingValue(value) ?? post.Rating;
                     break;
             }
         }
@@ -116,7 +116,7 @@ public class PostService
     {
         post.Rating = form.Rating;
         post.Source = form.Source;
-        await UpdateTags(post, TagString.Split(form.TagString));
+        await UpdateTags(post, TagParser.SplitTags(form.TagString));
         await _context.SaveChangesAsync();
     }
 
@@ -125,7 +125,7 @@ public class PostService
         var mediaAsset = await _mediaAssets.Get(form.MediaAssetId)!;
         var upload = await _uploads.Get(form.UploadId)!;
 
-        string[] tags = TagString.Split(form.TagString);
+        string[] tags = TagParser.SplitTags(form.TagString);
         Post post = new Post(uploader, mediaAsset, form.Rating, form.Source);
         UpdateTags(post, tags);
         _context.Posts.Add(post);

@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace CRbooru.Logical;
 
-public static class TagString
+public static class TagParser
 {
     private static readonly Dictionary<TagCategory, string[]> CATEGORY_PREFIXES = new() {
         [TagCategory.General] = ["general:", "gen:"],
@@ -30,7 +30,7 @@ public static class TagString
         sb.AppendLine();
     }
 
-    public static string Build(ICollection<Tag> tags)
+    public static string BuildTagString(ICollection<Tag> tags)
     {
         IEnumerable<Tag> artistTags = tags.Where(tag => tag.Category == TagCategory.Artist);
         IEnumerable<Tag> metaTags = tags.Where(tag => tag.Category == TagCategory.Meta);
@@ -59,7 +59,7 @@ public static class TagString
         return sb.ToString();
     }
 
-    public static string[] Split(string tagString)
+    public static string[] SplitTags(string tagString)
     {
         return tagString.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
@@ -80,6 +80,10 @@ public static class TagString
 
     public static PostRating? ParseRatingValue(string value)
     {
-        return RATING_MAP.GetValueOrDefault(char.ToLower(value[0]), null);
+        if (RATING_MAP.TryGetValue(char.ToLower(value[0]), out PostRating rating)) {
+            return rating;
+        }
+
+        return null;
     }
 }

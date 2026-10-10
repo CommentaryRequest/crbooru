@@ -7,7 +7,7 @@
     var formModel = new PostFormModel {
         Source = Model.Source,
         Rating = Model.Rating,
-        TagString = TagString.Build(Model.Tags)
+        TagString = TagParser.BuildTagString(Model.Tags)
     };
 
     var artistTags = Model.Tags.Where(tag => tag.Category == TagCategory.Artist);
