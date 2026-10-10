@@ -1,0 +1,10 @@
+#media-asset-view {
+    display: grid;
+    grid-template-columns: 20% minmax(0, 1fr);
+}
+
+#media-asset-sidebar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
