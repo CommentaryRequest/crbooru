@@ -19,6 +19,7 @@ public class Post
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public PostRating Rating { get; set; } = PostRating.General;
     public string? Source { get; set; } = "";
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     private Post()
     {

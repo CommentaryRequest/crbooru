@@ -14,4 +14,5 @@ public class Upload
     public UploadStatus Status { get; set; } = UploadStatus.Pending;
     public List<MediaAsset> MediaAssets { get; set; }
     public string? StatusMessage { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

@@ -22,6 +22,7 @@ public class MediaAsset
     public long FileSize { get; private set; }
     public int Width { get; private set; }
     public int Height { get; private set; }
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     public MediaAsset(string md5, string pixelHash, string fileType, long fileSize, int width, int height)
     {
