@@ -27,4 +27,9 @@ public class Tag
         Category = category;
         IsDeprecated = isDeprecated;
     }
+
+    public string DisplayName()
+    {
+        return string.Join(' ', Name.Split("_"));
+    }
 }

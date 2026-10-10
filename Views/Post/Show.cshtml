@@ -22,7 +22,7 @@
             <h4 class="category-heading">@categoryName</h4>
             <ul>
             @foreach (var tag in tagList) {
-                <li><a class="tag-@(categoryName.ToLower())">@tag.Name</a> (@tag.PostCount)</li>
+                <li><a class="tag-@(categoryName.ToLower())">@tag.DisplayName()</a> (@tag.PostCount)</li>
             }
             </ul>
         }
