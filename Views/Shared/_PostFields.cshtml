@@ -6,6 +6,6 @@
 <select asp-for="Rating" asp-items="Html.GetEnumSelectList<PostRating>()">
 </select>
 <p></p>
-<label for="tagstring">Tags</label>
-<textarea name="tagstring" cols="50" rows="5">@Model.TagString</textarea>
+<label for="tagstring">Tags</label><br>
+<textarea name="tagstring" cols="50" rows="5" id="tag-string">@Model.TagString</textarea>
 <p></p>

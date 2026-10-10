@@ -9,7 +9,9 @@
 <p><b>Posts:</b> @ViewData["PostCount"]</p>
 @if (((List<Post>)ViewData["RecentPosts"]).Count != 0) {
     <h2>Recent Posts:</h2>
+    <div class="post-list">
     @foreach (var post in (List<Post>)ViewData["RecentPosts"]) {
     <partial name="_PostThumbnail" model="post" />
     }
+    </div>
 }
