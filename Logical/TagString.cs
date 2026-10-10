@@ -1,11 +1,20 @@
 using CRbooru.Models;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace CRbooru.Logical;
 
 public static class TagString
 {
+    private static readonly Dictionary<TagCategory, string[]> CATEGORY_PREFIXES = new() {
+        [TagCategory.General] = ["general:", "gen:"],
+        [TagCategory.Artist] = ["artist:", "art:"],
+        [TagCategory.Character] = ["character:", "char:"],
+        [TagCategory.Copyright] = ["copyright:", "copy:"],
+        [TagCategory.Meta] = ["meta:"]
+    };
+
     private static void addTags(StringBuilder sb, IEnumerable<Tag> tags)
     {
         foreach (var tag in tags) {
@@ -46,5 +55,19 @@ public static class TagString
     public static string[] Split(string tagString)
     {
         return tagString.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
+    public static (TagCategory Category, string NormalizedName)? GetCategoryOverride(string tag)
+    {
+        foreach (var (category, prefixes) in CATEGORY_PREFIXES) {
+            var prefix = prefixes.FirstOrDefault(p => tag.StartsWith(p, StringComparison.OrdinalIgnoreCase));
+
+            if (prefix == null) {
+                continue;
+            }
+
+            return (category, tag[prefix.Length..]);
+        }
+        return null;
     }
 }

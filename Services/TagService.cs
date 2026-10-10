@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CRbooru.Data;
 using CRbooru.Models;
-using System.Collections.Generic;
+using CRbooru.Logical;
 
 namespace CRbooru.Services;
 
@@ -25,10 +25,17 @@ public class TagService
         var tags = new List<Tag>();
 
         foreach (var name in uniqueNames) {
-            var tag = await ByName(name);
-            if (tag == null && createNew) {
-                tag = new Tag(name, 0, TagCategory.General, false);
-                _context.Tags.Add(tag);
+            (TagCategory Category, string NormalizedName)? categoryOverride = TagString.GetCategoryOverride(name);
+            var tagName = categoryOverride?.NormalizedName ?? name;
+
+            var tag = await ByName(tagName);
+            if (tag == null) {
+                if (createNew) {
+                    tag = new Tag(tagName, 0, categoryOverride?.Category ?? TagCategory.General, false);
+                    _context.Tags.Add(tag);
+                }
+            } else {
+                tag.Category = categoryOverride?.Category ?? tag.Category;
             }
 
             if (tag != null) {
