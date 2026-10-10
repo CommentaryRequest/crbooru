@@ -23,6 +23,7 @@ public class User
     public string Name { get; set; }
     public string PasswordHash { get; set; }
     public UserRole Role { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public bool IsPrivileged() => Role >= UserRole.Privileged;
     public bool IsBuilder() => Role >= UserRole.Builder;
