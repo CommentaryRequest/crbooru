@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CRbooru.Data;
 using CRbooru.Models;
+using CRbooru.Logical;
 
 namespace CRbooru.Services;
 
@@ -73,12 +74,20 @@ public class PostService
         await _context.SaveChangesAsync();
     }
 
+    public async Task EditAsync(Post post, PostFormModel form)
+    {
+        await UpdateTags(post, TagString.Split(form.TagString));
+        post.Rating = form.Rating;
+        post.Source = form.Source;
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<Post> CreateAsync(User uploader, PostFormModel form)
     {
         var mediaAsset = await _mediaAssets.Get(form.MediaAssetId)!;
         var upload = await _uploads.Get(form.UploadId)!;
 
-        string[] tags = form.TagString.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        string[] tags = TagString.Split(form.TagString);
         Post post = new Post(uploader, mediaAsset, form.Rating, form.Source);
         UpdateTags(post, tags);
         _context.Posts.Add(post);

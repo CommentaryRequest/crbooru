@@ -1,7 +1,14 @@
 @model Post
 @using System.Linq
+@using CRbooru.Logical
 @{
     ViewData["Title"] = $"post #{Model.Id}";
+
+    var formModel = new PostFormModel {
+        Source = Model.Source,
+        Rating = Model.Rating,
+        TagString = TagString.Build(Model.Tags)
+    };
 
     var artistTags = Model.Tags.Where(tag => tag.Category == TagCategory.Artist);
     var copyrightTags = Model.Tags.Where(tag => tag.Category == TagCategory.Copyright);
@@ -30,6 +37,16 @@
     RenderTagList("Character", characterTags);
     RenderTagList("General", generalTags);
     RenderTagList("Meta", metaTags);
+}
+@if (User.Identity?.IsAuthenticated == true) {
+<h3>Edit</h3>
+<form asp-controller="Post" asp-action="Edit" method="post">
+    <input type="hidden" name="postid" value="@Model.Id">
+    <partial name="_PostFields" model="formModel">
+    <input type="submit" value="Edit">
+</form>
+} else {
+<p><a asp-controller="User" asp-action="Login">Log in</a> to edit posts.</p>
 }
 <h3>Information</h3>
 <p><b>ID:</b> @Model.Id</p>

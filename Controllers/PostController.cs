@@ -77,4 +77,16 @@ public class PostController : Controller
             return RedirectToAction("Show", "Upload", new { id = upload.Id });
         }
     }
+
+    [HttpPost("edit")]
+    public async Task<IActionResult> Edit(PostFormModel model)
+    {
+        var post = await _service.Get(model.PostId);
+        if (post == null) {
+            return NotFound();
+        }
+
+        await _service.EditAsync(post, model);
+        return RedirectToAction("Show", new { id = post.Id });
+    }
 }

@@ -1,6 +1,11 @@
 @model UploadViewModel
 @{
     ViewData["Title"] = "Upload";
+    var formModel = new PostFormModel {
+        Source = "",
+        Rating = PostRating.General,
+        TagString = ""
+    };
 }
 
 @if (Model.Upload.Status == UploadStatus.Pending) {
@@ -11,20 +16,7 @@
 <form asp-controller="Post" asp-action="Create" method="post">
     <input type="hidden" name="mediaassetid" value="@Model.MediaAsset.Id">
     <input type="hidden" name="uploadid" value="@Model.Upload.Id">
-    <label for="source">Source</label>
-    <input type="text" name="source">
-    <p></p>
-    <label for="rating">Rating</label>
-    <select name="rating">
-        <option value="general" selected="selected">General</option>
-        <option value="sensitive">Sensitive</option>
-        <option value="questionable">Questionable</option>
-        <option value="explicit">Explicit</option>
-    </select>
-    <p></p>
-    <label for="tagstring">Tags</label>
-    <textarea name="tagstring" cols="50" rows="5"></textarea>
-    <p></p>
+    <partial name="_PostFields" model="formModel">
     <input type="submit" value="Post">
     <p></p>
     <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.MediaAsset.Id">@Html.MediaAssetSize(Model.MediaAsset)</a>

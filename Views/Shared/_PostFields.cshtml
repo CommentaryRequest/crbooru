@@ -1,0 +1,11 @@
+@model PostFormModel
+<label for="source">Source</label>
+<input type="text" name="source" value="@Model.Source">
+<p></p>
+<label asp-for="Rating"></label>
+<select asp-for="Rating" asp-items="Html.GetEnumSelectList<PostRating>()">
+</select>
+<p></p>
+<label for="tagstring">Tags</label>
+<textarea name="tagstring" cols="50" rows="5">@Model.TagString</textarea>
+<p></p>
