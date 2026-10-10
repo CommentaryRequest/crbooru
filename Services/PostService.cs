@@ -51,16 +51,19 @@ public class PostService
 
     public async Task UpdateTags(Post post, IEnumerable<string> tagList)
     {
-        var newTags = await _tags.ResolveTags(tagList);
+        var negatedTags = await _tags.ResolveTags(tagList.Where(tag => tag.StartsWith('-')).Select(tag => tag[1..]).Where(tag => tagList.Contains(tag)), false);
+        var negatedTagsNames = negatedTags.Select(tag => tag.Name);
+        var newTags = await _tags.ResolveTags(tagList.Where(tag => !tag.StartsWith('-')).Except(negatedTagsNames));
 
         var removedTags = post.Tags.Except(newTags).ToList();
-        var addedTags = newTags.Except(post.Tags).ToList();
+        var addedTags = newTags.Except(post.Tags).Except(removedTags).ToList();
 
         foreach (var tag in addedTags) {
             tag.PostCount++;
         }
 
         foreach (var tag in removedTags) {
+            if (tag.PostCount == 0) continue;
             tag.PostCount--;
         }
 

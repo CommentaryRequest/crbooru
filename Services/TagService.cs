@@ -19,19 +19,21 @@ public class TagService
         return _context.Tags.FirstOrDefaultAsync(t => name.ToLower() == t.Name);
     }
 
-    public async Task<ICollection<Tag>> ResolveTags(IEnumerable<string> names)
+    public async Task<ICollection<Tag>> ResolveTags(IEnumerable<string> names, bool createNew = true)
     {
         IEnumerable<string> uniqueNames = names.Distinct();
         var tags = new List<Tag>();
 
         foreach (var name in uniqueNames) {
             var tag = await ByName(name);
-            if (tag == null) {
+            if (tag == null && createNew) {
                 tag = new Tag(name, 0, TagCategory.General, false);
                 _context.Tags.Add(tag);
             }
 
-            tags.Add(tag);
+            if (tag != null) {
+                tags.Add(tag);
+            }
         }
 
         await _context.SaveChangesAsync();
