@@ -9,4 +9,5 @@
 <p><b>Pixel hash:</b> @Model.PixelHash</p>
 <p><b>File type:</b> @Model.FileType</p>
 <p><b>Size:</b> @Html.MediaAssetSize(Model)</p>
+<p><b>Created at:</b> @Model.CreatedAt</p>
 <img src="@Model.GetFilePath("/images", MediaAssetVariantType.Original)">
