@@ -8,8 +8,6 @@
 
 <div class="post-list">
     @foreach (var post in Model) {
-    <a asp-controller="Post" asp-action="Show" asp-route-id="@post.Id">
-        <partial name="_PostThumbnail" model="post">
-    </a>
+    <partial name="_PostThumbnail" model="post" />
     }
 </div>
