@@ -1,5 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CRbooru.Models;
 
@@ -35,6 +34,8 @@ public class Tag
 
     public string UnqualifiedDisplayName()
     {
-        return string.Join(' ', Name.Split("_").Where(name => !name.StartsWith("(") && !name.EndsWith(")")));
+        var pattern = $"{Regex.Escape("(")}.*{Regex.Escape(")")}";
+        var unqualifiedName = Regex.Replace(Name, pattern, "");
+        return string.Join(' ', unqualifiedName.Split("_"));
     }
 }
