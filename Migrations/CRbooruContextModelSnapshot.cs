@@ -86,6 +86,32 @@ namespace CRbooru.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("CRbooru.Models.PostVersion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.PrimitiveCollection<string>("AddedTags")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte?>("NewRating")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("NewSource")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("INTEGER");
+
+                    b.PrimitiveCollection<string>("RemovedTags")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PostVersions");
+                });
+
             modelBuilder.Entity("CRbooru.Models.Tag", b =>
                 {
                     b.Property<int>("Id")

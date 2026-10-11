@@ -32,4 +32,5 @@ public class CRbooruContext : DbContext
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Upload> Uploads { get; set; }
+    public DbSet<PostVersion> PostVersions { get; set; }
 }
