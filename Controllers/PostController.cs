@@ -21,9 +21,14 @@ public class PostController : Controller
         _mediaAssets = mediaAssets;
     }
 
-    public async Task<IActionResult> Index(string query)
+    public async Task<IActionResult> Index(string tags = "")
     {
+        var query = QueryParser.ParseQuery(tags);
         var posts = await _service.ListAsync(20);
+
+        foreach (var term in query) {
+            Console.WriteLine($"Type={term.Type} value={term.Value} negated={term.IsNegated}");
+        }
 
         return View(posts);
     }
