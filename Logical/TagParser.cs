@@ -1,7 +1,5 @@
 using CRbooru.Models;
-using System.Linq;
 using System.Text;
-using System.Collections;
 
 namespace CRbooru.Logical;
 
@@ -20,6 +18,24 @@ public class TagValidationException : Exception
     }
 }
 
+public enum MetaTagType
+{
+    Rating
+}
+
+
+public class MetaTag
+{
+    public MetaTagType Type { get; set; }
+    public string Value { get; set; }
+
+    public MetaTag(MetaTagType type, string value)
+    {
+        Type = type;
+        Value = value;
+    }
+}
+
 public static class TagParser
 {
     private static readonly Dictionary<TagCategory, string[]> CATEGORY_PREFIXES = new() {
@@ -28,6 +44,10 @@ public static class TagParser
         [TagCategory.Character] = ["character:", "char:"],
         [TagCategory.Copyright] = ["copyright:", "copy:"],
         [TagCategory.Meta] = ["meta:"]
+    };
+
+    private static readonly Dictionary<string, MetaTagType> META_TAG_PREFIXES = new() {
+        ["rating:"] = MetaTagType.Rating
     };
 
     private static readonly Dictionary<char, PostRating> RATING_MAP = new() {
@@ -111,5 +131,17 @@ public static class TagParser
         if (tag.Contains("__")) {
             throw new TagValidationException($"'{tag}' may not contain consecutive underscores");
         }
+    }
+
+    public static MetaTag? ParseMetaTag(string tag)
+    {
+        var prefix = META_TAG_PREFIXES.Keys.FirstOrDefault(p => tag.StartsWith(p, StringComparison.OrdinalIgnoreCase));
+        if (prefix == null) {
+            return null;
+        }
+
+        var type = META_TAG_PREFIXES[prefix];
+        var value = tag[prefix.Length..];
+        return new MetaTag(type, value);
     }
 }

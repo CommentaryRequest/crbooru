@@ -8,15 +8,6 @@ namespace CRbooru.Services;
 
 public class PostService
 {
-    private enum MetaTagType
-    {
-        Rating
-    }
-
-    private static readonly Dictionary<string, MetaTagType> META_TAG_PREFIXES = new() {
-        ["rating:"] = MetaTagType.Rating
-    };
-
     private readonly CRbooruContext _context;
     private readonly TagService _tags;
     private readonly MediaAssetService _mediaAssets;
@@ -65,18 +56,15 @@ public class PostService
     {
         var metaTags = new List<string>();
         foreach (var tag in tagList) {
-            var prefix = META_TAG_PREFIXES.Keys.FirstOrDefault(p => tag.StartsWith(p, StringComparison.OrdinalIgnoreCase));
-            if (prefix == null) {
+            var metaTag = TagParser.ParseMetaTag(tag);
+            if (metaTag == null) {
                 continue;
             }
-
             metaTags.Add(tag);
-            
-            var type = META_TAG_PREFIXES[prefix];
-            var value = tag[prefix.Length..];
-            switch (type) {
+
+            switch (metaTag.Type) {
                 case MetaTagType.Rating:
-                    post.Rating = TagParser.ParseRatingValue(value) ?? post.Rating;
+                    post.Rating = TagParser.ParseRatingValue(metaTag.Value) ?? post.Rating;
                     break;
             }
         }
