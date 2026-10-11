@@ -36,10 +36,10 @@ public class PostVersionService
         return versions
             .GroupBy(v => v.PostId)
             .SelectMany(group => group
-                .OrderBy(v => v.CreatedAt)
-                .ThenBy(v => v.Id)
+                .OrderBy(v => v.Id)
                 .Select((version, index) =>
                     (Version: version, Number: index + 1)))
+                .OrderByDescending(v => v.Item1.Id)
             .ToList();
     }
 
