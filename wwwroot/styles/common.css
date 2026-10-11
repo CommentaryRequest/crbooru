@@ -86,3 +86,7 @@ a:hover {
 .user-admin {
     color: red;
 }
+
+#tag-string {
+    font-family: monospace;
+}

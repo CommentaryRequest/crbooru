@@ -67,14 +67,18 @@
         <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
 
         @if (User.Identity?.IsAuthenticated == true) {
-        <h3>Edit</h3>
-        <form asp-controller="Post" asp-action="Edit" method="post">
-            <input type="hidden" name="postid" value="@Model.Id">
-            <partial name="_PostFields" model="formModel">
-            <input type="submit" value="Edit">
-        </form>
+        <div id="edit">
+            <a href="#edit" id="post-edit-link">Edit</a>
+            <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form">
+                <input type="hidden" name="postid" value="@Model.Id">
+                <partial name="_PostFields" model="formModel">
+                <input type="submit" value="Submit">
+            </form>
+        </div>
         } else {
         <p><a asp-controller="User" asp-action="Login">Log in</a> to edit posts.</p>
         }
     </div>
 </div>
+
+<script src="/js/post_show.js">

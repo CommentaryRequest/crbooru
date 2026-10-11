@@ -22,3 +22,7 @@
 #post-query {
     margin-bottom: 5px;
 }
+
+#post-edit-form {
+    display: none;
+}
