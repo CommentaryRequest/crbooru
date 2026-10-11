@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Posts";
+    ViewData["Title"] = ViewData["Tags"] != null ? $"Search: {ViewData["Tags"]}" : "Posts";
 }
 
 <div id="post-list">
