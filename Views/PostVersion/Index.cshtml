@@ -22,7 +22,7 @@
             @if (version.NewRating != null) {
             <p><b>Rating:</b> @version.NewRating</p>
             }
-            @if (version.NewSource != null) {
+            @if (version.SourceChanged) {
             <p><b>Source:</b> @version.NewSource</p>
             }
         </td>

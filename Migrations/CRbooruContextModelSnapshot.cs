@@ -110,6 +110,9 @@ namespace CRbooru.Migrations
                     b.PrimitiveCollection<string>("RemovedTags")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("SourceChanged")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 

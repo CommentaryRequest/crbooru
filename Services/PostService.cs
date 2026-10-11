@@ -5,21 +5,25 @@ using CRbooru.Logical;
 
 namespace CRbooru.Services;
 
+public record TagDiff(string[] Added, string[] Removed);
+
 public class PostService
 {
     private readonly CRbooruContext _context;
     private readonly TagService _tags;
     private readonly MediaAssetService _mediaAssets;
     private readonly UploadService _uploads;
+    private readonly PostVersionService _versions;
 
     public const int DEFAULT_LIMIT = 20;
 
-    public PostService(CRbooruContext context, TagService tags, MediaAssetService mediaAssets, UploadService uploads)
+    public PostService(CRbooruContext context, TagService tags, MediaAssetService mediaAssets, UploadService uploads, PostVersionService versions)
     {
         _context = context;
         _tags = tags;
         _mediaAssets = mediaAssets;
         _uploads = uploads;
+        _versions = versions;
     }
 
     private IQueryable<Post> getPosts()
@@ -125,7 +129,7 @@ public class PostService
         return metaTags;
     }
 
-    public async Task UpdateTags(Post post, IEnumerable<string> tagList)
+    public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> tagList)
     {
         tagList = tagList.Select(tag => tag.ToLower());
         var metaTags = applyMetaTags(post, tagList);
@@ -160,14 +164,22 @@ public class PostService
 
         post.Tags = newTags;
         await _context.SaveChangesAsync();
+
+        return new(
+            addedTags.Count == 0 ? null : addedTags.Select(t => t.Name).ToArray(),
+            removedTags.Count == 0 ? null : removedTags.Select(t => t.Name).ToArray()
+        );
     }
 
-    public async Task EditAsync(Post post, PostFormModel form)
+    public async Task EditAsync(User editor, Post post, PostFormModel form)
     {
+        PostRating oldRating = post.Rating;
+        string? oldSource = post.Source;
         post.Rating = form.Rating;
         post.Source = form.Source;
-        await UpdateTags(post, TagParser.SplitTags(form.TagString));
+        TagDiff diff = await UpdateTags(post, TagParser.SplitTags(form.TagString));
         await _context.SaveChangesAsync();
+        _versions.Add(new PostVersion(post.Id, editor.Id, diff.Added, diff.Removed, oldRating == form.Rating ? null : form.Rating, oldSource == form.Source ? null : form.Source, oldSource != form.Source));
     }
 
     public async Task<Post> CreateAsync(User uploader, PostFormModel form)
@@ -177,9 +189,11 @@ public class PostService
 
         string[] tags = TagParser.SplitTags(form.TagString);
         Post post = new Post(uploader, mediaAsset, form.Rating, form.Source);
-        await UpdateTags(post, tags);
+        TagDiff diff = await UpdateTags(post, tags);
         _context.Posts.Add(post);
         await _context.SaveChangesAsync();
+        _versions.Add(new PostVersion(post.Id, uploader.Id, diff.Added, null, form.Rating, form.Source, true));
+
         return post;
     }
 }

@@ -123,13 +123,18 @@ public class PostController : Controller
     [HttpPost("edit")]
     public async Task<IActionResult> Edit(PostFormModel model)
     {
+        var currentUser = await _users.GetCurrentUser(this.User);
+        if (currentUser == null) {
+            return RedirectToAction("Login", "User");
+        }
+
         var post = await _service.Get(model.PostId);
         if (post == null) {
             return NotFound();
         }
 
         try {
-            await _service.EditAsync(post, model);
+            await _service.EditAsync(currentUser, post, model);
         } catch (TagValidationException exc) {
             TempData["Error"] = $"Tag validation failed: {exc.Message}";
         }

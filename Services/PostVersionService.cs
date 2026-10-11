@@ -20,4 +20,10 @@ public class PostVersionService
             .Include(p => p.User)
             .ToList();
     }
+
+    public async Task Add(PostVersion version)
+    {
+        _context.PostVersions.Add(version);
+        await _context.SaveChangesAsync();
+    }
 }

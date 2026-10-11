@@ -11,9 +11,10 @@ public class PostVersion
     public string[]? RemovedTags { get; set; }
     public PostRating? NewRating { get; set; }
     public string? NewSource { get; set; }
+    public bool SourceChanged { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public PostVersion(int postId, int userId, string[]? addedTags, string[]? removedTags, PostRating? newRating, string? newSource)
+    public PostVersion(int postId, int userId, string[]? addedTags, string[]? removedTags, PostRating? newRating, string? newSource, bool sourceChanged)
     {
         PostId = postId;
         UserId = userId;
@@ -21,5 +22,6 @@ public class PostVersion
         RemovedTags = removedTags;
         NewRating = newRating;
         NewSource = newSource;
+        SourceChanged = sourceChanged;
     }
 }
