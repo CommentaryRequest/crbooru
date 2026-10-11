@@ -85,6 +85,7 @@ public class PostService
 
     public async Task UpdateTags(Post post, IEnumerable<string> tagList)
     {
+        tagList = tagList.Select(tag => tag.ToLower());
         var metaTags = applyMetaTags(post, tagList);
         tagList = tagList.Except(metaTags);
 
