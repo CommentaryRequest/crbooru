@@ -1,0 +1,28 @@
+tr td {
+    background-color: #fff;
+}
+
+tr:nth-child(even) td {
+    background-color: #ccc;
+}
+
+td, th {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.added-tag {
+    color: green;
+}
+
+.removed-tag {
+    color: red;
+}
+
+.changed-tag {
+    color: blue;
+}

@@ -6,24 +6,37 @@
 
 <table>
     <tr>
+        <th>Version</th>
         <th>Changes</th>
         <th>User</th>
         <th>Updated at</th>
     </tr>
-    @foreach (var version in Model) {
+    @for (var i = 0; i < Model.Count; i++) {
+    var version = Model[i];
     <tr>
         <td>
+            @(ViewData["PostId"]).@(i + 1)
+        </td>
+        <td>
             @if (version.AddedTags != null) {
-            <p><b>Added:</b> @(string.Join(' ', version.AddedTags))</p>
+                @foreach (var tag in version.AddedTags) {
+                <span class="added-tag">+@tag</span>
+                }
             }
             @if (version.RemovedTags != null) {
-            <p><b>Removed:</b> @(string.Join(' ', version.RemovedTags))</p>
+                @foreach (var tag in version.RemovedTags) {
+                <span class="removed-tag">-@tag</span>
+                }
             }
             @if (version.NewRating != null) {
-            <p><b>Rating:</b> @version.NewRating</p>
+                <span class="changed-tag">rating:@version.NewRating.ToString().ToLower()[0]</span>
             }
             @if (version.SourceChanged) {
-            <p><b>Source:</b> @version.NewSource</p>
+                @if (version.NewSource == null) {
+                <span class="changed-tag">source:none</span>
+                } else {
+                <span class="changed-tag">source:@version.NewSource</span>
+                }
             }
         </td>
         <td>
