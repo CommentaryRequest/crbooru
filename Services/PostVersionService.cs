@@ -29,18 +29,9 @@ public class PostVersionService
         return query;
     }
 
-    public async Task<List<(PostVersion Version, int Number)>> List(int? postId, int? userId)
+    public List<PostVersion> List(int? postId, int? userId)
     {
-        var versions = Query(postId, userId).ToList();
-
-        return versions
-            .GroupBy(v => v.PostId)
-            .SelectMany(group => group
-                .OrderBy(v => v.Id)
-                .Select((version, index) =>
-                    (Version: version, Number: index + 1)))
-                .OrderByDescending(v => v.Item1.Id)
-            .ToList();
+        return Query(postId, userId).ToList();
     }
 
     public async Task Add(PostVersion version)

@@ -18,11 +18,10 @@
         <th>Updated at</th>
     </tr>
     @for (var i = 0; i < Model.Count; i++) {
-    var version = Model[i].Item1;
-    var number = Model[i].Item2;
+    var version = @Model[i];
     <tr>
         <td>
-            @(version.PostId).@number
+            @version.PostId
         </td>
         <td>
             @if (version.AddedTags != null) {
