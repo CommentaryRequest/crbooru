@@ -30,39 +30,32 @@ public class PostService
         _uploads = uploads;
     }
 
-    public Task<Post> Get(int id)
+    private IQueryable<Post> getPosts()
     {
         return _context.Posts
-            .Include(p => p.Tags)
+            .Include(p => p.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.MediaAsset)
-            .Include(p => p.Uploader)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .Include(p => p.Uploader);
+    }
+
+    public Task<Post> Get(int id)
+    {
+        return getPosts().FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public Task<Post> ByMediaAsset(int assetId)
     {
-        return _context.Posts
-            .Include(p => p.Tags)
-            .Include(p => p.MediaAsset)
-            .Include(p => p.Uploader)
-            .FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
+        return getPosts().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
 
     public IQueryable<Post> ByUser(int userId)
     {
-        return _context.Posts
-            .Include(p => p.Tags)
-            .Include(p => p.MediaAsset)
-            .Include(p => p.Uploader)
-            .Where(p => p.Uploader.Id == userId);
+        return getPosts().Where(p => p.Uploader.Id == userId);
     }
 
     public async Task<List<Post>> ListAsync(int limit)
     {
-        return await _context.Posts
-            .Include(p => p.Tags)
-            .Include(p => p.MediaAsset)
-            .Include(p => p.Uploader)
+        return await getPosts()
             .OrderByDescending(p => p.Id)
             .Take(limit)
             .ToListAsync();
