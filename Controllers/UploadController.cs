@@ -74,8 +74,40 @@ public class UploadController : Controller
         } else if (upload.MediaAssets.Count() == 0) {
             var viewModel = new UploadViewModel(upload, null);
             return View("ShowSingle", viewModel);
+        } else {
+            return View("ShowGallery", upload);
+        }
+    }
+
+    [HttpGet("{uploadId:int}/{mediaAssetId:int}")]
+    public async Task<IActionResult> ShowSingle(int uploadId, int mediaAssetId)
+    {
+        var currentUser = await _users.GetCurrentUser(this.User);
+        if (currentUser == null) {
+            return RedirectToAction("Login", "User");
         }
 
-        throw new NotImplementedException();
+        var upload = await _service.Get(uploadId);
+        if (upload == null) {
+            return NotFound();
+        }
+
+        if (!currentUser.IsAdmin() && currentUser.Id != upload.Uploader.Id) {
+            return Unauthorized();
+        }
+
+        var mediaAsset = upload.MediaAssets.FirstOrDefault(m => m.Id == mediaAssetId);
+        if (mediaAsset == null) {
+            return NotFound();
+        }
+
+        var existingPost = await _posts.ByMediaAsset(mediaAsset.Id);
+        if (existingPost != null) {
+            TempData["Information"] = $"Duplicate of post #{existingPost.Id}";
+            return RedirectToAction("Show", "Post", new { id = existingPost.Id });
+        }
+
+        var viewModel = new UploadViewModel(upload, mediaAsset);
+        return View("ShowSingle", viewModel);
     }
 }
