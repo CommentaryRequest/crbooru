@@ -23,7 +23,6 @@ public enum MetaTagType
     Rating
 }
 
-
 public class MetaTag
 {
     public MetaTagType Type { get; set; }

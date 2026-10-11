@@ -69,6 +69,13 @@ public class PostService
                             : posts.Where(p => p.Rating == rating);
                     }
                     break;
+                case SearchTermType.Id:
+                    if (int.TryParse(term.Value, out int id)) {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.Id != id)
+                            : posts.Where(p => p.Id == id);
+                    }
+                    break;
             }
         }
         return await posts
