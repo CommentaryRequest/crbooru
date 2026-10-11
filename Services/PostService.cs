@@ -12,6 +12,8 @@ public class PostService
     private readonly MediaAssetService _mediaAssets;
     private readonly UploadService _uploads;
 
+    public const int DEFAULT_LIMIT = 20;
+
     public PostService(CRbooruContext context, TagService tags, MediaAssetService mediaAssets, UploadService uploads)
     {
         _context = context;
@@ -28,14 +30,14 @@ public class PostService
             .Include(p => p.Uploader);
     }
 
-    public Task<Post?> Get(int id)
+    public async Task<Post> Get(int id)
     {
-        return getPosts().FirstOrDefaultAsync(p => p.Id == id);
+        return await getPosts().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<Post?> ByMediaAsset(int assetId)
+    public async Task<Post> ByMediaAsset(int assetId)
     {
-        return getPosts().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
+        return await getPosts().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
 
     public IQueryable<Post> ByUser(int userId)
@@ -43,7 +45,7 @@ public class PostService
         return getPosts().Where(p => p.Uploader.Id == userId);
     }
 
-    public async Task<List<Post>> ListAsync(int limit)
+    public async Task<List<Post>> ListAsync(int limit = DEFAULT_LIMIT)
     {
         return await getPosts()
             .OrderByDescending(p => p.Id)
@@ -51,7 +53,7 @@ public class PostService
             .ToListAsync();
     }
 
-    public async Task<List<Post>> QueryAsync(List<SearchTerm> terms, int limit = 20)
+    public async Task<List<Post>> QueryAsync(List<SearchTerm> terms, int limit = DEFAULT_LIMIT)
     {
         IQueryable<Post> posts = getPosts();
         foreach (var term in terms) {
@@ -91,6 +93,11 @@ public class PostService
                     posts = term.IsNegated
                         ? posts.Where(p => p.Uploader.Name != term.Value)
                         : posts.Where(p => p.Uploader.Name == term.Value);
+                    break;
+                case SearchTermType.Limit:
+                    if (int.TryParse(term.Value, out int l)) {
+                        limit = l;
+                    }
                     break;
             }
         }

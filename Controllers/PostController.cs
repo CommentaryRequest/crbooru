@@ -23,8 +23,14 @@ public class PostController : Controller
 
     public async Task<IActionResult> Index(string tags = "")
     {
-        var query = QueryParser.ParseQuery(tags);
-        var posts = await _service.QueryAsync(query);
+        var posts = new List<Post>();
+        try {
+            var query = QueryParser.ParseQuery(tags);
+            posts = await _service.QueryAsync(query);
+        } catch (QueryParserException exc) {
+            TempData["Error"] = exc.Message;
+            posts = await _service.ListAsync();
+        }
 
         var relatedTags = posts
             .SelectMany(p => p.Tags)

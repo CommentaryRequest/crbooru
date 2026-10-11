@@ -5,12 +5,28 @@ public enum SearchTermType
     Tag,
     Rating,
     Id,
-    User
+    User,
+    Limit
 }
 
 public record SearchTerm(SearchTermType Type, string Value, bool IsNegated);
 
 public record IdRange(int? Min, int? Max);
+
+public class QueryParserException : Exception
+{
+    public QueryParserException() : base()
+    {
+    }
+
+    public QueryParserException(string message) : base(message)
+    {
+    }
+
+    public QueryParserException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+}
 
 public static class QueryParser
 {
@@ -35,6 +51,12 @@ public static class QueryParser
         }
         if (token.StartsWith("user:")) {
             return new SearchTerm(SearchTermType.User, token[5..], isNegated);
+        }
+        if (token.StartsWith("limit:")) {
+            if (isNegated) {
+                throw new QueryParserException("Limit cannot be negated.");
+            }
+            return new SearchTerm(SearchTermType.Limit, token[6..], false);
         }
         return new SearchTerm(SearchTermType.Tag, token, isNegated);
     }
