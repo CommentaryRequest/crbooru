@@ -1,6 +1,7 @@
 @model Post
+@using CRbooru.Logical
 <div class="post-thumbnail">
-    <a asp-controller="Post" asp-action="Show" asp-route-id="@Model.Id">
+    <a asp-controller="Post" asp-action="Show" asp-route-id="@Model.Id" title="@(TagParser.BuildTagString(Model.Tags))user:@Model.Uploader.Name rating:@Model.Rating.ToString().ToLower()[0] source:@Model.Source">
         <partial name="_MediaAssetThumbnail" model="Model.MediaAsset" />
     </a>
 </div>
