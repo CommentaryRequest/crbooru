@@ -24,4 +24,12 @@ public class PostVersion
         NewSource = newSource;
         SourceChanged = sourceChanged;
     }
+
+    public bool IsEmpty()
+    {
+        return AddedTags == null
+            && RemovedTags == null
+            && NewRating == null
+            && !SourceChanged;
+    }
 }

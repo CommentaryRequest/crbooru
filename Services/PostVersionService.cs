@@ -23,6 +23,10 @@ public class PostVersionService
 
     public async Task Add(PostVersion version)
     {
+        if (version.IsEmpty()) {
+            return;
+        }
+
         _context.PostVersions.Add(version);
         await _context.SaveChangesAsync();
     }
