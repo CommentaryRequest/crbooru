@@ -95,3 +95,20 @@ a:hover {
     width: 100%;
     text-align: center;
 }
+
+.striped tr td {
+    background-color: #fff;
+}
+
+.striped tr:nth-child(even) td {
+    background-color: #ccc;
+}
+
+.striped td, .checkered th {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+.striped {
+    border-collapse: collapse;
+}
