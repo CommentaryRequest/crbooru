@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Users";
+}
+
+<table class="striped">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Joined</th>
+    </tr>
+    @foreach (var user in Model) {
+    <tr>
+        <td>@user.Id</td>
+        <td><partial name="_UserLink" model="user" /></td>
+        <td>@user.Role</td>
+        <td>@user.CreatedAt</td>
+    </tr>
+    }
+</table>

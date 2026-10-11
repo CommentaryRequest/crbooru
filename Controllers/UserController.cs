@@ -24,9 +24,10 @@ public class UserController : Controller
         _passwordHasher = passwordHasher;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        throw new NotImplementedException();
+        var users = await _service.ListAsync();
+        return View(users);
     }
 
     [HttpGet("{id:int}")]

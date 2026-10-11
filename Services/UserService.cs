@@ -43,4 +43,9 @@ public class UserService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<User>> ListAsync()
+    {
+        return await _context.Users.ToListAsync();
+    }
 }
