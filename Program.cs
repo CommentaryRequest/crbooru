@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 using CRbooru.Models;
 using CRbooru.Data;
 using CRbooru.Services;
@@ -55,7 +56,19 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.UseStaticFiles(new StaticFileOptions {
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "Assets")
+    ),
+    RequestPath = ""
+});
+
+app.UseStaticFiles(new StaticFileOptions {
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "Storage", "Images")
+    ),
+    RequestPath = "/images"
+});
 
 app.MapControllerRoute(
     name: "default",

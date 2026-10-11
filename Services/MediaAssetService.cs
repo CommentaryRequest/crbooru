@@ -48,7 +48,7 @@ public class MediaAssetService
             if (assetByMd5 != null) {
                 return assetByMd5;
             }
-            var mediaAsset = MediaFileProcessor.ProcessFile(stream, Path.Combine(_webHostEnv.WebRootPath, "images"));
+            var mediaAsset = MediaFileProcessor.ProcessFile(stream, Path.Combine(_webHostEnv.ContentRootPath, "Storage", "Images"));
             _context.MediaAssets.Add(mediaAsset);
             await _context.SaveChangesAsync();
             return mediaAsset;

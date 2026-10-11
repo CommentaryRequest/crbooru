@@ -487,4 +487,4 @@ crbooru.db-shm
 crbooru.db-wal
 
 # Local image files
-wwwroot/images/
+Storage/Images/
