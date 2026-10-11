@@ -25,6 +25,14 @@ public class CRbooruContext : DbContext
             .HasMany(u => u.MediaAssets)
             .WithMany()
             .UsingEntity(j => j.ToTable("UploadMediaAssets"));
+
+        modelBuilder.Entity<PostVersion>()
+            .HasOne(v => v.User)
+            .WithMany()
+            .HasForeignKey(v => v.UserId)
+            .HasOne(v => v.Post)
+            .WithMany()
+            .HasForeignKey(v => v.PostId);
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }

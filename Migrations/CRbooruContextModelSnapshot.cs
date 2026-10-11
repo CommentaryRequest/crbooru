@@ -95,6 +95,9 @@ namespace CRbooru.Migrations
                     b.PrimitiveCollection<string>("AddedTags")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<byte?>("NewRating")
                         .HasColumnType("INTEGER");
 
@@ -107,7 +110,14 @@ namespace CRbooru.Migrations
                     b.PrimitiveCollection<string>("RemovedTags")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("PostVersions");
                 });
@@ -237,6 +247,25 @@ namespace CRbooru.Migrations
                     b.Navigation("MediaAsset");
 
                     b.Navigation("Uploader");
+                });
+
+            modelBuilder.Entity("CRbooru.Models.PostVersion", b =>
+                {
+                    b.HasOne("CRbooru.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CRbooru.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CRbooru.Models.Upload", b =>
