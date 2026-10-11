@@ -8,7 +8,7 @@ namespace CRbooru.Logical;
 public static class MediaFileProcessor
 {
     public static readonly string[] SUPPORTED_FILE_TYPES = [
-        "png", "jpg", "webp", "avif", "gif"
+        "png", "jpg", "webp", "avif", "gif", "jpeg"
     ];
 
     public static string ComputeFileMd5(FileStream fileStream)
