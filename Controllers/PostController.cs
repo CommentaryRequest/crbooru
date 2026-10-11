@@ -26,7 +26,16 @@ public class PostController : Controller
         var query = QueryParser.ParseQuery(tags);
         var posts = await _service.QueryAsync(query);
 
+        var relatedTags = posts
+            .SelectMany(p => p.Tags)
+            .GroupBy(t => t.Id)
+            .Select(g => new { Tag = g.First(), Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(20)
+            .Select(x => x.Tag);
+
         ViewData["Tags"] = tags;
+        ViewData["RelatedTags"] = relatedTags;
 
         return View(posts);
     }

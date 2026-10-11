@@ -1,15 +1,19 @@
-#post-view {
+#post-view, #post-list {
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
     gap: 1.25rem;
     align-items: start;
 }
 
-#post-sidebar, #post-image {
+#post-sidebar, #post-image, #post-list-sidebar, #post-gallery {
     min-width: 0;
 }
 
-#post-information ul, #tag-list ul {
+#post-list-sidebar h4 {
+    margin: 0;
+}
+
+#post-information ul, #tag-list ul, #post-list-sidebar ul {
     list-style-type: none;
     margin: 0;
     padding: 0;

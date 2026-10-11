@@ -22,7 +22,7 @@
             <h4 class="category-heading">@categoryName</h4>
             <ul>
             @foreach (var tag in tagList) {
-                <li><a asp-controller="Post" asp-action="Index" asp-route-tags="@tag.Name" class="tag-@(categoryName.ToLower())">@tag.DisplayName()</a> (@tag.PostCount)</li>
+                <li><partial name="_TagLink" model="tag" /></li>
             }
             </ul>
         }

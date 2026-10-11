@@ -1,0 +1,2 @@
+@model Tag
+<a asp-controller="Post" asp-action="Index" asp-route-tags="@Model.Name" class="tag-@(Model.Category.ToString().ToLower())">@Model.DisplayName()</a> (@Model.PostCount)

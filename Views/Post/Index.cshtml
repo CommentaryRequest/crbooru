@@ -2,16 +2,28 @@
     ViewData["Title"] = "Posts";
 }
 
-<form asp-controller="Post" asp-action="Index" method="get">
-    <input type="text" name="tags" placeholder="Search posts" value="@ViewData["Tags"]">
-    <input type="submit" value="Search">
-</form>
-<div class="post-list">
-    @foreach (var post in Model) {
-    <partial name="_PostThumbnail" model="post" />
-    }
+<div id="post-list">
+    <div id="post-list-sidebar">
+        <h4>Search</h4>
+        <form asp-controller="Post" asp-action="Index" method="get">
+            <input type="text" name="tags" placeholder="Search posts" value="@ViewData["Tags"]">
+            <input type="submit" value="Search">
+        </form>
+        <br>
+        <h4>Tags</h4>
+        <ul>
+            @foreach (var tag in (IEnumerable<Tag>)(ViewData["RelatedTags"])) {
+                <li><partial name="_TagLink" model="tag" /></li>
+            }
+        </ul>
+    </div>
+    <div id="post-list-gallery" class="post-list">
+        @foreach (var post in Model) {
+        <partial name="_PostThumbnail" model="post" />
+        }
 
-    @if (Model.Count == 0) {
-    <p>Nobody here but us chickens!</p>
-    }
+        @if (Model.Count == 0) {
+        <p>Nobody here but us chickens!</p>
+        }
+    </div>
 </div>
