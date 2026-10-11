@@ -21,16 +21,27 @@ public class PostController : Controller
         _mediaAssets = mediaAssets;
     }
 
-    public async Task<IActionResult> Index(string tags = "")
+    public async Task<IActionResult> Index(string tags = "", int page = 1)
     {
+        page = Math.Max(1, page);
         var posts = new List<Post>();
+        var total = 0;
+        var limit = PostService.DEFAULT_LIMIT;
         try {
-            var query = QueryParser.ParseQuery(tags);
-            posts = await _service.QueryAsync(query);
+            var parsedQuery = QueryParser.ParseQuery(tags);
+            var (postQuery, queryLimit) = await _service.QueryAsync(parsedQuery);
+            limit = queryLimit;
+            total = postQuery.Count();
+            posts = postQuery
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
         } catch (QueryParserException exc) {
-            TempData["Error"] = exc.Message;
-            posts = await _service.ListAsync();
+            ViewData["SearchError"] = exc.Message;
+            return View("SearchError");
         }
+
+        var totalPages = (int)Math.Ceiling(total / (double)limit);
 
         var relatedTags = posts
             .SelectMany(p => p.Tags)
@@ -41,6 +52,8 @@ public class PostController : Controller
             .Select(x => x.Tag);
 
         ViewData["Tags"] = tags;
+        ViewData["Page"] = page;
+        ViewData["TotalPages"] = totalPages;
         ViewData["RelatedTags"] = relatedTags;
 
         return View(posts);

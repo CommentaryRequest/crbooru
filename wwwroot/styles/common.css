@@ -90,3 +90,8 @@ a:hover {
 #tag-string {
     font-family: monospace;
 }
+
+#paginator {
+    width: 100%;
+    text-align: center;
+}

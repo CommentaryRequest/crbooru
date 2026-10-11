@@ -53,8 +53,9 @@ public class PostService
             .ToListAsync();
     }
 
-    public async Task<List<Post>> QueryAsync(List<SearchTerm> terms, int limit = DEFAULT_LIMIT)
+    public async Task<(IQueryable<Post>, int)> QueryAsync(List<SearchTerm> terms)
     {
+        int limit = DEFAULT_LIMIT;
         IQueryable<Post> posts = getPosts();
         foreach (var term in terms) {
             switch (term.Type) {
@@ -101,10 +102,8 @@ public class PostService
                     break;
             }
         }
-        return await posts
-            .OrderByDescending(p => p.Id)
-            .Take(limit)
-            .ToListAsync();
+        return (posts
+            .OrderByDescending(p => p.Id), limit);
     }
 
     private IEnumerable<string> applyMetaTags(Post post, IEnumerable<string> tagList)
