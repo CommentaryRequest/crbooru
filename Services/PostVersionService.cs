@@ -13,23 +13,25 @@ public class PostVersionService
         _context = context;
     }
 
-    public async Task<List<(PostVersion Version, int Number)>> List(int? postId, int? userId)
+    public IQueryable<PostVersion> Query(int? postId, int? userId)
     {
         IQueryable<PostVersion> query = _context.PostVersions
-            .Include(p => p.User)
-            .Include(p => p.Post);
+            .Include(v => v.User)
+            .Include(v => v.Post);
+
         if (postId != null) {
-            query = query.Where(p => p.PostId == postId);
+            query = query.Where(v => v.PostId == postId);
         }
         if (userId != null) {
-            query = query.Where(p => p.UserId == userId);
+            query = query.Where(v => v.UserId == userId);
         }
 
-        var versions = await _context.PostVersions
-            .Include(v => v.User)
-            .Include(v => v.Post)
-            .Where(v => v.UserId == userId)
-            .ToListAsync();
+        return query;
+    }
+
+    public async Task<List<(PostVersion Version, int Number)>> List(int? postId, int? userId)
+    {
+        var versions = Query(postId, userId).ToList();
 
         return versions
             .GroupBy(v => v.PostId)

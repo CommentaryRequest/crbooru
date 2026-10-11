@@ -13,12 +13,14 @@ public class UserController : Controller
 {
     private readonly UserService _service;
     private readonly PostService _posts;
+    private readonly PostVersionService _postVersions;
     private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserController(UserService service, PostService posts, IPasswordHasher<User> passwordHasher)
+    public UserController(UserService service, PostService posts, PostVersionService postVersions, IPasswordHasher<User> passwordHasher)
     {
         _service = service;
         _posts = posts;
+        _postVersions = postVersions;
         _passwordHasher = passwordHasher;
     }
 
@@ -36,6 +38,7 @@ public class UserController : Controller
         }
 
         ViewData["PostCount"] = _posts.ByUser(id).Count();
+        ViewData["PostChangeCount"] = _postVersions.Query(null, id).Count();
         ViewData["RecentPosts"] = _posts.ByUser(id).OrderByDescending(p => p.Id).Take(6).ToList();
 
         return View("Show", user);
