@@ -76,6 +76,11 @@ public class PostService
                             : posts.Where(p => p.Id == id);
                     }
                     break;
+                case SearchTermType.User:
+                    posts = term.IsNegated
+                        ? posts.Where(p => p.Uploader.Name != term.Value)
+                        : posts.Where(p => p.Uploader.Name == term.Value);
+                    break;
             }
         }
         return await posts
