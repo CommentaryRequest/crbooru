@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = ViewData["Tags"] != null ? $"Search: {ViewData["Tags"]}" : "Posts";
+    ViewData["Title"] = String.IsNullOrWhiteSpace((string?)ViewData["Tags"]) ? "Posts" : $"Search: {ViewData["Tags"]}";
 }
 
 <div id="post-list">
