@@ -2,7 +2,13 @@
     ViewData["Title"] = "Post History";
 }
 
+@if (ViewData["PostId"] != null) {
 <h1>Post History: <a asp-controller="Post" asp-action="Show" asp-route-id="@ViewData["PostId"]">post #@ViewData["PostId"]</a></h1>
+} else if (ViewData["UserId"] != null) {
+<h1>Post History: <partial name="_UserLink" model="@ViewData["User"]" /></h1>
+} else {
+<h1>Post History</h1>
+}
 
 <table>
     <tr>
@@ -12,10 +18,11 @@
         <th>Updated at</th>
     </tr>
     @for (var i = 0; i < Model.Count; i++) {
-    var version = Model[i];
+    var version = Model[i].Item1;
+    var number = Model[i].Item2;
     <tr>
         <td>
-            @(ViewData["PostId"]).@(i + 1)
+            @(version.PostId).@number
         </td>
         <td>
             @if (version.AddedTags != null) {

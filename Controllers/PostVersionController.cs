@@ -13,10 +13,14 @@ public class PostVersionController : Controller
         _service = service;
     }
 
-    public IActionResult Index(int postId)
+    public async Task<IActionResult> Index(int? postId, int? userId)
     {
-        var postVersions = _service.List(postId);
+        var postVersions = await _service.List(postId, userId);
         ViewData["PostId"] = postId;
+        ViewData["UserId"] = userId;
+        if (userId != null) {
+            ViewData["User"] = postVersions[0].Version.User;
+        }
         return View(postVersions);
     }
 }
