@@ -61,6 +61,14 @@ public class PostService
                         ? posts.Where(p => !p.Tags.Any(t => t.Name == term.Value))
                         : posts.Where(p => p.Tags.Any(t => t.Name == term.Value));
                     break;
+                case SearchTermType.Rating:
+                    PostRating? rating = TagParser.ParseRatingValue(term.Value);
+                    if (rating != null) {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.Rating != rating)
+                            : posts.Where(p => p.Rating == rating);
+                    }
+                    break;
             }
         }
         return await posts
