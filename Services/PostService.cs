@@ -29,12 +29,12 @@ public class PostService
             .Include(p => p.Uploader);
     }
 
-    public Task<Post> Get(int id)
+    public Task<Post?> Get(int id)
     {
         return getPosts().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<Post> ByMediaAsset(int assetId)
+    public Task<Post?> ByMediaAsset(int assetId)
     {
         return getPosts().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
@@ -123,7 +123,7 @@ public class PostService
 
         string[] tags = TagParser.SplitTags(form.TagString);
         Post post = new Post(uploader, mediaAsset, form.Rating, form.Source);
-        UpdateTags(post, tags);
+        await UpdateTags(post, tags);
         _context.Posts.Add(post);
         await _context.SaveChangesAsync();
         return post;
