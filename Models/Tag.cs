@@ -32,4 +32,9 @@ public class Tag
     {
         return string.Join(' ', Name.Split("_"));
     }
+
+    public string UnqualifiedDisplayName()
+    {
+        return string.Join(' ', Name.Split("_").Where(name => !name.StartsWith("(") && !name.EndsWith(")")));
+    }
 }

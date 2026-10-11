@@ -2,19 +2,19 @@
 @using System.Linq
 @using CRbooru.Logical
 @{
-    ViewData["Title"] = $"post #{Model.Id}";
+    var artistTags = Model.Tags.Where(tag => tag.Category == TagCategory.Artist);
+    var copyrightTags = Model.Tags.Where(tag => tag.Category == TagCategory.Copyright);
+    var characterTags = Model.Tags.Where(tag => tag.Category == TagCategory.Character);
+    var generalTags = Model.Tags.Where(tag => tag.Category == TagCategory.General);
+    var metaTags = Model.Tags.Where(tag => tag.Category == TagCategory.Meta);
+
+    ViewData["Title"] = EssentialTagStringBuilder.Build(Model.Tags.ToList(), Model.Id);
 
     var formModel = new PostFormModel {
         Source = Model.Source,
         Rating = Model.Rating,
         TagString = TagParser.BuildTagString(Model.Tags)
     };
-
-    var artistTags = Model.Tags.Where(tag => tag.Category == TagCategory.Artist);
-    var copyrightTags = Model.Tags.Where(tag => tag.Category == TagCategory.Copyright);
-    var characterTags = Model.Tags.Where(tag => tag.Category == TagCategory.Character);
-    var generalTags = Model.Tags.Where(tag => tag.Category == TagCategory.General);
-    var metaTags = Model.Tags.Where(tag => tag.Category == TagCategory.Meta);
 
     async Task RenderTagList(string categoryName, IEnumerable<Tag> tagList)
     {
@@ -34,11 +34,11 @@
         <div id="tag-list">
             <h3>Tags (@Model.Tags.Count())</h3>
             @{
-                RenderTagList("Artist", artistTags);
-                RenderTagList("Copyright", copyrightTags);
-                RenderTagList("Character", characterTags);
-                RenderTagList("General", generalTags);
-                RenderTagList("Meta", metaTags);
+                await RenderTagList("Artist", artistTags);
+                await RenderTagList("Copyright", copyrightTags);
+                await RenderTagList("Character", characterTags);
+                await RenderTagList("General", generalTags);
+                await RenderTagList("Meta", metaTags);
             }
         </div>
         <div id="post-information">
