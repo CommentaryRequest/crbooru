@@ -31,7 +31,7 @@ public class PostVersionService
 
     public List<PostVersion> List(int? postId, int? userId)
     {
-        return Query(postId, userId).ToList();
+        return Query(postId, userId).OrderByDescending(v => v.Id).ToList();
     }
 
     public async Task Add(PostVersion version)
