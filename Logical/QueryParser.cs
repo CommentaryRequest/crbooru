@@ -8,19 +8,7 @@ public enum SearchTermType
     User
 }
 
-public class SearchTerm
-{
-    public SearchTermType Type { get; set; }
-    public string Value { get; set; }
-    public bool IsNegated { get; set; }
-
-    public SearchTerm(SearchTermType type, string value, bool isNegated)
-    {
-        Type = type;
-        Value = value;
-        IsNegated = isNegated;
-    }
-}
+public record SearchTerm(SearchTermType Type, string Value, bool IsNegated);
 
 public static class QueryParser
 {
