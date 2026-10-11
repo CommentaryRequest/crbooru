@@ -75,7 +75,7 @@
         @if (User.Identity?.IsAuthenticated == true) {
         <div id="edit">
             <a href="#edit" id="post-edit-link">Edit</a>
-            <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form">
+            <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form" style="display: none">
                 <input type="hidden" name="postid" value="@Model.Id">
                 <partial name="_PostFields" model="formModel">
                 <input type="submit" value="Submit">
@@ -87,4 +87,4 @@
     </div>
 </div>
 
-<script src="/js/post_show.js">
+<script src="/js/post_show.js"></script>
