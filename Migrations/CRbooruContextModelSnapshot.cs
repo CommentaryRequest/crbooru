@@ -104,6 +104,9 @@ namespace CRbooru.Migrations
                     b.Property<string>("NewSource")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Number")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("PostId")
                         .HasColumnType("INTEGER");
 

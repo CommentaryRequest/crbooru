@@ -7,6 +7,7 @@ public class PostVersion
     public Post Post { get; private set; }
     public int UserId { get; private set; }
     public User User { get; private set; }
+    public int Number { get; set; }
     public string[]? AddedTags { get; set; }
     public string[]? RemovedTags { get; set; }
     public PostRating? NewRating { get; set; }

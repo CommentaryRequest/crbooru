@@ -40,6 +40,11 @@ public class PostVersionService
             return;
         }
 
+        int currentVersion = await _context.PostVersions
+            .Where(v => v.PostId == version.PostId)
+            .MaxAsync(v => (int?)v.Number) ?? 0;
+        version.Number = currentVersion + 1;
+
         _context.PostVersions.Add(version);
         await _context.SaveChangesAsync();
     }

@@ -21,7 +21,7 @@
     var version = @Model[i];
     <tr>
         <td>
-            @version.PostId
+            @(version.PostId).@version.Number
         </td>
         <td>
             @if (version.AddedTags != null) {
