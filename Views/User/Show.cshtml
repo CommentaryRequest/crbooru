@@ -3,11 +3,29 @@
 }
 
 <h1><partial name="_UserLink" model="Model" /></h1>
-<p><b>ID:</b> @Model.Id</p>
-<p><b>Join Date:</b> @Model.CreatedAt</p>
-<p><b>Role:</b> @Model.Role</p>
-<p><b>Posts:</b> <a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Name">@ViewData["PostCount"]</a></p>
-<p><b>Post Changes:</b> <a asp-controller="PostVersion" asp-action="Index" asp-route-userid="@Model.Id">@ViewData["PostChangeCount"]</a></p>
+<h3>Statistics</h3>
+<table>
+    <tr>
+        <td><b>ID</b></td>
+        <td>@Model.Id</td>
+    </tr>
+    <tr>
+        <td><b>Join Date</b></td>
+        <td>@Model.CreatedAt</td>
+    </tr>
+    <tr>
+        <td><b>Role</b></td>
+        <td>@Model.Role</td>
+    </tr>
+    <tr>
+        <td><b>Posts</b></td>
+        <td><a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Name">@ViewData["PostCount"]</a></td>
+    </tr>
+    <tr>
+        <td><b>Post Changes</b></td>
+        <td><a asp-controller="PostVersion" asp-action="Index" asp-route-userid="@Model.Id">@ViewData["PostChangeCount"]</a></td>
+    </tr>
+</table>
 @if (((List<Post>)ViewData["RecentPosts"]).Count != 0) {
     <h2>Recent Posts:</h2>
     <div class="post-list">
