@@ -29,7 +29,9 @@ public class CRbooruContext : DbContext
         modelBuilder.Entity<PostVersion>()
             .HasOne(v => v.User)
             .WithMany()
-            .HasForeignKey(v => v.UserId)
+            .HasForeignKey(v => v.UserId);
+
+        modelBuilder.Entity<PostVersion>()
             .HasOne(v => v.Post)
             .WithMany()
             .HasForeignKey(v => v.PostId);

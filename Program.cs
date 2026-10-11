@@ -15,6 +15,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<PostVersionService>();
 
 // Authentication
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -29,9 +30,12 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
     if (!db.PostVersions.Any()) {
-        var posts = await db.Posts.Include(p => p.Tags.OrderBy(tag => tag.Name)).ToListAsync();
+        var posts = await db.Posts
+            .Include(p => p.Tags.OrderBy(tag => tag.Name))
+            .Include(p => p.Uploader)
+            .ToListAsync();
         foreach (var post in posts) {
-            db.PostVersions.Add(new PostVersion(post.Id, post.Tags.Select(tag => tag.Name).ToArray(), null, post.Rating, post.Source));
+            db.PostVersions.Add(new PostVersion(post.Id, post.Uploader.Id, post.Tags.Select(tag => tag.Name).ToArray(), null, post.Rating, post.Source));
         }
         await db.SaveChangesAsync();
     }
