@@ -16,13 +16,13 @@
     var generalTags = Model.Tags.Where(tag => tag.Category == TagCategory.General);
     var metaTags = Model.Tags.Where(tag => tag.Category == TagCategory.Meta);
 
-    void RenderTagList(string categoryName, IEnumerable<Tag> tagList)
+    async Task RenderTagList(string categoryName, IEnumerable<Tag> tagList)
     {
         @if (tagList.Count() != 0) {
             <h4 class="category-heading">@categoryName</h4>
             <ul>
             @foreach (var tag in tagList) {
-                <li><a class="tag-@(categoryName.ToLower())">@tag.DisplayName()</a> (@tag.PostCount)</li>
+                <li><a asp-controller="Post" asp-action="Index" asp-route-tags="@tag.Name" class="tag-@(categoryName.ToLower())">@tag.DisplayName()</a> (@tag.PostCount)</li>
             }
             </ul>
         }
@@ -45,7 +45,7 @@
             <h3>Information</h3>
             <ul>
                 <li><b>ID:</b> @Model.Id</li>
-                <li><b>Uploader:</b> <partial name="_UserLink" model="Model.Uploader"> <a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Uploader.Name">»</a></li>
+                <li><b>Uploader:</b> <partial name="_UserLink" model="Model.Uploader"> <a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Uploader.Name" />»</a></li>
                 <li><b>Date:</b> @Model.CreatedAt</li>
                 <li><b>Rating:</b> @Model.Rating</li>
                 <li><b>Size:</b> <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.MediaAsset.Id">@Html.MediaAssetSize(Model.MediaAsset)</a></li>
