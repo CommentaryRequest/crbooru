@@ -12,14 +12,18 @@
 
 <table class="striped">
     <tr>
+        <th>Post</th>
         <th>Version</th>
         <th>Changes</th>
         <th>User</th>
         <th>Updated at</th>
     </tr>
     @for (var i = 0; i < Model.Count; i++) {
-    var version = @Model[i];
+    var version = Model[i];
     <tr>
+        <td>
+            <partial name="_PostThumbnail" model="@version.Post" />
+        </td>
         <td>
             @(version.PostId).@version.Number
         </td>

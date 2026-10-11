@@ -17,7 +17,8 @@ public class PostVersionService
     {
         IQueryable<PostVersion> query = _context.PostVersions
             .Include(v => v.User)
-            .Include(v => v.Post);
+            .Include(v => v.Post)
+            .Include(v => v.Post.MediaAsset);
 
         if (postId != null) {
             query = query.Where(v => v.PostId == postId);
