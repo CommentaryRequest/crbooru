@@ -70,7 +70,18 @@ public class PostService
                     }
                     break;
                 case SearchTermType.Id:
-                    if (int.TryParse(term.Value, out int id)) {
+                    IdRange? range = QueryParser.ParseIdRange(term.Value);
+                    if (range != null) {
+                        posts = term.IsNegated
+                            ? posts.Where(p => !(
+                                    (range.Min == null || p.Id >= range.Min) &&
+                                    (range.Max == null || p.Id <= range.Max)
+                                ))
+                            : posts.Where(p => (
+                                    (range.Min == null || p.Id >= range.Min) &&
+                                    (range.Max == null || p.Id <= range.Max)
+                                ));
+                    } else if (int.TryParse(term.Value, out int id)) {
                         posts = term.IsNegated
                             ? posts.Where(p => p.Id != id)
                             : posts.Where(p => p.Id == id);

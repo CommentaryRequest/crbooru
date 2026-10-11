@@ -10,6 +10,8 @@ public enum SearchTermType
 
 public record SearchTerm(SearchTermType Type, string Value, bool IsNegated);
 
+public record IdRange(int? Min, int? Max);
+
 public static class QueryParser
 {
     private static SearchTerm? parseToken(string token)
@@ -50,5 +52,57 @@ public static class QueryParser
         }
 
         return terms;
+    }
+
+    public static IdRange? ParseIdRange(string value)
+    {
+        // a..
+        if (value.EndsWith("..")) {
+            value = value[..^2];
+            if (int.TryParse(value, out int min)) {
+                return new(min, null);
+            }
+            return null;
+        }
+
+        // ..b
+        if (value.StartsWith("..")) {
+            value = value[2..];
+            if (int.TryParse(value, out int max)) {
+                return new(null, max);
+            }
+            return null;
+        }
+
+        // a..b
+        if (value.Contains("..")) {
+            string[] values = value.Split("..");
+            if (values.Length != 2) {
+                return null;
+            }
+            if (int.TryParse(values[0], out int min) && int.TryParse(values[1], out int max)) {
+                return new(min, max);
+            }
+            return null;
+        }
+
+        // >, <, >=, <=
+        if (value.StartsWith("<")) {
+            bool eq = value[1] == '=';
+            value = eq ? value[2..] : value[1..];
+            if (int.TryParse(value, out int max)) {
+                return new(null, eq ? max : max - 1);
+            }
+            return null;
+        }
+        if (value.StartsWith(">")) {
+            bool eq = value[1] == '=';
+            value = eq ? value[2..] : value[1..];
+            if (int.TryParse(value, out int min)) {
+                return new(eq ? min : min + 1, null);
+            }
+            return null;
+        }
+        return null;
     }
 }
