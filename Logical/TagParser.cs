@@ -93,8 +93,11 @@ public static class TagParser
         return sb.ToString();
     }
 
-    public static string[] SplitTags(string tagString)
+    public static string[] SplitTags(string? tagString)
     {
+        if (tagString == null) {
+            return new string[]{};
+        }
         return tagString.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
