@@ -20,7 +20,8 @@ public class TagValidationException : Exception
 
 public enum MetaTagType
 {
-    Rating
+    Rating,
+    Source
 }
 
 public class MetaTag
@@ -46,7 +47,8 @@ public static class TagParser
     };
 
     private static readonly Dictionary<string, MetaTagType> META_TAG_PREFIXES = new() {
-        ["rating:"] = MetaTagType.Rating
+        ["rating:"] = MetaTagType.Rating,
+        ["source:"] = MetaTagType.Source
     };
 
     private static readonly Dictionary<char, PostRating> RATING_MAP = new() {

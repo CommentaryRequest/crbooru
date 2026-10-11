@@ -124,6 +124,9 @@ public class PostService
                 case MetaTagType.Rating:
                     post.Rating = TagParser.ParseRatingValue(metaTag.Value) ?? post.Rating;
                     break;
+                case MetaTagType.Source:
+                    post.Source = string.IsNullOrWhiteSpace(metaTag.Value) || metaTag.Value == "none" ? null : metaTag.Value;
+                    break;
             }
         }
         return metaTags;
@@ -179,7 +182,7 @@ public class PostService
         post.Source = form.Source;
         TagDiff diff = await UpdateTags(post, TagParser.SplitTags(form.TagString));
         await _context.SaveChangesAsync();
-        _versions.Add(new PostVersion(post.Id, editor.Id, diff.Added, diff.Removed, oldRating == form.Rating ? null : form.Rating, oldSource == form.Source ? null : form.Source, oldSource != form.Source));
+        _versions.Add(new PostVersion(post.Id, editor.Id, diff.Added, diff.Removed, oldRating == post.Rating ? null : post.Rating, oldSource == post.Source ? null : post.Source, oldSource != post.Source));
     }
 
     public async Task<Post> CreateAsync(User uploader, PostFormModel form)
