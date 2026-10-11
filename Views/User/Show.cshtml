@@ -6,7 +6,7 @@
 <p><b>ID:</b> @Model.Id</p>
 <p><b>Join Date:</b> @Model.CreatedAt</p>
 <p><b>Role:</b> @Model.Role</p>
-<p><b>Posts:</b> @ViewData["PostCount"]</p>
+<p><b>Posts:</b> <a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Name">@ViewData["PostCount"]</a></p>
 @if (((List<Post>)ViewData["RecentPosts"]).Count != 0) {
     <h2>Recent Posts:</h2>
     <div class="post-list">
