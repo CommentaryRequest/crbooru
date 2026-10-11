@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Logical;
@@ -47,6 +46,24 @@ public class PostService
     public async Task<List<Post>> ListAsync(int limit)
     {
         return await getPosts()
+            .OrderByDescending(p => p.Id)
+            .Take(limit)
+            .ToListAsync();
+    }
+
+    public async Task<List<Post>> QueryAsync(List<SearchTerm> terms, int limit = 20)
+    {
+        IQueryable<Post> posts = getPosts();
+        foreach (var term in terms) {
+            switch (term.Type) {
+                case SearchTermType.Tag:
+                    posts = term.IsNegated
+                        ? posts.Where(p => !p.Tags.Any(t => t.Name == term.Value))
+                        : posts.Where(p => p.Tags.Any(t => t.Name == term.Value));
+                    break;
+            }
+        }
+        return await posts
             .OrderByDescending(p => p.Id)
             .Take(limit)
             .ToListAsync();

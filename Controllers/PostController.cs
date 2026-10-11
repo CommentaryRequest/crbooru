@@ -24,11 +24,9 @@ public class PostController : Controller
     public async Task<IActionResult> Index(string tags = "")
     {
         var query = QueryParser.ParseQuery(tags);
-        var posts = await _service.ListAsync(20);
+        var posts = await _service.QueryAsync(query);
 
-        foreach (var term in query) {
-            Console.WriteLine($"Type={term.Type} value={term.Value} negated={term.IsNegated}");
-        }
+        ViewData["Tags"] = tags;
 
         return View(posts);
     }
