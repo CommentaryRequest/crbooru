@@ -1,6 +1,6 @@
 @model Post
 <div class="post-thumbnail">
     <a asp-controller="Post" asp-action="Show" asp-route-id="@Model.Id">
-        <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Thumbnail)" alt="post #@Model.Id">
+        <partial name="_MediaAssetThumbnail" model="Model.MediaAsset" />
     </a>
 </div>
