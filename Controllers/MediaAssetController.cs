@@ -16,6 +16,12 @@ public class MediaAssetController : Controller
         _webHostEnv = webHostEnv;
     }
 
+    public async Task<IActionResult> Index()
+    {
+        var mediaAssets = await _service.ListAsync(20);
+        return View(mediaAssets);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Show(int id)
     {

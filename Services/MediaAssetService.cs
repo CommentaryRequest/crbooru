@@ -27,6 +27,14 @@ public class MediaAssetService
         return _context.MediaAssets.FirstOrDefaultAsync(m => md5 == m.Md5);
     }
 
+    public async Task<List<MediaAsset>> ListAsync(int limit)
+    {
+        return await _context.MediaAssets
+            .OrderByDescending(p => p.Id)
+            .Take(limit)
+            .ToListAsync();
+    }
+
     public async Task<MediaAsset> CreateFromFile(IFormFile file)
     {
         string tempPath = Path.GetTempFileName() + Path.GetExtension(file.FileName);
