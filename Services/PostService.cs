@@ -90,6 +90,11 @@ public class PostService
 
         var negatedTags = await _tags.ResolveTags(tagList.Where(tag => tag.StartsWith('-')).Select(tag => tag[1..]).Where(tag => tagList.Contains(tag)), false);
         var negatedTagsNames = negatedTags.Select(tag => tag.Name);
+
+        foreach (var tag in tagList.Except(negatedTagsNames)) {
+            TagParser.ValidateTagName(tag);
+        }
+
         var newTags = await _tags.ResolveTags(tagList.Where(tag => !tag.StartsWith('-')).Except(negatedTagsNames));
 
         var removedTags = post.Tags.Except(newTags).ToList();

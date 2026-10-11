@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using CRbooru.Models;
+using CRbooru.Logical;
 
 namespace CRbooru.Controllers;
 
@@ -20,7 +21,7 @@ public class PostController : Controller
         _mediaAssets = mediaAssets;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string query)
     {
         var posts = await _service.ListAsync(20);
 
@@ -68,6 +69,16 @@ public class PostController : Controller
             return RedirectToAction("Show", new { id = existingPost.Id });
         }
 
+        // Validate tags
+        foreach (var tag in TagParser.SplitTags(model.TagString)) {
+            try {
+                TagParser.ValidateTagName(tag);
+            } catch (TagValidationException exc) {
+                TempData["Error"] = $"Tag validation failed: {exc.Message}";
+                return RedirectToAction("Show", "Upload", new { id = upload.Id });
+            }
+        }
+
         // Create the post
         try {
             var post = await _service.CreateAsync(currentUser, model);
@@ -86,7 +97,11 @@ public class PostController : Controller
             return NotFound();
         }
 
-        await _service.EditAsync(post, model);
+        try {
+            await _service.EditAsync(post, model);
+        } catch (TagValidationException exc) {
+            TempData["Error"] = $"Tag validation failed: {exc.Message}";
+        }
         return RedirectToAction("Show", new { id = post.Id });
     }
 }

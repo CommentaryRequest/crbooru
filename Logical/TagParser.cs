@@ -5,6 +5,21 @@ using System.Collections;
 
 namespace CRbooru.Logical;
 
+public class TagValidationException : Exception
+{
+    public TagValidationException() : base()
+    {
+    }
+
+    public TagValidationException(string message) : base(message)
+    {
+    }
+
+    public TagValidationException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+}
+
 public static class TagParser
 {
     private static readonly Dictionary<TagCategory, string[]> CATEGORY_PREFIXES = new() {
@@ -85,5 +100,16 @@ public static class TagParser
         }
 
         return null;
+    }
+
+    public static void ValidateTagName(string tag)
+    {
+        if (tag.StartsWith('_') || tag.EndsWith('_')) {
+            throw new TagValidationException($"'{tag}' may not begin or end with an underscore");
+        }
+
+        if (tag.Contains("__")) {
+            throw new TagValidationException($"'{tag}' may not contain consecutive underscores");
+        }
     }
 }
