@@ -86,6 +86,7 @@ public class PostVersionService
         newVersion.Post = version.Post;
 
         version.Post.Rating = newVersion.NewRating ?? version.Post.Rating;
+        version.Post.Source = newVersion.SourceChanged ? newVersion.NewSource : version.Post.Source;
 
         var diff = await _postUpdate.UpdateTags(version.Post, newVersion.AddedTags ?? [], newVersion.RemovedTags ?? []);
 

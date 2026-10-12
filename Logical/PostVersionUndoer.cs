@@ -24,9 +24,23 @@ public static class PostVersionUndoer
                 }
             }
         }
-
         if (newVersion.NewRating == version.Post.Rating) {
             newVersion.NewRating = null;
+        }
+
+        // Undo source if it was changed.
+        if (newVersion.SourceChanged) {
+            for (int i = version.Number - 2; i >= 0; i--) {
+                PostVersion v = postVersions[i];
+                if (v.SourceChanged) {
+                    newVersion.NewSource = v.NewSource;
+                    break;
+                }
+            }
+        }
+        if (newVersion.NewSource == version.Post.Source) {
+            newVersion.SourceChanged = false;
+            newVersion.NewSource = null;
         }
 
         return newVersion;
