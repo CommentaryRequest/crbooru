@@ -482,9 +482,7 @@ $RECYCLE.BIN/
 *.swp
 
 # SQLite database files
-crbooru.db
-crbooru.db-shm
-crbooru.db-wal
+crbooru.db*
 
 # Local image files
 Storage/Images/
