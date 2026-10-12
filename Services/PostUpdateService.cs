@@ -39,25 +39,18 @@ public class PostUpdateService
         return metaTags;
     }
 
-    public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> tagList)
+    // Does not account for meta tags
+    public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> addedTagNames, IEnumerable<string> removedTagNames)
     {
-        _logger.LogInformation("Update post with tags: {tagList}", tagList);
+        addedTagNames = addedTagNames.Select(tag => tag.ToLower());
+        removedTagNames = removedTagNames.Select(tag => tag.ToLower());
 
-        tagList = tagList.Select(tag => tag.ToLower());
-        var metaTags = applyMetaTags(post, tagList);
-        tagList = tagList.Except(metaTags);
+        var addedTags = await _tags.ResolveTags(addedTagNames);
+        var removedTags = await _tags.ResolveTags(removedTagNames);
 
-        var negatedTags = await _tags.ResolveTags(tagList.Where(tag => tag.StartsWith('-')).Select(tag => tag[1..]).Where(tag => tagList.Contains(tag)), false);
-        var negatedTagsNames = negatedTags.Select(tag => tag.Name);
-
-        foreach (var tag in tagList.Except(negatedTagsNames)) {
+        foreach (var tag in addedTagNames.Concat(removedTagNames)) {
             TagParser.ValidateTagName(tag);
         }
-
-        var newTags = await _tags.ResolveTags(tagList.Where(tag => !tag.StartsWith('-')).Except(negatedTagsNames));
-
-        var removedTags = post.Tags.Except(newTags).ToList();
-        var addedTags = newTags.Except(post.Tags).Except(removedTags).ToList();
 
         foreach (var tag in addedTags) {
             tag.PostCount++;
@@ -68,18 +61,37 @@ public class PostUpdateService
             tag.PostCount--;
         }
 
+        post.Tags = post.Tags.Concat(addedTags).ToList();
+        post.Tags = post.Tags.Where(tag => !removedTagNames.Contains(tag.Name)).ToList();
+
         // If there are no tags left, add tagme.
-        if (newTags.Count() == 0) {
-            newTags = await _tags.ResolveTags(["tagme"]);
-            newTags.ElementAt(0).PostCount++;
+        if (post.Tags.Count() == 0) {
+            post.Tags = await _tags.ResolveTags(["tagme"]);
+            post.Tags.ElementAt(0).PostCount++;
         }
 
-        post.Tags = newTags;
         await _context.SaveChangesAsync();
 
         return new(
             addedTags.Count == 0 ? null : addedTags.Select(t => t.Name).ToArray(),
             removedTags.Count == 0 ? null : removedTags.Select(t => t.Name).ToArray()
         );
+    }
+
+    public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> tagList)
+    {
+        tagList = tagList.Select(tag => tag.ToLower());
+        var metaTags = applyMetaTags(post, tagList);
+        tagList = tagList.Except(metaTags);
+
+        var negatedTags = await _tags.ResolveTags(tagList.Where(tag => tag.StartsWith('-')).Select(tag => tag[1..]).Where(tag => tagList.Contains(tag)), false);
+        var negatedTagsNames = negatedTags.Select(tag => tag.Name);
+
+        var currentTags = post.Tags.Select(tag => tag.Name).AsEnumerable();
+        var newTags = tagList.Where(tag => !tag.StartsWith('-')).Except(negatedTagsNames).ToList();
+        var removedTags = currentTags.Except(newTags);
+        var addedTags = newTags.Except(currentTags).Except(removedTags).ToList();
+
+        return await UpdateTags(post, addedTags, removedTags);
     }
 }

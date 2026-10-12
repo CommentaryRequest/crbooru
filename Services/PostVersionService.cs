@@ -80,12 +80,7 @@ public class PostVersionService
         newVersion.User = editor;
         newVersion.PostId = version.Post.Id;
         newVersion.Post = version.Post;
-        await _postUpdate.UpdateTags(version.Post,
-                    TagParser.SplitTags(
-                        TagParser.BuildTagString(
-                            version.Post.Tags))
-                    .Concat(newVersion.AddedTags ?? new string[]{})
-                    .Concat(newVersion.RemovedTags?.Select(tag => $"-{tag}") ?? new string[]{}));
+        await _postUpdate.UpdateTags(version.Post, newVersion.AddedTags ?? [], newVersion.RemovedTags ?? []);
         Add(newVersion);
     }
 }
