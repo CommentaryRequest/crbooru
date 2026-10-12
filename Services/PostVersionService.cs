@@ -80,7 +80,9 @@ public class PostVersionService
         newVersion.User = editor;
         newVersion.PostId = version.Post.Id;
         newVersion.Post = version.Post;
-        await _postUpdate.UpdateTags(version.Post, newVersion.AddedTags ?? [], newVersion.RemovedTags ?? []);
+        var diff = await _postUpdate.UpdateTags(version.Post, newVersion.AddedTags ?? [], newVersion.RemovedTags ?? []);
+        newVersion.AddedTags = diff.Added;
+        newVersion.RemovedTags = diff.Removed;
         Add(newVersion);
     }
 }
