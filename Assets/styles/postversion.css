@@ -9,3 +9,7 @@
 .changed-tag {
     color: blue;
 }
+
+.obsolete-tag {
+    font-weight: bold;
+}
