@@ -3,10 +3,10 @@ namespace CRbooru.Models;
 public class PostVersion
 {
     public int Id { get; private set; }
-    public int PostId { get; private set; }
-    public Post Post { get; private set; }
-    public int UserId { get; private set; }
-    public User User { get; private set; }
+    public int PostId { get; set; }
+    public Post Post { get; set; }
+    public int UserId { get; set; }
+    public User User { get; set; }
     public int Number { get; set; }
     public string[]? AddedTags { get; set; }
     public string[]? RemovedTags { get; set; }
@@ -24,6 +24,18 @@ public class PostVersion
         NewRating = newRating;
         NewSource = newSource;
         SourceChanged = sourceChanged;
+    }
+
+    public PostVersion(PostVersion other)
+    {
+        this.PostId = other.PostId;
+        this.Post = other.Post;
+        this.UserId = other.UserId;
+        this.User = other.User;
+        this.AddedTags = (string[]?)other.AddedTags?.Clone();
+        this.RemovedTags = (string[]?)other.RemovedTags?.Clone();
+        this.NewRating = other.NewRating;
+        this.SourceChanged = other.SourceChanged;
     }
 
     public bool IsEmpty()

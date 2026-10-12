@@ -7,10 +7,12 @@ namespace CRbooru.Controllers;
 public class PostVersionController : Controller
 {
     private readonly PostVersionService _service;
+    private readonly UserService _users;
 
-    public PostVersionController(PostVersionService service)
+    public PostVersionController(PostVersionService service, UserService users)
     {
         _service = service;
+        _users = users;
     }
 
     public IActionResult Index(int? postId, int? userId)
@@ -22,5 +24,22 @@ public class PostVersionController : Controller
             ViewData["User"] = postVersions[0].User;
         }
         return View(postVersions);
+    }
+
+    [Route("{id:int}/undo")]
+    public async Task<IActionResult> Undo(int id)
+    {
+        var currentUser = await _users.GetCurrentUser(this.User);
+        if (currentUser == null) {
+            return RedirectToAction("Login", "User");
+        }
+
+        var postVersion = await _service.Get(id);
+        if (postVersion == null) {
+            return NotFound();
+        }
+        await _service.Undo(currentUser, postVersion);
+        TempData["Information"] = $"Post version {postVersion.PostId}.{postVersion.Number} undone";
+        return RedirectToAction("Index", new {postVersion.PostId});
     }
 }

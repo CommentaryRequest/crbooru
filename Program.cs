@@ -14,8 +14,9 @@ builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data
 builder.Services.AddScoped<MediaAssetService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TagService>();
-builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<PostUpdateService>();
 builder.Services.AddScoped<PostVersionService>();
 
 // Authentication

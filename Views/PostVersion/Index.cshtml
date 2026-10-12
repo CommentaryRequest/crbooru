@@ -17,6 +17,7 @@
         <th>Changes</th>
         <th>User</th>
         <th>Updated at</th>
+        <th>Actions</th>
     </tr>
     @for (var i = 0; i < Model.Count; i++) {
     var version = Model[i];
@@ -54,6 +55,11 @@
         </td>
         <td>
             @version.CreatedAt
+        </td>
+        <td>
+            @if (version.Number != 1) {
+                <a asp-action="Undo" asp-route-id="@version.Id">Undo</a>
+            }
         </td>
     </tr>
     }

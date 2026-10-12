@@ -1,25 +1,38 @@
 using Microsoft.EntityFrameworkCore;
 using CRbooru.Data;
 using CRbooru.Models;
+using CRbooru.Logical;
 
 namespace CRbooru.Services;
 
 public class PostVersionService
 {
     private readonly CRbooruContext _context;
+    private readonly PostUpdateService _postUpdate;
 
-    public PostVersionService(CRbooruContext context)
+    public PostVersionService(CRbooruContext context, PostUpdateService postUpdate)
     {
         _context = context;
+        _postUpdate = postUpdate;
     }
 
-    public IQueryable<PostVersion> Query(int? postId, int? userId)
+    private IQueryable<PostVersion> getPostVersions()
     {
-        IQueryable<PostVersion> query = _context.PostVersions
+        return _context.PostVersions
             .Include(v => v.User)
             .Include(v => v.Post)
             .Include(v => v.Post.MediaAsset)
             .Include(v => v.Post.Tags);
+    }
+
+    public async Task<PostVersion> Get(int id)
+    {
+        return await getPostVersions().FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public IQueryable<PostVersion> Query(int? postId, int? userId)
+    {
+        IQueryable<PostVersion> query = getPostVersions();
 
         if (postId != null) {
             query = query.Where(v => v.PostId == postId);
@@ -31,9 +44,13 @@ public class PostVersionService
         return query;
     }
 
-    public List<PostVersion> List(int? postId, int? userId)
+    public List<PostVersion> List(int? postId, int? userId, bool orderAscending = false)
     {
-        return Query(postId, userId).OrderByDescending(v => v.Id).ToList();
+        IQueryable<PostVersion> query = Query(postId, userId);
+        query = orderAscending
+            ? query.OrderBy(v => v.Id)
+            : query.OrderByDescending(v => v.Id);
+        return query.ToList();
     }
 
     public async Task Add(PostVersion version)
@@ -49,5 +66,26 @@ public class PostVersionService
 
         _context.PostVersions.Add(version);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task Undo(User editor, PostVersion version)
+    {
+        if (version.Number == 1) {
+            return;
+        }
+
+        List<PostVersion> postVersions = List(version.PostId, null, true);
+        var newVersion = PostVersionUndoer.Undo(version, postVersions);
+        newVersion.UserId = editor.Id;
+        newVersion.User = editor;
+        newVersion.PostId = version.Post.Id;
+        newVersion.Post = version.Post;
+        await _postUpdate.UpdateTags(version.Post,
+                    TagParser.SplitTags(
+                        TagParser.BuildTagString(
+                            version.Post.Tags))
+                    .Concat(newVersion.AddedTags ?? new string[]{})
+                    .Concat(newVersion.RemovedTags?.Select(tag => $"-{tag}") ?? new string[]{}));
+        Add(newVersion);
     }
 }
