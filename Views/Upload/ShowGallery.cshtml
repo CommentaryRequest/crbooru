@@ -2,6 +2,7 @@
     ViewData["Title"] = "Upload Media Assets";
 }
 
+<h1>Upload</h1>
 <div class="post-list">
     @foreach (var mediaAsset in Model.MediaAssets) {
     <a asp-action="ShowSingle" asp-route-uploadid="@Model.Id" asp-route-mediaassetid="@mediaAsset.Id" class="post-thumbnail">
