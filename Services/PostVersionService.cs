@@ -76,13 +76,23 @@ public class PostVersionService
 
         List<PostVersion> postVersions = List(version.PostId, null, true);
         var newVersion = PostVersionUndoer.Undo(version, postVersions);
+
+        // Add user and post information to the new version.
+        // PostVersion's copy constructor, used by PostVersionUndoer,
+        // removes these fields.
         newVersion.UserId = editor.Id;
         newVersion.User = editor;
         newVersion.PostId = version.Post.Id;
         newVersion.Post = version.Post;
+
+        version.Post.Rating = newVersion.NewRating ?? version.Post.Rating;
+
         var diff = await _postUpdate.UpdateTags(version.Post, newVersion.AddedTags ?? [], newVersion.RemovedTags ?? []);
+
+        // Change the diff to what was actually changed.
         newVersion.AddedTags = diff.Added;
         newVersion.RemovedTags = diff.Removed;
+
         Add(newVersion);
     }
 }
