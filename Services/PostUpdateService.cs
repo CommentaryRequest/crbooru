@@ -42,8 +42,9 @@ public class PostUpdateService
     // Does not account for meta tags
     public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> addedTagNames, IEnumerable<string> removedTagNames)
     {
-        addedTagNames = addedTagNames.Select(tag => tag.ToLower());
-        removedTagNames = removedTagNames.Select(tag => tag.ToLower());
+        var postTagNames = post.Tags.Select(tag => tag.Name);
+        addedTagNames = addedTagNames.Select(tag => tag.ToLower()).Except(postTagNames);
+        removedTagNames = removedTagNames.Select(tag => tag.ToLower()).Where(tag => postTagNames.Contains(tag));
 
         var addedTags = await _tags.ResolveTags(addedTagNames);
         var removedTags = await _tags.ResolveTags(removedTagNames);
