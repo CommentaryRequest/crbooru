@@ -26,9 +26,21 @@ public static class PostVersionMerger
 
         if (newVersion.NewRating != null) {
             result.NewRating = newVersion.NewRating;
+
             var lastRating = PostVersionTraverser.GetLastRating(postVersions, versionNumber);
             if (result.NewRating == lastRating) {
                 result.NewRating = null;
+            }
+        }
+
+        if (newVersion.SourceChanged) {
+            result.NewSource = newVersion.NewSource;
+            result.SourceChanged = true;
+
+            var lastSource = PostVersionTraverser.GetLastSource(postVersions, versionNumber);
+            if (result.NewSource == lastSource) {
+                result.NewSource = null;
+                result.SourceChanged = false;
             }
         }
 

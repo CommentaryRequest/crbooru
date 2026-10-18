@@ -67,6 +67,8 @@ public class PostVersionService
                 lastVersion.AddedTags = mergedVersion.AddedTags;
                 lastVersion.RemovedTags = mergedVersion.RemovedTags;
                 lastVersion.NewRating = mergedVersion.NewRating;
+                lastVersion.NewSource = mergedVersion.NewSource;
+                lastVersion.SourceChanged = mergedVersion.SourceChanged;
                 await _context.SaveChangesAsync();
                 return;
             }
