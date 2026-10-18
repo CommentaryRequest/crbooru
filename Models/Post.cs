@@ -16,18 +16,21 @@ public class Post
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public PostRating Rating { get; set; } = PostRating.General;
     public string? Source { get; set; } = "";
+    public int? ParentId { get; set; }
+    public Post? Parent { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     private Post()
     {
     }
 
-    public Post(User uploader, MediaAsset mediaAsset, PostRating rating, string? source)
+    public Post(User uploader, MediaAsset mediaAsset, PostRating rating, string? source, int? parentId)
     {
         Uploader = uploader;
         MediaAsset = mediaAsset;
         Tags = new List<Tag>();
         Rating = rating;
         Source = source;
+        ParentId = parentId;
     }
 }

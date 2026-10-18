@@ -21,6 +21,11 @@ public class CRbooruContext : DbContext
             .WithMany()
             .UsingEntity(j => j.ToTable("PostTags"));
 
+        modelBuilder.Entity<Post>()
+            .HasOne(p => p.Parent)
+            .WithMany()
+            .HasForeignKey(p => p.ParentId);
+
         modelBuilder.Entity<Upload>()
             .HasMany(u => u.MediaAssets)
             .WithMany()

@@ -68,6 +68,9 @@ namespace CRbooru.Migrations
                     b.Property<int>("MediaAssetId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<byte>("Rating")
                         .HasColumnType("INTEGER");
 
@@ -80,6 +83,8 @@ namespace CRbooru.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MediaAssetId");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("UploaderId");
 
@@ -192,7 +197,6 @@ namespace CRbooru.Migrations
                         .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<byte>("Role")
@@ -244,6 +248,10 @@ namespace CRbooru.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CRbooru.Models.Post", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
                     b.HasOne("CRbooru.Models.User", "Uploader")
                         .WithMany()
                         .HasForeignKey("UploaderId")
@@ -251,6 +259,8 @@ namespace CRbooru.Migrations
                         .IsRequired();
 
                     b.Navigation("MediaAsset");
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Uploader");
                 });

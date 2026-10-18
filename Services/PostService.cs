@@ -31,7 +31,8 @@ public class PostService
         return _context.Posts
             .Include(p => p.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.MediaAsset)
-            .Include(p => p.Uploader);
+            .Include(p => p.Uploader)
+            .Include(p => p.Parent);
     }
 
     public async Task<Post?> Get(int id)
@@ -118,9 +119,15 @@ public class PostService
         // Apply form fields
         post.Rating = form.Rating;
         post.Source = form.Source;
+        post.ParentId = form.Parent;
 
         // Update the post
         TagDiff diff = await _postUpdate.UpdateTags(post, TagParser.SplitTags(form.TagString));
+
+        if (post.ParentId == post.Id) {
+            post.ParentId = null;
+        }
+
         await _context.SaveChangesAsync();
 
         // Create a new post version
@@ -146,7 +153,7 @@ public class PostService
         var upload = await _uploads.Get(form.UploadId)!;
 
         string[] tags = TagParser.SplitTags(form.TagString);
-        Post post = new Post(uploader, mediaAsset, form.Rating, form.Source);
+        Post post = new Post(uploader, mediaAsset, form.Rating, form.Source, form.Parent);
         TagDiff diff = await _postUpdate.UpdateTags(post, tags);
         _context.Posts.Add(post);
         await _context.SaveChangesAsync();

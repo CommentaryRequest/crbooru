@@ -2,6 +2,9 @@
 <label for="source">Source</label>
 <input type="text" name="source" value="@Model.Source">
 <p></p>
+<label for="parent">Parent</label>
+<input type="number" name="parent" value="@Model.Parent">
+<p></p>
 <label asp-for="Rating"></label>
 <select asp-for="Rating" asp-items="Html.GetEnumSelectList<PostRating>()">
 </select>

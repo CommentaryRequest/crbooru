@@ -13,7 +13,8 @@
     var formModel = new PostFormModel {
         Source = Model.Source,
         Rating = Model.Rating,
-        TagString = TagParser.BuildTagString(Model.Tags)
+        TagString = TagParser.BuildTagString(Model.Tags),
+        Parent = Model.ParentId
     };
 
     async Task RenderTagList(string categoryName, IEnumerable<Tag> tagList)

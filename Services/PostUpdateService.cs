@@ -34,6 +34,13 @@ public class PostUpdateService
                 case MetaTagType.Source:
                     post.Source = string.IsNullOrWhiteSpace(metaTag.Value) || metaTag.Value == "none" ? null : metaTag.Value;
                     break;
+                case MetaTagType.Parent:
+                    if (metaTag.Value == "none") {
+                        post.ParentId = null;
+                    } else if (int.TryParse(metaTag.Value, out int parent)) {
+                        post.ParentId = parent;
+                    }
+                    break;
             }
         }
         return metaTags;

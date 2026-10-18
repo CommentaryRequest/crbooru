@@ -7,5 +7,6 @@ public class PostFormModel
     public int UploadId { get; set; }
     public string? Source { get; set; }
     public PostRating Rating { get; set; }
+    public int? Parent { get; set; }
     public required string TagString { get; set; }
 }
