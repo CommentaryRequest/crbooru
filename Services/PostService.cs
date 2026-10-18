@@ -29,10 +29,33 @@ public class PostService
     private IQueryable<Post> getPosts()
     {
         return _context.Posts
+            .AsSplitQuery()
             .Include(p => p.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.MediaAsset)
             .Include(p => p.Uploader)
-            .Include(p => p.Parent);
+            .Include(p => p!.Children)
+                .ThenInclude(p => p.Tags.OrderBy(tag => tag.Name))
+            .Include(p => p!.Children)
+                .ThenInclude(p => p.MediaAsset)
+            .Include(p => p!.Children)
+                .ThenInclude(p => p.Uploader)
+            .Include(p => p!.Children)
+                .ThenInclude(p => p.Children)
+            .Include(p => p.Parent)
+                .ThenInclude(p => p.Tags.OrderBy(tag => tag.Name))
+            .Include(p => p.Parent)
+                .ThenInclude(p => p.MediaAsset)
+            .Include(p => p.Parent)
+                .ThenInclude(p => p.Uploader)
+            .Include(p => p.Parent)
+                .ThenInclude(p => p!.Children)
+                    .ThenInclude(p => p.Tags.OrderBy(tag => tag.Name))
+            .Include(p => p.Parent)
+                .ThenInclude(p => p!.Children)
+                    .ThenInclude(p => p.MediaAsset)
+            .Include(p => p.Parent)
+                .ThenInclude(p => p!.Children)
+                    .ThenInclude(p => p.Uploader);
     }
 
     public async Task<Post?> Get(int id)

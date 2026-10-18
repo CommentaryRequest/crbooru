@@ -255,7 +255,7 @@ namespace CRbooru.Migrations
                         .IsRequired();
 
                     b.HasOne("CRbooru.Models.Post", "Parent")
-                        .WithMany()
+                        .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.HasOne("CRbooru.Models.User", "Uploader")
@@ -329,6 +329,11 @@ namespace CRbooru.Migrations
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CRbooru.Models.Post", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }

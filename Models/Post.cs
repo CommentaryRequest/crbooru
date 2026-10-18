@@ -18,6 +18,7 @@ public class Post
     public string? Source { get; set; } = "";
     public int? ParentId { get; set; }
     public Post? Parent { get; set; }
+    public ICollection<Post> Children { get; set; } = [];
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     private Post()

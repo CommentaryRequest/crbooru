@@ -72,8 +72,27 @@
 
     <div id="post-image">
         @if (Model.Parent != null) {
+        var siblingCount = Model.Parent.Children.Count() - 1;
         <div id="parent-notice">
-            This post belong to a parent:
+            This post belongs to a <a asp-action="Index" asp-route-tags="parent:@Model.ParentId">parent</a>@if (siblingCount > 0) {<text> and has <a asp-action="Index" asp-route-tags="parent:@Model.ParentId">@siblingCount sibling@(siblingCount == 1 ? "" : "s")</a></text>}:
+            <div class="thumbnail-row">
+                <div class="thumbnail-small"><partial name="_PostThumbnail" model="Model.Parent" /></div>
+                @foreach (var sibling in Model.Parent.Children) {
+                <div class="thumbnail-small"><partial name="_PostThumbnail" model="sibling" /></div>
+                }
+            </div>
+        </div>
+        }
+        @if (Model.Children.Count() != 0) {
+        var childCount = Model.Children.Count();
+        <div id="child-notice">
+            This post has <a asp-action="Index" asp-route-tags="parent:@Model.Id">@childCount child@(childCount == 1 ? "" : "ren")</a>:
+            <div class="thumbnail-row">
+                <div class="thumbnail-small"><partial name="_PostThumbnail" model="Model" /></div>
+                @foreach (var sibling in Model.Children) {
+                <div class="thumbnail-small"><partial name="_PostThumbnail" model="sibling" /></div>
+                }
+            </div>
         </div>
         }
         <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">

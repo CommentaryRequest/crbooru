@@ -23,7 +23,7 @@ public class CRbooruContext : DbContext
 
         modelBuilder.Entity<Post>()
             .HasOne(p => p.Parent)
-            .WithMany()
+            .WithMany(p => p.Children)
             .HasForeignKey(p => p.ParentId);
 
         modelBuilder.Entity<Upload>()
