@@ -34,12 +34,12 @@ public class PostService
             .Include(p => p.Uploader);
     }
 
-    public async Task<Post> Get(int id)
+    public async Task<Post?> Get(int id)
     {
         return await getPosts().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Post> ByMediaAsset(int assetId)
+    public async Task<Post?> ByMediaAsset(int assetId)
     {
         return await getPosts().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
@@ -123,7 +123,10 @@ public class PostService
 
     public async Task<Post> CreateAsync(User uploader, PostFormModel form)
     {
-        var mediaAsset = await _mediaAssets.Get(form.MediaAssetId)!;
+        var mediaAsset = await _mediaAssets.Get(form.MediaAssetId);
+        if (mediaAsset == null) {
+            throw new ArgumentException($"Media asset #{form.MediaAssetId} not found");
+        }
         var upload = await _uploads.Get(form.UploadId)!;
 
         string[] tags = TagParser.SplitTags(form.TagString);

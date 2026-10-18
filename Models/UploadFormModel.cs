@@ -4,5 +4,5 @@ namespace CRbooru.Models;
 
 public class UploadFormModel
 {
-    public List<IFormFile> Files { get; set; }
+    public required List<IFormFile> Files { get; set; }
 }

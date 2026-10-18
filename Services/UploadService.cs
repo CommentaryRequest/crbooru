@@ -15,7 +15,7 @@ public class UploadService
         _assets = assets;
     }
 
-    public Task<Upload> Get(int id)
+    public Task<Upload?> Get(int id)
     {
         return _context.Uploads
             .Include(u => u.MediaAssets)

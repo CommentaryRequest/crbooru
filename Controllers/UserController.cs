@@ -49,7 +49,10 @@ public class UserController : Controller
     public async Task<IActionResult> Profile()
     {
         if (User.Identity?.IsAuthenticated == true) {
-            return await Show(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null) {
+                return await Show(int.Parse(userId));
+            }
         }
         return RedirectToAction("ShowLogin");
     }
@@ -76,6 +79,13 @@ public class UserController : Controller
         if (user == null) {
             Response.StatusCode = 400;
             TempData["Error"] = "User does not exist";
+            return View();
+        }
+
+        // Does the user have a password?
+        if (user.PasswordHash == null) {
+            Response.StatusCode = 400;
+            TempData["Error"] = "User does not have a password";
             return View();
         }
 
@@ -149,9 +159,10 @@ public class UserController : Controller
         }
 
         // Create a new user
-        var user = new User();
-        user.Name = model.Username;
-        user.Role = _service.Any() ? UserRole.Member : UserRole.Admin;
+        var user = new User() {
+            Name = model.Username,
+            Role = _service.Any() ? UserRole.Member : UserRole.Admin
+        };
         user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
         await _service.Add(user);
 

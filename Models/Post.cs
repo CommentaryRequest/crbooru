@@ -14,8 +14,8 @@ public enum PostRating : byte
 public class Post
 {
     public int Id { get; private set; }
-    public User Uploader { get; private set; }
-    public MediaAsset MediaAsset { get; set; }
+    public User Uploader { get; private set; } = null!;
+    public MediaAsset MediaAsset { get; set; } = null!;
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public PostRating Rating { get; set; } = PostRating.General;
     public string? Source { get; set; } = "";
@@ -25,7 +25,7 @@ public class Post
     {
     }
 
-    public Post(User uploader, MediaAsset mediaAsset, PostRating rating, string source)
+    public Post(User uploader, MediaAsset mediaAsset, PostRating rating, string? source)
     {
         Uploader = uploader;
         MediaAsset = mediaAsset;

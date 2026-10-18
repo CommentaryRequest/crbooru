@@ -12,7 +12,7 @@
     <p>This upload is still processing...</p>
 } else if (Model.Upload.Status == UploadStatus.Error) {
     <p>Upload failed: @Model.Upload.StatusMessage</p>
-} else {
+} else if (Model.MediaAsset != null) {
 <div id="upload-view">
     <div id="upload-image">
         <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Original)">

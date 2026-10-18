@@ -14,7 +14,7 @@ public class TagService
         _context = context;
     }
 
-    public Task<Tag> ByName(string name)
+    public Task<Tag?> ByName(string name)
     {
         return _context.Tags.FirstOrDefaultAsync(t => name.ToLower() == t.Name);
     }

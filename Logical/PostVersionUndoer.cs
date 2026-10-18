@@ -9,8 +9,8 @@ public static class PostVersionUndoer
         PostVersion newVersion = new(version);
 
         // Swap added and removed tags.
-        string[] addedTags = newVersion.RemovedTags;
-        string[] removedTags = newVersion.AddedTags;
+        string[] addedTags = newVersion.RemovedTags ?? [];
+        string[] removedTags = newVersion.AddedTags ?? [];
         newVersion.AddedTags = addedTags;
         newVersion.RemovedTags = removedTags;
 

@@ -4,9 +4,9 @@ public class PostVersion
 {
     public int Id { get; private set; }
     public int PostId { get; set; }
-    public Post Post { get; set; }
+    public Post Post { get; set; } = null!;
     public int UserId { get; set; }
-    public User User { get; set; }
+    public User User { get; set; } = null!;
     public int Number { get; set; }
     public string[]? AddedTags { get; set; }
     public string[]? RemovedTags { get; set; }

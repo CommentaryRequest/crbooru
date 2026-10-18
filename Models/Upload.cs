@@ -10,9 +10,9 @@ public enum UploadStatus : byte
 public class Upload
 {
     public int Id { get; set; }
-    public User Uploader { get; set; }
+    public required User Uploader { get; set; }
     public UploadStatus Status { get; set; } = UploadStatus.Pending;
-    public List<MediaAsset> MediaAssets { get; set; }
+    public List<MediaAsset>? MediaAssets { get; set; }
     public string? StatusMessage { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

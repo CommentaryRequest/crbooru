@@ -25,7 +25,7 @@ public class PostVersionService
             .Include(v => v.Post.Tags);
     }
 
-    public async Task<PostVersion> Get(int id)
+    public async Task<PostVersion?> Get(int id)
     {
         return await getPostVersions().FirstOrDefaultAsync(p => p.Id == id);
     }
@@ -104,6 +104,6 @@ public class PostVersionService
         newVersion.AddedTags = diff.Added;
         newVersion.RemovedTags = diff.Removed;
 
-        Add(newVersion);
+        await Add(newVersion);
     }
 }

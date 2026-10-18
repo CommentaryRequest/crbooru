@@ -62,7 +62,7 @@ public class UploadController : Controller
             return Unauthorized();
         }
 
-        if (upload.MediaAssets.Count() == 1) {
+        if (upload.MediaAssets?.Count() == 1) {
             var existingPost = await _posts.ByMediaAsset(upload.MediaAssets[0].Id);
             if (existingPost != null) {
                 TempData["Information"] = $"Duplicate of post #{existingPost.Id}";
@@ -71,7 +71,7 @@ public class UploadController : Controller
 
             var viewModel = new UploadViewModel(upload, upload.MediaAssets[0]);
             return View("ShowSingle", viewModel);
-        } else if (upload.MediaAssets.Count() == 0) {
+        } else if (upload.MediaAssets == null || upload.MediaAssets.Count() == 0) {
             var viewModel = new UploadViewModel(upload, null);
             return View("ShowSingle", viewModel);
         } else {
@@ -94,6 +94,10 @@ public class UploadController : Controller
 
         if (!currentUser.IsAdmin() && currentUser.Id != upload.Uploader.Id) {
             return Unauthorized();
+        }
+
+        if (upload.MediaAssets == null) {
+            return NotFound();
         }
 
         var mediaAsset = upload.MediaAssets.FirstOrDefault(m => m.Id == mediaAssetId);

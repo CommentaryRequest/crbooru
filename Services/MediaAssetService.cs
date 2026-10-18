@@ -17,12 +17,12 @@ public class MediaAssetService
         _webHostEnv = webHostEnv;
     }
 
-    public ValueTask<MediaAsset> Get(int id)
+    public ValueTask<MediaAsset?> Get(int id)
     {
         return _context.MediaAssets.FindAsync(id);
     }
 
-    public Task<MediaAsset> ByMd5(string md5)
+    public Task<MediaAsset?> ByMd5(string md5)
     {
         return _context.MediaAssets.FirstOrDefaultAsync(m => md5 == m.Md5);
     }

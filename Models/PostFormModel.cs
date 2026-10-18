@@ -5,7 +5,7 @@ public class PostFormModel
     public int MediaAssetId { get; set; }
     public int PostId { get; set; }
     public int UploadId { get; set; }
-    public string Source { get; set; }
+    public string? Source { get; set; }
     public PostRating Rating { get; set; }
-    public string TagString { get; set; }
+    public required string TagString { get; set; }
 }

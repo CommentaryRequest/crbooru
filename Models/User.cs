@@ -20,8 +20,8 @@ public class User
 
     public int Id { get; private set; }
     [MaxLength(MAX_USERNAME_LENGTH)]
-    public string Name { get; set; }
-    public string PasswordHash { get; set; }
+    public required string Name { get; set; }
+    public string? PasswordHash { get; set; }
     public UserRole Role { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

@@ -40,7 +40,8 @@ public class MediaAsset
         {
             MediaAssetVariantType.Original => "original",
             MediaAssetVariantType.Sample => "sample",
-            MediaAssetVariantType.Thumbnail => "thumb"
+            MediaAssetVariantType.Thumbnail => "thumb",
+            _ => throw new ArgumentOutOfRangeException(nameof(MediaAssetVariantType), variant, null)
         };
         string fileType = variant == MediaAssetVariantType.Original ? FileType : "jpg";
         return Path.Combine(basePath, variantDir, Md5[0..2], Md5[2..4], $"{Md5}.{fileType}");

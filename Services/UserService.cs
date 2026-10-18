@@ -14,23 +14,27 @@ public class UserService
         _context = context;
     }
 
-    public ValueTask<User> Get(int id)
+    public ValueTask<User?> Get(int id)
     {
         return _context.Users.FindAsync(id);
     }
 
-    public Task<User> ByName(string name)
+    public async Task<User?> ByName(string name)
     {
-        return _context.Users.FirstOrDefaultAsync(u => name == u.Name);
+        return await _context.Users.FirstOrDefaultAsync(u => name == u.Name);
     }
 
-    public Task<User> GetCurrentUser(ClaimsPrincipal user)
+    public async Task<User?> GetCurrentUser(ClaimsPrincipal user)
     {
         if (user.Identity?.IsAuthenticated != true) {
             return null;
         }
 
-        return Get(int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier))).AsTask();
+        string? userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) {
+            return null;
+        }
+        return await Get(int.Parse(userId));
     }
 
     public bool Any()
