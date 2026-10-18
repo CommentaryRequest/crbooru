@@ -59,14 +59,16 @@ public class PostVersionService
             return;
         }
 
-        var lastVersion = List(version.PostId, null)[0];
-
-        if (lastVersion.UserId == version.UserId && DateTime.UtcNow - lastVersion.CreatedAt < TimeSpan.FromHours(1)) {
-            PostVersion mergedVersion = PostVersionMerger.Merge(lastVersion, version);
-            lastVersion.AddedTags = mergedVersion.AddedTags;
-            lastVersion.RemovedTags = mergedVersion.RemovedTags;
-            await _context.SaveChangesAsync();
-            return;
+        var versions = List(version.PostId, null);
+        if (versions.Count() > 0) {
+            var lastVersion = versions[0];
+            if (lastVersion.UserId == version.UserId && DateTime.UtcNow - lastVersion.CreatedAt < TimeSpan.FromHours(1)) {
+                PostVersion mergedVersion = PostVersionMerger.Merge(lastVersion, version);
+                lastVersion.AddedTags = mergedVersion.AddedTags;
+                lastVersion.RemovedTags = mergedVersion.RemovedTags;
+                await _context.SaveChangesAsync();
+                return;
+            }
         }
 
         int currentVersion = await _context.PostVersions
