@@ -12,7 +12,6 @@ public static class PostVersionTraverser
 
         for (int i = number - 2; i >= 0; i--) {
             PostVersion v = versions[i];
-            Console.WriteLine($"[traverse] {i} = {v.NewRating}");
             if (v.NewRating != null) {
                 return v.NewRating;
             }
