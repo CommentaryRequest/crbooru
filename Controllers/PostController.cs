@@ -116,6 +116,8 @@ public class PostController : Controller
             return RedirectToAction("Show", new { id = post.Id });
         } catch (Exception exc) {
             TempData["Error"] = exc.Message;
+            // TODO properly log shit
+            Console.WriteLine($"error posting: {exc}");
             return RedirectToAction("Show", "Upload", new { id = upload.Id });
         }
     }

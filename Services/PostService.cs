@@ -112,13 +112,29 @@ public class PostService
 
     public async Task EditAsync(User editor, Post post, PostFormModel form)
     {
-        PostRating oldRating = post.Rating;
+        PostRating? oldRating = post.Rating;
         string? oldSource = post.Source;
+
+        // Apply form fields
         post.Rating = form.Rating;
         post.Source = form.Source;
+
+        // Update the post
         TagDiff diff = await _postUpdate.UpdateTags(post, TagParser.SplitTags(form.TagString));
         await _context.SaveChangesAsync();
-        await _versions.Add(new PostVersion(post.Id, editor.Id, diff.Added, diff.Removed, oldRating == post.Rating ? null : post.Rating, oldSource == post.Source ? null : post.Source, oldSource != post.Source));
+
+        // Create a new post version
+        await _versions.Add(
+            new PostVersion(
+                post.Id,
+                editor.Id,
+                diff.Added,
+                diff.Removed,
+                oldRating == post.Rating ? null : post.Rating,
+                oldSource == post.Source ? null : post.Source,
+                oldSource != post.Source
+            )
+        );
     }
 
     public async Task<Post> CreateAsync(User uploader, PostFormModel form)
