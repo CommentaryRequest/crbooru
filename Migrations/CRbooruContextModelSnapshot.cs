@@ -56,6 +56,29 @@ namespace CRbooru.Migrations
                     b.ToTable("MediaAssets");
                 });
 
+            modelBuilder.Entity("CRbooru.Models.Pool", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("PostIds")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pools");
+                });
+
             modelBuilder.Entity("CRbooru.Models.Post", b =>
                 {
                     b.Property<int>("Id")

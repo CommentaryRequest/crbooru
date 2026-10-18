@@ -48,4 +48,5 @@ public class CRbooruContext : DbContext
     public DbSet<Post> Posts { get; set; }
     public DbSet<Upload> Uploads { get; set; }
     public DbSet<PostVersion> PostVersions { get; set; }
+    public DbSet<Pool> Pools { get; set; }
 }
