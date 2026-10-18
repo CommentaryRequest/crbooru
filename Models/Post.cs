@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
 namespace CRbooru.Models;
 
 public enum PostRating : byte
