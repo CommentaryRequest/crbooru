@@ -36,7 +36,7 @@ public static class MediaFileProcessor
 
         // Get the image's pixel hash
         using var md5 = MD5.Create();
-        byte[] pixelData = image.WriteToMemory();
+        byte[] pixelData = image.WriteToMemory<byte>();
         byte[] pixelHashBytes = md5.ComputeHash(pixelData);
         string pixelHash = Convert.ToHexString(pixelHashBytes).ToLowerInvariant();
 
