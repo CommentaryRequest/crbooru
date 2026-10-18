@@ -29,6 +29,16 @@ public class PostService
     private IQueryable<Post> getPosts()
     {
         return _context.Posts
+            .Include(p => p.Tags.OrderBy(tag => tag.Name))
+            .Include(p => p.MediaAsset)
+            .Include(p => p.Uploader)
+            .Include(p => p.Children)
+            .Include(p => p.Parent);
+    }
+
+    private IQueryable<Post> getPostsFamily()
+    {
+        return _context.Posts
             .AsSplitQuery()
             .Include(p => p.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.MediaAsset)
@@ -61,6 +71,11 @@ public class PostService
     public async Task<Post?> Get(int id)
     {
         return await getPosts().FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<Post?> GetFamily(int id)
+    {
+        return await getPostsFamily().FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Post?> ByMediaAsset(int assetId)

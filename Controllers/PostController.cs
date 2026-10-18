@@ -62,7 +62,7 @@ public class PostController : Controller
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Show(int id)
     {
-        var post = await _service.Get(id);
+        var post = await _service.GetFamily(id);
         if (post == null) {
             return NotFound();
         }
