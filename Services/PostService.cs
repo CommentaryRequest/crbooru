@@ -130,6 +130,7 @@ public class PostService
     {
         PostRating? oldRating = post.Rating;
         string? oldSource = post.Source;
+        int? oldParent = post.ParentId;
 
         // Apply form fields
         post.Rating = form.Rating;
@@ -154,7 +155,9 @@ public class PostService
                 diff.Removed,
                 oldRating == post.Rating ? null : post.Rating,
                 oldSource == post.Source ? null : post.Source,
-                oldSource != post.Source
+                oldSource != post.Source,
+                oldParent == post.ParentId ? null : post.ParentId,
+                oldParent != post.ParentId
             )
         );
     }
@@ -172,7 +175,7 @@ public class PostService
         TagDiff diff = await _postUpdate.UpdateTags(post, tags);
         _context.Posts.Add(post);
         await _context.SaveChangesAsync();
-        await _versions.Add(new PostVersion(post.Id, uploader.Id, diff.Added, null, form.Rating, form.Source, true));
+        await _versions.Add(new PostVersion(post.Id, uploader.Id, diff.Added, null, form.Rating, form.Source, true, form.Parent, true));
 
         return post;
     }

@@ -44,6 +44,17 @@ public static class PostVersionMerger
             }
         }
 
+        if (newVersion.ParentChanged) {
+            result.NewParent = newVersion.NewParent;
+            result.ParentChanged = true;
+
+            var lastParent = PostVersionTraverser.GetLastParent(postVersions, versionNumber);
+            if (result.NewParent == lastParent) {
+                result.NewParent = null;
+                result.ParentChanged = false;
+            }
+        }
+
         return result;
     }
 }

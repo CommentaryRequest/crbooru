@@ -31,6 +31,15 @@ public static class PostVersionUndoer
             newVersion.NewSource = null;
         }
 
+        // Undo parent if it was changed.
+        if (newVersion.ParentChanged) {
+            newVersion.NewParent = PostVersionTraverser.GetLastParent(postVersions, version.Number);
+        }
+        if (newVersion.NewParent == version.Post.ParentId) {
+            newVersion.ParentChanged = false;
+            newVersion.NewParent = null;
+        }
+
         return newVersion;
     }
 }

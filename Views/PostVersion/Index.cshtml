@@ -43,15 +43,23 @@
                 }
             }
             @if (version.NewRating != null) {
-                    var isObsolete = version.Post.Rating != version.NewRating;
+                var isObsolete = version.Post.Rating != version.NewRating;
                 <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">rating:@version.NewRating.ToString().ToLower()[0]</span>
             }
             @if (version.SourceChanged) {
-                    var isObsolete = version.Post.Source != version.NewSource;
+                var isObsolete = version.Post.Source != version.NewSource;
                 @if (version.NewSource == null) {
                 <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">source:none</span>
                 } else {
                 <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">source:@version.NewSource</span>
+                }
+            }
+            @if (version.ParentChanged) {
+                var isObsolete = version.Post.ParentId != version.NewParent;
+                @if (version.NewParent == null) {
+                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">parent:none</span>
+                } else {
+                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">parent:@version.NewParent</span>
                 }
             }
         </td>

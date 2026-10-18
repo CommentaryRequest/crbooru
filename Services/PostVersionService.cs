@@ -69,6 +69,8 @@ public class PostVersionService
                 lastVersion.NewRating = mergedVersion.NewRating;
                 lastVersion.NewSource = mergedVersion.NewSource;
                 lastVersion.SourceChanged = mergedVersion.SourceChanged;
+                lastVersion.ParentChanged = mergedVersion.ParentChanged;
+                lastVersion.NewParent = mergedVersion.NewParent;
                 await _context.SaveChangesAsync();
                 return;
             }

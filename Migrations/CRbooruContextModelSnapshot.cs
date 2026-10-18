@@ -103,6 +103,9 @@ namespace CRbooru.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("NewParent")
+                        .HasColumnType("INTEGER");
+
                     b.Property<byte?>("NewRating")
                         .HasColumnType("INTEGER");
 
@@ -110,6 +113,9 @@ namespace CRbooru.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Number")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ParentChanged")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PostId")

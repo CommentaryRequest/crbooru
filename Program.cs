@@ -38,7 +38,7 @@ using (var scope = app.Services.CreateScope()) {
             .Include(p => p.Uploader)
             .ToListAsync();
         foreach (var post in posts) {
-            await postVersions.Add(new PostVersion(post.Id, post.Uploader.Id, post.Tags.Select(tag => tag.Name).ToArray(), null, post.Rating, post.Source, true));
+            await postVersions.Add(new PostVersion(post.Id, post.Uploader.Id, post.Tags.Select(tag => tag.Name).ToArray(), null, post.Rating, post.Source, true, null, true));
         }
         await db.SaveChangesAsync();
     }

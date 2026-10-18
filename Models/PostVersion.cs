@@ -13,9 +13,11 @@ public class PostVersion
     public PostRating? NewRating { get; set; }
     public string? NewSource { get; set; }
     public bool SourceChanged { get; set; } = true;
+    public int? NewParent { get; set; }
+    public bool ParentChanged { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public PostVersion(int postId, int userId, string[]? addedTags, string[]? removedTags, PostRating? newRating, string? newSource, bool sourceChanged)
+    public PostVersion(int postId, int userId, string[]? addedTags, string[]? removedTags, PostRating? newRating, string? newSource, bool sourceChanged, int? newParent, bool parentChanged)
     {
         PostId = postId;
         UserId = userId;
@@ -24,6 +26,8 @@ public class PostVersion
         NewRating = newRating;
         NewSource = newSource;
         SourceChanged = sourceChanged;
+        NewParent = newParent;
+        ParentChanged = parentChanged;
     }
 
     public PostVersion(PostVersion other)
@@ -36,6 +40,8 @@ public class PostVersion
         this.RemovedTags = (string[]?)other.RemovedTags?.Clone();
         this.NewRating = other.NewRating;
         this.SourceChanged = other.SourceChanged;
+        this.NewParent = other.NewParent;
+        this.ParentChanged = other.ParentChanged;
     }
 
     public bool IsEmpty()
@@ -43,6 +49,7 @@ public class PostVersion
         return AddedTags == null
             && RemovedTags == null
             && NewRating == null
-            && !SourceChanged;
+            && !SourceChanged
+            && !ParentChanged;
     }
 }

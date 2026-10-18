@@ -35,4 +35,20 @@ public static class PostVersionTraverser
 
         return null;
     }
+
+    public static int? GetLastParent(List<PostVersion> versions, int number)
+    {
+        if (number < 2) {
+            return versions[0].NewParent;
+        }
+
+        for (int i = number - 2; i >= 0; i--) {
+            PostVersion v = versions[i];
+            if (v.ParentChanged) {
+                return v.NewParent;
+            }
+        }
+
+        return null;
+    }
 }
