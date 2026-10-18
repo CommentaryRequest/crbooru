@@ -7,7 +7,8 @@ public enum SearchTermType
     Id,
     User,
     Limit,
-    Parent
+    Parent,
+    Child
 }
 
 public record SearchTerm(SearchTermType Type, string Value, bool IsNegated);
@@ -61,6 +62,9 @@ public static class QueryParser
         }
         if (token.StartsWith("parent:")) {
             return new SearchTerm(SearchTermType.Parent, token[7..], isNegated);
+        }
+        if (token.StartsWith("child:")) {
+            return new SearchTerm(SearchTermType.Child, token[6..], isNegated);
         }
         return new SearchTerm(SearchTermType.Tag, token, isNegated);
     }

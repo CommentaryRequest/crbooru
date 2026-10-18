@@ -158,6 +158,17 @@ public class PostService
                             : posts.Where(p => p.ParentId == parent || p.Id == parent);
                     }
                     break;
+                case SearchTermType.Child:
+                    if (term.Value == "none") {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.Children.Count() != 0)
+                            : posts.Where(p => p.Children.Count() == 0);
+                    } else if (term.Value == "any") {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.Children.Count() == 0)
+                            : posts.Where(p => p.Children.Count() != 0);
+                    }
+                    break;
             }
         }
         return (posts
