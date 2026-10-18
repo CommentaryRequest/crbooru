@@ -26,7 +26,7 @@ public class PostService
         _postUpdate = postUpdate;
     }
 
-    private IQueryable<Post> getPosts()
+    public IQueryable<Post> Query()
     {
         return _context.Posts
             .Include(p => p.Tags.OrderBy(tag => tag.Name))
@@ -36,7 +36,7 @@ public class PostService
             .Include(p => p.Parent);
     }
 
-    private IQueryable<Post> getPostsFamily()
+    public IQueryable<Post> QueryFamily()
     {
         return _context.Posts
             .AsSplitQuery()
@@ -70,36 +70,36 @@ public class PostService
 
     public async Task<Post?> Get(int id)
     {
-        return await getPosts().FirstOrDefaultAsync(p => p.Id == id);
+        return await Query().FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Post?> GetFamily(int id)
     {
-        return await getPostsFamily().FirstOrDefaultAsync(p => p.Id == id);
+        return await QueryFamily().FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Post?> ByMediaAsset(int assetId)
     {
-        return await getPosts().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
+        return await Query().FirstOrDefaultAsync(p => p.MediaAsset.Id == assetId);
     }
 
     public IQueryable<Post> ByUser(int userId)
     {
-        return getPosts().Where(p => p.Uploader.Id == userId);
+        return Query().Where(p => p.Uploader.Id == userId);
     }
 
     public async Task<List<Post>> ListAsync(int limit = DEFAULT_LIMIT)
     {
-        return await getPosts()
+        return await Query()
             .OrderByDescending(p => p.Id)
             .Take(limit)
             .ToListAsync();
     }
 
-    public async Task<(IQueryable<Post>, int)> QueryAsync(List<SearchTerm> terms)
+    public async Task<(IQueryable<Post>, int)> QuerySearchAsync(List<SearchTerm> terms)
     {
         int limit = DEFAULT_LIMIT;
-        IQueryable<Post> posts = getPosts();
+        IQueryable<Post> posts = Query();
         foreach (var term in terms) {
             switch (term.Type) {
                 case SearchTermType.Tag:

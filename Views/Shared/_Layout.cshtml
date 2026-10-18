@@ -16,6 +16,7 @@
         <a asp-controller="User" asp-action="Profile">My Account</a>
     }
     | <a asp-controller="Post" asp-action="Index">Posts</a>
+    | <a asp-controller="Pool" asp-action="Index">Pools</a>
     <hr>
     @{
         switch (ViewData["Controller"]) {
@@ -33,6 +34,7 @@
                 <text>
                 <a asp-controller="Post" asp-action="Index">Listing</a>
                 | <a asp-controller="Upload" asp-action="ShowCreate">Upload</a>
+                | <a asp-controller="PostVersion" asp-action="Index">Changes</a>
                 </text>
                 break;
             case "Upload":
@@ -44,6 +46,12 @@
             case "PostVersion":
                 <text>
                 <a asp-controller="PostVersion" asp-action="Index">Listing</a>
+                </text>
+                break;
+            case "Pool":
+                <text>
+                <a asp-controller="Pool" asp-action="Index">Listing</a>
+                | <a asp-controller="Pool" asp-action="ShowCreate">New</a>
                 </text>
                 break;
         }

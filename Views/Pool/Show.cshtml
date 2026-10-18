@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = $"Pool: {Model.Pool.Name}";
+}
+
+<h1>Pool: @Model.Pool.Name</h1>
+<p>@Model.Pool.Description</p>
+
+<div class="post-list">
+    @foreach (var post in Model.Posts) {
+    <partial name="_PostThumbnail" model="post" />
+    }
+</div>

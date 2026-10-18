@@ -29,7 +29,7 @@ public class PostController : Controller
         var limit = PostService.DEFAULT_LIMIT;
         try {
             var parsedQuery = QueryParser.ParseQuery(tags);
-            var (postQuery, queryLimit) = await _service.QueryAsync(parsedQuery);
+            var (postQuery, queryLimit) = await _service.QuerySearchAsync(parsedQuery);
             limit = queryLimit;
             total = postQuery.Count();
             posts = postQuery

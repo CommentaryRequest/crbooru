@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Pools";
+}
+
+<table id="pools-list" class="striped">
+    <tr>
+        <th>Name</th>
+        <th>Post count</th>
+    </tr>
+    @foreach (var pool in Model) {
+    <tr>
+        <td><a asp-action="Show" asp-route-id="@pool.Id">@pool.Name</a></td>
+        <td>@pool.PostIds.Count</td>
+    </tr>
+    }
+</table>
