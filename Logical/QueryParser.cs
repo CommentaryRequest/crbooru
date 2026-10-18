@@ -6,7 +6,8 @@ public enum SearchTermType
     Rating,
     Id,
     User,
-    Limit
+    Limit,
+    Parent
 }
 
 public record SearchTerm(SearchTermType Type, string Value, bool IsNegated);
@@ -57,6 +58,9 @@ public static class QueryParser
                 throw new QueryParserException("Limit cannot be negated.");
             }
             return new SearchTerm(SearchTermType.Limit, token[6..], false);
+        }
+        if (token.StartsWith("parent:")) {
+            return new SearchTerm(SearchTermType.Parent, token[7..], isNegated);
         }
         return new SearchTerm(SearchTermType.Tag, token, isNegated);
     }

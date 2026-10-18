@@ -71,6 +71,11 @@
     </div>
 
     <div id="post-image">
+        @if (Model.Parent != null) {
+        <div id="parent-notice">
+            This post belong to a parent:
+        </div>
+        }
         <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
 
         @if (User.Identity?.IsAuthenticated == true) {

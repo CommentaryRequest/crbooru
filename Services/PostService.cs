@@ -105,6 +105,21 @@ public class PostService
                         limit = l;
                     }
                     break;
+                case SearchTermType.Parent:
+                    if (term.Value == "none") {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.ParentId != null)
+                            : posts.Where(p => p.ParentId == null);
+                    } else if (term.Value == "any") {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.ParentId == null)
+                            : posts.Where(p => p.ParentId != null);
+                    } else if (int.TryParse(term.Value, out int parent)) {
+                        posts = term.IsNegated
+                            ? posts.Where(p => p.ParentId != parent && p.Id != parent)
+                            : posts.Where(p => p.ParentId == parent || p.Id == parent);
+                    }
+                    break;
             }
         }
         return (posts
