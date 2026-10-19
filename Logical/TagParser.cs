@@ -22,7 +22,8 @@ public enum MetaTagType
 {
     Rating,
     Source,
-    Parent
+    Parent,
+    Pool
 }
 
 public class MetaTag
@@ -50,7 +51,8 @@ public static class TagParser
     private static readonly Dictionary<string, MetaTagType> META_TAG_PREFIXES = new() {
         ["rating:"] = MetaTagType.Rating,
         ["source:"] = MetaTagType.Source,
-        ["parent:"] = MetaTagType.Parent
+        ["parent:"] = MetaTagType.Parent,
+        ["pool:"] = MetaTagType.Pool
     };
 
     private static readonly Dictionary<char, PostRating> RATING_MAP = new() {

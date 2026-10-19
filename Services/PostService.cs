@@ -14,16 +14,18 @@ public class PostService
     private readonly UploadService _uploads;
     private readonly PostVersionService _versions;
     private readonly PostUpdateService _postUpdate;
+    private readonly PoolUpdateService _poolUpdate;
 
     public const int DEFAULT_LIMIT = 20;
 
-    public PostService(CRbooruContext context, MediaAssetService mediaAssets, UploadService uploads, PostVersionService versions, PostUpdateService postUpdate)
+    public PostService(CRbooruContext context, MediaAssetService mediaAssets, UploadService uploads, PostVersionService versions, PostUpdateService postUpdate, PoolUpdateService poolUpdate)
     {
         _context = context;
         _mediaAssets = mediaAssets;
         _uploads = uploads;
         _versions = versions;
         _postUpdate = postUpdate;
+        _poolUpdate = poolUpdate;
     }
 
     public IQueryable<Post> Query()
@@ -187,7 +189,7 @@ public class PostService
         post.ParentId = form.Parent;
 
         // Update the post
-        TagDiff diff = await _postUpdate.UpdateTags(post, TagParser.SplitTags(form.TagString));
+        PostUpdateResult postUpdate = await _postUpdate.UpdateTags(post, TagParser.SplitTags(form.TagString));
 
         if (post.ParentId == post.Id) {
             post.ParentId = null;
@@ -195,13 +197,15 @@ public class PostService
 
         await _context.SaveChangesAsync();
 
+        await _poolUpdate.UpdatePostPoolsAsync(editor, post.Id, postUpdate.PoolUpdate);
+
         // Create a new post version
         await _versions.Add(
             new PostVersion(
                 post.Id,
                 editor.Id,
-                diff.Added,
-                diff.Removed,
+                postUpdate.TagDiff.Added,
+                postUpdate.TagDiff.Removed,
                 oldRating == post.Rating ? null : post.Rating,
                 oldSource == post.Source ? null : post.Source,
                 oldSource != post.Source,
@@ -220,11 +224,16 @@ public class PostService
         var upload = await _uploads.Get(form.UploadId)!;
 
         string[] tags = TagParser.SplitTags(form.TagString);
+
         Post post = new Post(uploader, mediaAsset, form.Rating, form.Source, form.Parent);
-        TagDiff diff = await _postUpdate.UpdateTags(post, tags);
+        PostUpdateResult updateResult = await _postUpdate.UpdateTags(post, tags);
         _context.Posts.Add(post);
+
         await _context.SaveChangesAsync();
-        await _versions.Add(new PostVersion(post.Id, uploader.Id, diff.Added, null, form.Rating, form.Source, true, form.Parent, true));
+
+        await _poolUpdate.UpdatePostPoolsAsync(uploader, post.Id, updateResult.PoolUpdate);
+
+        await _versions.Add(new PostVersion(post.Id, uploader.Id, updateResult.TagDiff.Added, null, form.Rating, form.Source, true, form.Parent, true));
 
         return post;
     }

@@ -61,7 +61,7 @@ public class PoolService
             .ToList();
     }
 
-    public async Task UpdateAsync(Pool pool, PoolFormModel form)
+    public async Task UpdateAsync(User updater, Pool pool, PoolFormModel form)
     {
         pool.Name = form.Name;
         pool.Description = form.Description;

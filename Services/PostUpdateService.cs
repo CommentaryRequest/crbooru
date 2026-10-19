@@ -4,6 +4,21 @@ using CRbooru.Logical;
 
 namespace CRbooru.Services;
 
+public record PoolUpdate(
+    List<int> PoolIds,
+    bool ClearPools
+);
+
+public record MetaTagResult(
+    List<string> ConsumedMetaTags,
+    PoolUpdate PoolUpdate
+);
+
+public record PostUpdateResult(
+    TagDiff TagDiff,
+    PoolUpdate PoolUpdate
+);
+
 public class PostUpdateService
 {
     private readonly CRbooruContext _context;
@@ -17,9 +32,12 @@ public class PostUpdateService
         _logger = logger;
     }
 
-    private IEnumerable<string> applyMetaTags(Post post, IEnumerable<string> tagList)
+    private MetaTagResult applyMetaTags(Post post, IEnumerable<string> tagList)
     {
         var metaTags = new List<string>();
+        var pools = new List<int>();
+        bool clearPools = false;
+
         foreach (var tag in tagList) {
             var metaTag = TagParser.ParseMetaTag(tag);
             if (metaTag == null) {
@@ -41,9 +59,17 @@ public class PostUpdateService
                         post.ParentId = parent;
                     }
                     break;
+                case MetaTagType.Pool:
+                    if (metaTag.Value == "none") {
+                        clearPools = true;
+                    } else if (int.TryParse(metaTag.Value, out int poolId)) {
+                        pools.Add(poolId);
+                    }
+                    break;
             }
         }
-        return metaTags;
+
+        return new(metaTags, new(pools, clearPools));
     }
 
     // Does not account for meta tags
@@ -86,11 +112,11 @@ public class PostUpdateService
         );
     }
 
-    public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> tagList)
+    public async Task<PostUpdateResult> UpdateTags(Post post, IEnumerable<string> tagList)
     {
         tagList = tagList.Select(tag => tag.ToLower());
-        var metaTags = applyMetaTags(post, tagList);
-        tagList = tagList.Except(metaTags);
+        var metaTagResult = applyMetaTags(post, tagList);
+        tagList = tagList.Except(metaTagResult.ConsumedMetaTags);
 
         var negatedTags = await _tags.ResolveTags(tagList.Where(tag => tag.StartsWith('-')).Select(tag => tag[1..]).Where(tag => tagList.Contains(tag)), false);
         var negatedTagsNames = negatedTags.Select(tag => tag.Name);
@@ -100,6 +126,9 @@ public class PostUpdateService
         var removedTags = currentTags.Except(newTags);
         var addedTags = newTags.Except(currentTags).Except(removedTags).ToList();
 
-        return await UpdateTags(post, addedTags, removedTags);
+        return new(
+            await UpdateTags(post, addedTags, removedTags),
+            metaTagResult.PoolUpdate
+        );
     }
 }

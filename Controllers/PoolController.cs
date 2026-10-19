@@ -90,7 +90,7 @@ public class PoolController : Controller
             return NotFound();
         }
 
-        await _service.UpdateAsync(pool, form);
+        await _service.UpdateAsync(currentUser, pool, form);
         TempData["Information"] = "Pool updated";
         return RedirectToAction("Show", new { id = id });
     }
