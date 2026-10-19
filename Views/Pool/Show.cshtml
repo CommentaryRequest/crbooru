@@ -2,7 +2,7 @@
     ViewData["Title"] = $"Pool: {Model.Pool.Name}";
 }
 
-<h1>Pool: @Model.Pool.Name</h1>
+<h1>Pool: @Model.Pool.Name @if (Model.IsDeleted) {<i>(deleted)</i>}</h1>
 <p>@Model.Pool.Description</p>
 
 <div class="post-list">

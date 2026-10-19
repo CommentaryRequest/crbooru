@@ -6,4 +6,5 @@ public class Pool
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public List<int> PostIds { get; set; } = [];
+    public bool IsDeleted { get; set; } = false;
 }
