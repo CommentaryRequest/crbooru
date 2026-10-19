@@ -60,4 +60,13 @@ public class PoolService
             .Select(id => postsById[id])
             .ToList();
     }
+
+    public async Task UpdateAsync(Pool pool, PoolFormModel form)
+    {
+        pool.Name = form.Name;
+        pool.Description = form.Description;
+        pool.PostIds = await ValidatePostList(PostListParser.ParsePostList(form.PostIds));
+
+        await _context.SaveChangesAsync();
+    }
 }

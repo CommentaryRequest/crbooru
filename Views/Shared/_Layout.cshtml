@@ -53,6 +53,11 @@
                 <a asp-controller="Pool" asp-action="Index">Listing</a>
                 | <a asp-controller="Pool" asp-action="ShowCreate">New</a>
                 </text>
+                if (Model is PoolViewModel) {
+                <text>
+                | <a asp-controller="Pool" asp-action="ShowEdit" asp-route-id="@Model.Pool.Id">Edit</a>
+                </text>
+                }
                 break;
         }
     }

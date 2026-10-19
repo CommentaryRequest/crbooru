@@ -60,4 +60,38 @@ public class PoolController : Controller
 
         return View(viewModel);
     }
+
+    [Route("{id:int}/edit")]
+    public async Task<IActionResult> ShowEdit(int id)
+    {
+        var currentUser = await _users.GetCurrentUser(this.User);
+        if (currentUser == null) {
+            return RedirectToAction("Login", "User");
+        }
+
+        var pool = await _service.GetAsync(id);
+        if (pool == null) {
+            return NotFound();
+        }
+
+        return View(pool);
+    }
+
+    [HttpPost("{id:int}/edit")]
+    public async Task<IActionResult> Edit(int id, PoolFormModel form)
+    {
+        var currentUser = await _users.GetCurrentUser(this.User);
+        if (currentUser == null) {
+            return RedirectToAction("Login", "User");
+        }
+
+        var pool = await _service.GetAsync(id);
+        if (pool == null) {
+            return NotFound();
+        }
+
+        await _service.UpdateAsync(pool, form);
+        TempData["Information"] = "Pool updated";
+        return RedirectToAction("Show", new { id = id });
+    }
 }

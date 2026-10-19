@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Edit Pool";
+
+    var formModel = new PoolFormModel {
+        Name = Model.Name,
+        Description = Model.Description,
+        PostIds = string.Join(" ", Model.PostIds)
+    };
+}
+
+<h1>Edit Pool</h1>
+<form asp-controller="Pool" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+    <partial name="_PoolFields" model="formModel">
+    <input type="submit" value="Submit">
+</form>
