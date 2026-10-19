@@ -64,3 +64,12 @@
 .thumbnail-row div {
     display: inline-block;
 }
+
+#pool-notice {
+    border: 1px solid grey;
+    padding: 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: center;
+}

@@ -12,13 +12,15 @@ public class PostController : Controller
     private readonly UserService _users;
     private readonly UploadService _uploads;
     private readonly MediaAssetService _mediaAssets;
+    private readonly PoolPostService _poolPosts;
 
-    public PostController(PostService service, UserService users, UploadService uploads, MediaAssetService mediaAssets)
+    public PostController(PostService service, UserService users, UploadService uploads, MediaAssetService mediaAssets, PoolPostService poolPosts)
     {
         _service = service;
         _users = users;
         _uploads = uploads;
         _mediaAssets = mediaAssets;
+        _poolPosts = poolPosts;
     }
 
     public async Task<IActionResult> Index(string tags = "", int page = 1)
@@ -67,7 +69,11 @@ public class PostController : Controller
             return NotFound();
         }
 
-        return View(post);
+        var pools = await _poolPosts.GetPostPools(id);
+
+        PostViewModel model = new(post, pools);
+
+        return View(model);
     }
 
     [HttpPost("new")]

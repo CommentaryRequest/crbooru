@@ -1,20 +1,20 @@
-@model Post
+@model PostViewModel
 @using System.Linq
 @using CRbooru.Logical
 @{
-    var artistTags = Model.Tags.Where(tag => tag.Category == TagCategory.Artist);
-    var copyrightTags = Model.Tags.Where(tag => tag.Category == TagCategory.Copyright);
-    var characterTags = Model.Tags.Where(tag => tag.Category == TagCategory.Character);
-    var generalTags = Model.Tags.Where(tag => tag.Category == TagCategory.General);
-    var metaTags = Model.Tags.Where(tag => tag.Category == TagCategory.Meta);
+    var artistTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.Artist);
+    var copyrightTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.Copyright);
+    var characterTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.Character);
+    var generalTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.General);
+    var metaTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.Meta);
 
-    ViewData["Title"] = EssentialTagStringBuilder.Build(Model.Tags.ToList(), Model.Id);
+    ViewData["Title"] = EssentialTagStringBuilder.Build(Model.Post.Tags.ToList(), Model.Post.Id);
 
     var formModel = new PostFormModel {
-        Source = Model.Source,
-        Rating = Model.Rating,
-        TagString = TagParser.BuildTagString(Model.Tags),
-        Parent = Model.ParentId
+        Source = Model.Post.Source,
+        Rating = Model.Post.Rating,
+        TagString = TagParser.BuildTagString(Model.Post.Tags),
+        Parent = Model.Post.ParentId
     };
 
     async Task RenderTagList(string categoryName, IEnumerable<Tag> tagList)
@@ -33,7 +33,7 @@
 <div id="post-view">
     <div id="post-sidebar">
         <div id="tag-list">
-            <h3>Tags (@Model.Tags.Count())</h3>
+            <h3>Tags (@Model.Post.Tags.Count())</h3>
             @{
                 await RenderTagList("Artist", artistTags);
                 await RenderTagList("Copyright", copyrightTags);
@@ -45,19 +45,19 @@
         <div id="post-information">
             <h3>Information</h3>
             <ul>
-                <li><b>ID:</b> @Model.Id</li>
-                <li><b>Uploader:</b> <partial name="_UserLink" model="Model.Uploader"> <a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Uploader.Name">»</a></li>
-                <li><b>Date:</b> @Model.CreatedAt</li>
-                <li><b>Rating:</b> @Model.Rating</li>
-                <li><b>Size:</b> <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.MediaAsset.Id">@Html.MediaAssetSize(Model.MediaAsset)</a></li>
+                <li><b>ID:</b> @Model.Post.Id</li>
+                <li><b>Uploader:</b> <partial name="_UserLink" model="Model.Post.Uploader"> <a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Post.Uploader.Name">»</a></li>
+                <li><b>Date:</b> @Model.Post.CreatedAt</li>
+                <li><b>Rating:</b> @Model.Post.Rating</li>
+                <li><b>Size:</b> <a asp-controller="MediaAsset" asp-action="Show" asp-route-id="@Model.Post.MediaAsset.Id">@Html.MediaAssetSize(Model.Post.MediaAsset)</a></li>
                 <li><b>Source:</b>
-                @if (!string.IsNullOrEmpty(Model.Source) && (Uri.TryCreate(Model.Source, UriKind.Absolute, out var uri)
+                @if (!string.IsNullOrEmpty(Model.Post.Source) && (Uri.TryCreate(Model.Post.Source, UriKind.Absolute, out var uri)
                 && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))) {
-                    <a href="@Model.Source">@Model.Source</a>
-                } else if (string.IsNullOrWhiteSpace(Model.Source)) {
+                    <a href="@Model.Post.Source">@Model.Post.Source</a>
+                } else if (string.IsNullOrWhiteSpace(Model.Post.Source)) {
                     <i>none</i>
                 } else {
-                    @Model.Source
+                    @Model.Post.Source
                 }
                 </li>
             </ul>
@@ -65,43 +65,51 @@
         <div id="post-history">
             <h3>History</h3>
             <ul>
-                <li><a asp-controller="PostVersion" asp-action="Index" asp-route-postid="@Model.Id">Tags</a></li>
+                <li><a asp-controller="PostVersion" asp-action="Index" asp-route-postid="@Model.Post.Id">Tags</a></li>
             </ul>
         </div>
     </div>
 
     <div id="post-image">
-        @if (Model.Parent != null) {
-        var siblingCount = Model.Parent.Children.Count() - 1;
+        @if (Model.Pools.Count() != 0) {
+        <div id="pool-notice">
+            @foreach (var pool in Model.Pools) {
+            <a asp-controller="Pool" asp-action="Pool" asp-route-id="pool.Id">Pool: @pool.Name</a>
+            }
+        </div>
+        }
+
+        @if (Model.Post.Parent != null) {
+        var siblingCount = Model.Post.Parent.Children.Count() - 1;
         <div id="parent-notice">
-            This post belongs to a <a asp-action="Index" asp-route-tags="parent:@Model.ParentId">parent</a>@if (siblingCount > 0) {<text> and has <a asp-action="Index" asp-route-tags="parent:@Model.ParentId">@siblingCount sibling@(siblingCount == 1 ? "" : "s")</a></text>}:
+            This post belongs to a <a asp-action="Index" asp-route-tags="parent:@Model.Post.ParentId">parent</a>@if (siblingCount > 0) {<text> and has <a asp-action="Index" asp-route-tags="parent:@Model.Post.ParentId">@siblingCount sibling@(siblingCount == 1 ? "" : "s")</a></text>}:
             <div class="thumbnail-row">
-                <div class="thumbnail-small"><partial name="_PostThumbnail" model="Model.Parent" /></div>
-                @foreach (var sibling in Model.Parent.Children) {
+                <div class="thumbnail-small"><partial name="_PostThumbnail" model="Model.Post.Parent" /></div>
+                @foreach (var sibling in Model.Post.Parent.Children) {
                 <div class="thumbnail-small"><partial name="_PostThumbnail" model="sibling" /></div>
                 }
             </div>
         </div>
         }
-        @if (Model.Children.Count() != 0) {
-        var childCount = Model.Children.Count();
+        @if (Model.Post.Children.Count() != 0) {
+        var childCount = Model.Post.Children.Count();
         <div id="child-notice">
-            This post has <a asp-action="Index" asp-route-tags="parent:@Model.Id">@childCount child@(childCount == 1 ? "" : "ren")</a>:
+            This post has <a asp-action="Index" asp-route-tags="parent:@Model.Post.Id">@childCount child@(childCount == 1 ? "" : "ren")</a>:
             <div class="thumbnail-row">
-                <div class="thumbnail-small"><partial name="_PostThumbnail" model="Model" /></div>
-                @foreach (var sibling in Model.Children) {
+                <div class="thumbnail-small"><partial name="_PostThumbnail" model="Model.Post" /></div>
+                @foreach (var sibling in Model.Post.Children) {
                 <div class="thumbnail-small"><partial name="_PostThumbnail" model="sibling" /></div>
                 }
             </div>
         </div>
         }
-        <img src="@Model.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
+        <img src="@Model.Post.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
 
         @if (User.Identity?.IsAuthenticated == true) {
         <div id="edit">
             <a href="#edit" id="post-edit-link">Edit</a>
             <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form" style="display: none">
-                <input type="hidden" name="postid" value="@Model.Id">
+                <input type="hidden" name="postid" value="@Model.Post.Id">
                 <partial name="_PostFields" model="formModel">
                 <input type="submit" value="Submit">
             </form>

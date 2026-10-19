@@ -33,13 +33,8 @@ public class PoolUpdateService
     public async Task UpdatePostPoolsAsync(User updater, int postId, PoolUpdate update)
     {
         if (update.ClearPools) {
-            List<int> pools = await _poolPosts.GetPostPools(postId);
-            foreach (var poolId in pools) {
-                var pool = await _context.Pools.FirstOrDefaultAsync(p => p.Id == poolId);
-                if (pool == null) {
-                    continue;
-                }
-
+            var pools = await _poolPosts.GetPostPools(postId);
+            foreach (var pool in pools) {
                 await RemoveAsync(updater, pool, postId);
             }
             return;

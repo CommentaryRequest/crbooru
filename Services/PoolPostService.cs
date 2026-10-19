@@ -30,11 +30,17 @@ public class PoolPostService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<int>> GetPostPools(int postId)
+    public async Task<List<Pool>> GetPostPools(int postId)
     {
         return await _context.PoolPosts
             .Where(p => p.PostId == postId)
-            .Select(p => p.PoolId)
+            .Join(
+                _context.Pools,
+                pp => pp.PoolId,
+                p => p.Id,
+                (pp, p) => p
+            )
+            .Where(p => !p.IsDeleted)
             .ToListAsync();
     }
 }
