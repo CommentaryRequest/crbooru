@@ -10,12 +10,14 @@ public class PoolService
     private readonly CRbooruContext _context;
     private readonly PostService _posts;
     private readonly PoolUpdateService _poolUpdate;
+    private readonly PoolPostService _poolPosts;
 
-    public PoolService(CRbooruContext context, PostService posts, PoolUpdateService poolUpdate)
+    public PoolService(CRbooruContext context, PostService posts, PoolUpdateService poolUpdate, PoolPostService poolPosts)
     {
         _context = context;
         _posts = posts;
         _poolUpdate = poolUpdate;
+        _poolPosts = poolPosts;
     }
 
     public async Task<List<Pool>> ListAsync()
@@ -65,9 +67,21 @@ public class PoolService
 
     public async Task UpdateAsync(User updater, Pool pool, PoolFormModel form)
     {
+        var postIds = await ValidatePostList(PostListParser.ParsePostList(form.PostIds));
+        var removedPostIds = pool.PostIds.Except(postIds);
+        var addedPostIds = postIds.Except(pool.PostIds).Except(removedPostIds);
+
+        foreach (var postId in removedPostIds) {
+            await _poolPosts.RemovePoolPostAsync(pool.Id, postId);
+        }
+
+        foreach (var postId in addedPostIds) {
+            await _poolPosts.AddPoolPostAsync(pool.Id, postId);
+        }
+
         pool.Name = form.Name;
         pool.Description = form.Description;
-        pool.PostIds = await ValidatePostList(PostListParser.ParsePostList(form.PostIds));
+        pool.PostIds = postIds;
 
         await _context.SaveChangesAsync();
     }

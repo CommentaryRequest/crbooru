@@ -20,6 +20,7 @@ builder.Services.AddScoped<PostUpdateService>();
 builder.Services.AddScoped<PostVersionService>();
 builder.Services.AddScoped<PoolService>();
 builder.Services.AddScoped<PoolUpdateService>();
+builder.Services.AddScoped<PoolPostService>();
 
 // Authentication
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

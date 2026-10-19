@@ -8,20 +8,24 @@ namespace CRbooru.Services;
 public class PoolUpdateService
 {
     private readonly CRbooruContext _context;
+    private readonly PoolPostService _poolPosts;
 
-    public PoolUpdateService(CRbooruContext context)
+    public PoolUpdateService(CRbooruContext context, PoolPostService poolPosts)
     {
         _context = context;
+        _poolPosts = poolPosts;
     }
 
     public async Task AppendAsync(User updater, Pool pool, int postId)
     {
+        await _poolPosts.AddPoolPostAsync(pool.Id, postId);
         pool.PostIds.Add(postId);
         await _context.SaveChangesAsync();
     }
 
     public async Task RemoveAsync(User updater, Pool pool, int postId)
     {
+        await _poolPosts.RemovePoolPostAsync(pool.Id, postId);
         pool.PostIds.Remove(postId);
         await _context.SaveChangesAsync();
     }
