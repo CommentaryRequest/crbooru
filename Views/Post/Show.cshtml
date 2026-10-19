@@ -73,9 +73,11 @@
     <div id="post-image">
         @if (Model.Pools.Count() != 0) {
         <div id="pool-notice">
+            <ul>
             @foreach (var pool in Model.Pools) {
-            <p><a asp-controller="Pool" asp-action="Show" asp-route-id="@pool.Id">Pool: @pool.Name</a></p>
+                <li><a asp-controller="Pool" asp-action="Show" asp-route-id="@pool.Id">Pool: @pool.Name</a></li>
             }
+            </ul>
         </div>
         }
 
