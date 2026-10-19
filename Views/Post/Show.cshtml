@@ -74,7 +74,7 @@
         @if (Model.Pools.Count() != 0) {
         <div id="pool-notice">
             @foreach (var pool in Model.Pools) {
-            <a asp-controller="Pool" asp-action="Pool" asp-route-id="pool.Id">Pool: @pool.Name</a>
+            <a asp-controller="Pool" asp-action="Show" asp-route-id="@pool.Id">Pool: @pool.Name</a>
             }
         </div>
         }
