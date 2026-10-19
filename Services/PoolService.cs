@@ -9,11 +9,13 @@ public class PoolService
 {
     private readonly CRbooruContext _context;
     private readonly PostService _posts;
+    private readonly PoolUpdateService _poolUpdate;
 
-    public PoolService(CRbooruContext context, PostService posts)
+    public PoolService(CRbooruContext context, PostService posts, PoolUpdateService poolUpdate)
     {
         _context = context;
         _posts = posts;
+        _poolUpdate = poolUpdate;
     }
 
     public async Task<List<Pool>> ListAsync()

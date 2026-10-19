@@ -40,6 +40,22 @@ public class CRbooruContext : DbContext
             .HasOne(v => v.Post)
             .WithMany()
             .HasForeignKey(v => v.PostId);
+
+        modelBuilder.Entity<PoolPost>()
+            .HasKey(p => new { p.PoolId, p.PostId });
+
+        modelBuilder.Entity<PoolPost>()
+            .HasOne<Pool>()
+            .WithMany()
+            .HasForeignKey(p => p.PoolId);
+
+        modelBuilder.Entity<PoolPost>()
+            .HasOne<Post>()
+            .WithMany()
+            .HasForeignKey(p => p.PostId);
+
+        modelBuilder.Entity<PoolPost>()
+            .HasIndex(p => p.PostId);
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }
@@ -49,4 +65,5 @@ public class CRbooruContext : DbContext
     public DbSet<Upload> Uploads { get; set; }
     public DbSet<PostVersion> PostVersions { get; set; }
     public DbSet<Pool> Pools { get; set; }
+    public DbSet<PoolPost> PoolPosts { get; set; }
 }

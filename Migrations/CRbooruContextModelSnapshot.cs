@@ -82,6 +82,21 @@ namespace CRbooru.Migrations
                     b.ToTable("Pools");
                 });
 
+            modelBuilder.Entity("CRbooru.Models.PoolPost", b =>
+                {
+                    b.Property<int>("PoolId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PoolId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PoolPosts");
+                });
+
             modelBuilder.Entity("CRbooru.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -270,6 +285,21 @@ namespace CRbooru.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("PostTags", (string)null);
+                });
+
+            modelBuilder.Entity("CRbooru.Models.PoolPost", b =>
+                {
+                    b.HasOne("CRbooru.Models.Pool", null)
+                        .WithMany()
+                        .HasForeignKey("PoolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CRbooru.Models.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CRbooru.Models.Post", b =>
