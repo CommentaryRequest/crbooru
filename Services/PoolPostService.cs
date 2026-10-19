@@ -15,7 +15,6 @@ public class PoolPostService
 
     public async Task AddPoolPostAsync(int poolId, int postId)
     {
-        Console.WriteLine($"ADD POOL POST ASYNC (pool {poolId}, post {postId})");
         _context.PoolPosts.Add(new PoolPost{
             PoolId = poolId,
             PostId = postId
@@ -25,7 +24,6 @@ public class PoolPostService
 
     public async Task RemovePoolPostAsync(int poolId, int postId)
     {
-        Console.WriteLine($"REMOVE POOL POST ASYNC (pool {poolId}, post {postId})");
         await _context.PoolPosts
             .Where(p => p.PoolId == poolId && p.PostId == postId)
             .ExecuteDeleteAsync();
