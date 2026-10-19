@@ -1,19 +1,15 @@
 @{
     ViewData["Title"] = "New Pool";
+
+    var formModel = new PoolFormModel {
+        Name = "",
+        Description = "",
+        PostIds = ""
+    };
 }
 
 <h1>New Pool</h1>
 <form asp-controller="Pool" asp-action="Create" method="post">
-    <label for="name">Name</label>
-    <input type="text" name="name">
-    <p></p>
-    <label for="description">Description</label>
-    <br>
-    <textarea name="description" cols="50" rows="10"></textarea>
-    <p></p>
-    <label for="postids">Posts</label>
-    <br>
-    <textarea name="postids" cols="50" rows="10"></textarea>
-    <p></p>
+    <partial name="_PoolFields" model="formModel">
     <input type="submit" value="Submit">
 </form>
