@@ -51,8 +51,13 @@ public class PoolService
 
     public async Task<List<Post>> GetPostsAsync(Pool pool)
     {
-        return await _posts.Query()
+        var postsById = await _posts.Query()
             .Where(p => pool.PostIds.Contains(p.Id))
-            .ToListAsync();
+            .ToDictionaryAsync(p => p.Id);
+
+        return pool.PostIds
+            .Where(postsById.ContainsKey)
+            .Select(id => postsById[id])
+            .ToList();
     }
 }
