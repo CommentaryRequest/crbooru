@@ -50,6 +50,9 @@ public class PoolService
 
         _context.Pools.Add(pool);
         await _context.SaveChangesAsync();
+        foreach (var postId in pool.PostIds) {
+            await _poolPosts.AddPoolPostAsync(pool.Id, postId);
+        }
         return pool;
     }
 
