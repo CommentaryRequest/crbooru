@@ -24,7 +24,7 @@ public static class EssentialTagStringBuilder
         var copyrightTags = namesByCategory(tags, TagCategory.Copyright);
         var characterTags = namesByCategory(tags, TagCategory.Character);
 
-        if (artistTags.Length == 0 && copyrightTags.Length == 0 && artistTags.Length == 0) {
+        if (artistTags.Length == 0 && copyrightTags.Length == 0 && characterTags.Length == 0) {
             return $"#{postId}";
         }
         
@@ -43,6 +43,6 @@ public static class EssentialTagStringBuilder
             sb.Append($"drawn by {shortTagList(artistTags)}");
         }
 
-        return sb.ToString();
+        return sb.ToString().Trim();
     }
 }
