@@ -26,17 +26,7 @@ public enum MetaTagType
     Pool
 }
 
-public class MetaTag
-{
-    public MetaTagType Type { get; set; }
-    public string Value { get; set; }
-
-    public MetaTag(MetaTagType type, string value)
-    {
-        Type = type;
-        Value = value;
-    }
-}
+public record MetaTag(MetaTagType Type, string Value);
 
 public static class TagParser
 {
