@@ -10,7 +10,8 @@ public static class PostListParser
 
         return list
             .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(int.Parse)
+            .Select(s => int.TryParse(s, out var id) ? (int?)id : null)
+            .OfType<int>()
             .ToHashSet();
     }
 }
