@@ -7,7 +7,7 @@ public static class PostVersionTraverser
     public static PostRating? GetLastRating(List<PostVersion> versions, int number)
     {
         if (number < 2) {
-            return versions[^1].NewRating;
+            return versions[0].NewRating;
         }
 
         for (int i = number - 2; i >= 0; i--) {
