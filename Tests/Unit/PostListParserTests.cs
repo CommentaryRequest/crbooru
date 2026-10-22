@@ -1,6 +1,6 @@
 using CRbooru.Logical;
 
-namespace CRbooru.Tests;
+namespace CRbooru.Tests.Unit;
 
 public class PostListParserTests
 {
