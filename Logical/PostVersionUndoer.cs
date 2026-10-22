@@ -6,12 +6,12 @@ public static class PostVersionUndoer
 {
     public static PostVersion Undo(PostVersion version, List<PostVersion> postVersions)
     {
-        PostVersion newVersion = new(version);
-
         // 1st version cannot be undone.
         if (version.Number == 1) {
             throw new ArgumentException("1st version of a post cannot be undone");
         }
+
+        PostVersion newVersion = new(version);
 
         // Swap added and removed tags.
         string[] addedTags = newVersion.RemovedTags ?? [];

@@ -44,6 +44,7 @@ public class PostVersion
         this.AddedTags = (string[]?)other.AddedTags?.Clone();
         this.RemovedTags = (string[]?)other.RemovedTags?.Clone();
         this.NewRating = other.NewRating;
+        this.NewSource = other.NewSource;
         this.SourceChanged = other.SourceChanged;
         this.NewParent = other.NewParent;
         this.ParentChanged = other.ParentChanged;
