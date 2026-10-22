@@ -30,6 +30,11 @@ public class PostVersion
         ParentChanged = parentChanged;
     }
 
+    public PostVersion(int postId, int userId, int number, string[]? addedTags, string[]? removedTags, PostRating? newRating, string? newSource, bool sourceChanged, int? newParent, bool parentChanged) : this(postId, userId, addedTags, removedTags, newRating, newSource, sourceChanged, newParent, parentChanged)
+    {
+        Number = number;
+    }
+
     public PostVersion(PostVersion other)
     {
         this.PostId = other.PostId;
