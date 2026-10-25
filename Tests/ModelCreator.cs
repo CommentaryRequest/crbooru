@@ -2,7 +2,7 @@ using CRbooru.Models;
 
 namespace CRbooru.Tests;
 
-public static class TestUtils
+public static class ModelCreator
 {
     public static User CreateUser(string name, UserRole role)
     {

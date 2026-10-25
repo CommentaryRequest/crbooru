@@ -16,8 +16,8 @@ public class PostVersionUndoerTests
 
     private List<PostVersion> createVersions(PostRating currentRating, string? currentSource, int? currentParent)
     {
-        var user = TestUtils.CreateUser("test", UserRole.Member);
-        var post = TestUtils.CreatePost(user, currentRating, currentSource, currentParent);
+        var user = ModelCreator.CreateUser("test", UserRole.Member);
+        var post = ModelCreator.CreatePost(user, currentRating, currentSource, currentParent);
 
         var versions = Versions.Select(p => new PostVersion(p)).ToList();
         for (int i = 0; i < versions.Count; i++) {
