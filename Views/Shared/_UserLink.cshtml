@@ -1,2 +1,2 @@
 @model User
-<a asp-controller="User" asp-action="Show" asp-route-id="@Model.Id" class="user-@(Model.Role.ToString().ToLower())">@Model.Name</a>
+<a asp-controller="User" asp-action="Show" asp-route-id="@Model.Id" class="user-@(Model.Role.ToString().ToLowerInvariant())">@Model.Name</a>

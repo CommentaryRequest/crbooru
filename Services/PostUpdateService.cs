@@ -76,8 +76,8 @@ public class PostUpdateService
     public async Task<TagDiff> UpdateTags(Post post, IEnumerable<string> addedTagNames, IEnumerable<string> removedTagNames)
     {
         var postTagNames = post.Tags.Select(tag => tag.Name);
-        addedTagNames = addedTagNames.Select(tag => tag.ToLower()).Except(postTagNames);
-        removedTagNames = removedTagNames.Select(tag => tag.ToLower()).Where(tag => postTagNames.Contains(tag));
+        addedTagNames = addedTagNames.Select(tag => tag.ToLowerInvariant()).Except(postTagNames);
+        removedTagNames = removedTagNames.Select(tag => tag.ToLowerInvariant()).Where(tag => postTagNames.Contains(tag));
 
         var addedTags = await _tags.ResolveTags(addedTagNames);
         var removedTags = await _tags.ResolveTags(removedTagNames);
@@ -114,7 +114,7 @@ public class PostUpdateService
 
     public async Task<PostUpdateResult> UpdateTags(Post post, IEnumerable<string> tagList)
     {
-        tagList = tagList.Select(tag => tag.ToLower());
+        tagList = tagList.Select(tag => tag.ToLowerInvariant());
         var metaTagResult = applyMetaTags(post, tagList);
         tagList = tagList.Except(metaTagResult.ConsumedMetaTags);
 

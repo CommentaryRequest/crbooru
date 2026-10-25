@@ -16,7 +16,7 @@ public class TagService
 
     public Task<Tag?> ByName(string name)
     {
-        return _context.Tags.FirstOrDefaultAsync(t => name.ToLower() == t.Name);
+        return _context.Tags.FirstOrDefaultAsync(t => name.ToLowerInvariant() == t.Name);
     }
 
     public async Task<ICollection<Tag>> ResolveTags(IEnumerable<string> names, bool createNew = true)
