@@ -36,6 +36,9 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 options.UseSqlite(connection);
             });
 
+            services.AddSingleton(new StorageOptions("/"));
+
+            services.AddScoped<MediaAssetService>();
             services.AddScoped<UserService>();
         });
 

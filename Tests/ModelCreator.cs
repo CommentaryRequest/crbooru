@@ -12,10 +12,10 @@ public static class ModelCreator
         };
     }
 
-    public static MediaAsset CreateDummyMediaAsset()
+    public static MediaAsset CreateDummyMediaAsset(string md5 = "abcdefabcdefabcdefabcdefabcdefab")
     {
         return new MediaAsset(
-            "abcdefabcdefabcdefabcdefabcdefab",
+            md5,
             "abcdefabcdefabcdefabcdefabcdefab",
             "jpg",
             1024,
