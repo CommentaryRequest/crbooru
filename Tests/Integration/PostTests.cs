@@ -7,7 +7,7 @@ public class PostServiceTests
     : DatabaseLifetime,
       IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    public PostServiceTests(CustomWebApplicationFactory<Program> factory) : base(factory)
+    public PostTests(CustomWebApplicationFactory<Program> factory) : base(factory)
     {
     }
 
