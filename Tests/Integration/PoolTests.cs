@@ -2,9 +2,9 @@ using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Services;
 
-namespace CRbooru.Tests.Unit.Services;
+namespace CRbooru.Tests.Integration;
 
-public class PoolServiceTests
+public class PoolTests
     : DatabaseLifetime,
       IClassFixture<CustomWebApplicationFactory<Program>>
 {
@@ -208,5 +208,45 @@ public class PoolServiceTests
             PostIds = ""
         };
         await Assert.ThrowsAsync<ArgumentException>(async () => await pools.UpdateAsync(user, pool, updateFormModel));
+    }
+
+    [Fact]
+    public async Task GetPostPools_Works()
+    {
+        using var scope = CreateScope();
+        var db = GetService<CRbooruContext>(scope);
+        var pools = GetService<PoolService>(scope);
+        var users = GetService<UserService>(scope);
+        var poolPosts = GetService<PoolPostService>(scope);
+
+        var user = ModelCreator.CreateUser("NewUser", UserRole.Member);
+        await users.Add(user);
+
+        var posts = new List<Post> {};
+
+        for (var i = 0; i < 4; i++) {
+            var post = ModelCreator.CreatePost(user, PostRating.General, null, null);
+            db.Posts.Add(post);
+            posts.Add(post);
+        }
+        await db.SaveChangesAsync();
+
+        var formModel = new PoolFormModel {
+            Name = "new pool",
+            Description = "Lorem ipsum",
+            PostIds = "1 2 3"
+        };
+        var pool1 = await pools.CreateAsync(user, formModel);
+
+        formModel = new PoolFormModel {
+            Name = "another pool",
+            Description = "ipsum Lorem",
+            PostIds = "2 3 4"
+        };
+        var pool2 = await pools.CreateAsync(user, formModel);
+
+        Assert.Equal(new List<Pool> {pool1, pool2}, await poolPosts.GetPostPools(2));
+        Assert.Equal(new List<Pool> {pool1}, await poolPosts.GetPostPools(1));
+        Assert.Equal(new List<Pool> {pool2}, await poolPosts.GetPostPools(4));
     }
 }
