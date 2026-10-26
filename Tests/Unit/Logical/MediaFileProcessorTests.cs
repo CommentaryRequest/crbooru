@@ -10,11 +10,6 @@ public class MediaFileProcessorTests
     // https://commons.wikimedia.org/wiki/File:Sunflower_Public_Domain.jpg
     // https://commons.wikimedia.org/wiki/File:Apple-tree_blossoms_2017_G3.jpg
 
-    private static string getFixturePath(string filename)
-    {
-        return Path.Combine(AppContext.BaseDirectory, "Fixtures", filename);
-    }
-
     [Theory]
     [InlineData("image.jpg", "c194b6b065aecef7efdd118e61218755", "jpg")]
     [InlineData("image.png", "4a537a667671109b04b9938a7be5895c", "png")]
@@ -24,7 +19,7 @@ public class MediaFileProcessorTests
     {
         using var tempDir = new TemporaryDirectory();
 
-        var fixturePath = getFixturePath(input);
+        var fixturePath = FileFixture.GetFixturePath(input);
 
         using var stream = File.OpenRead(fixturePath);
         var imagesRoot = tempDir.GetPath("images");
@@ -45,7 +40,7 @@ public class MediaFileProcessorTests
     public void ProcessFile_UnknownExtension_Throws()
     {
         using var tempDir = new TemporaryDirectory();
-        var fixturePath = getFixturePath("image.jpg");
+        var fixturePath = FileFixture.GetFixturePath("image.jpg");
         var imagesRoot = tempDir.GetPath("images");
 
         var filePath = tempDir.GetPath("image.asd");
@@ -58,7 +53,7 @@ public class MediaFileProcessorTests
     public void ProcessFile_CorruptedFile_Throws()
     {
         using var tempDir = new TemporaryDirectory();
-        var fixturePath = getFixturePath("image_corrupted.jpg");
+        var fixturePath = FileFixture.GetFixturePath("image_corrupted.jpg");
         var imagesRoot = tempDir.GetPath("images");
 
         using var stream = File.OpenRead(fixturePath);
@@ -71,8 +66,8 @@ public class MediaFileProcessorTests
         using var tempDir = new TemporaryDirectory();
         var imagesRoot = tempDir.GetPath("images");
 
-        var imagePath1 = getFixturePath("image.jpg");
-        var imagePath2 = getFixturePath("image_metadata.jpg");
+        var imagePath1 = FileFixture.GetFixturePath("image.jpg");
+        var imagePath2 = FileFixture.GetFixturePath("image_metadata.jpg");
 
         using var stream1 = File.OpenRead(imagePath1);
         var asset1 = MediaFileProcessor.ProcessFile(stream1, imagesRoot);
@@ -90,8 +85,8 @@ public class MediaFileProcessorTests
         using var tempDir = new TemporaryDirectory();
         var imagesRoot = tempDir.GetPath("images");
 
-        var imagePath1 = getFixturePath("image.jpg");
-        var imagePath2 = getFixturePath("image2.jpg");
+        var imagePath1 = FileFixture.GetFixturePath("image.jpg");
+        var imagePath2 = FileFixture.GetFixturePath("image2.jpg");
 
         using var stream1 = File.OpenRead(imagePath1);
         var asset1 = MediaFileProcessor.ProcessFile(stream1, imagesRoot);
