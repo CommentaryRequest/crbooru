@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Time.Testing;
 using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Services;
@@ -123,9 +122,8 @@ public class PostTests
 
         // Offset the 2nd post's initial version back by like a year
         // so that it definitely doesn't merge
-        var fakeTimeProvider = new FakeTimeProvider(new DateTimeOffset(2025, 10, 26, 12, 0, 0, TimeSpan.Zero));
         var postVersion = postVersions.List(post2.Id, null);
-        postVersion[0].CreatedAt = fakeTimeProvider.GetUtcNow().UtcDateTime;
+        postVersion[0].CreatedAt = new DateTime(2025, 10, 26, 12, 0, 0);
         await db.SaveChangesAsync();
 
         var editForm = new PostFormModel {
