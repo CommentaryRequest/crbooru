@@ -8,7 +8,7 @@ public class PoolTests
     : DatabaseLifetime,
       IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    public PoolServiceTests(CustomWebApplicationFactory<Program> factory) : base(factory)
+    public PoolTests(CustomWebApplicationFactory<Program> factory) : base(factory)
     {
     }
 
