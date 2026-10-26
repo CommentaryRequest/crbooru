@@ -36,6 +36,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             });
         });
 
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment("Testing");
     }
 }
