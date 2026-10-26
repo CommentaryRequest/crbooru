@@ -1,7 +1,7 @@
 @model Post
 @using CRbooru.Logical
 <div class="post-thumbnail @if (Model.Children.Count() != 0) {<text>post-parent</text>} @if (Model.Parent != null) {<text>post-child</text>}">
-    <a asp-controller="Post" asp-action="Show" asp-route-id="@Model.Id" title="@(TagParser.BuildTagString(Model.Tags))user:@Model.Uploader.Name rating:@Model.Rating.ToString().ToLower()[0] source:@Model.Source">
+    <a asp-controller="Post" asp-action="Show" asp-route-id="@Model.Id" title="@(TagParser.BuildTagString(Model.Tags))user:@Model.Uploader.Name rating:@Model.Rating.ToString().ToLowerInvariant()[0] source:@Model.Source">
         <partial name="_MediaAssetThumbnail" model="Model.MediaAsset" />
     </a>
 </div>

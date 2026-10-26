@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] | CRbooru</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="/styles/common.css">
-    <link rel="stylesheet" href="/styles/@(ViewData["Controller"].ToString().ToLower()).css">
+    <link rel="stylesheet" href="/styles/@(ViewData["Controller"].ToString().ToLowerInvariant()).css">
 </head>
 <body>
     <h1>CRbooru</h1>

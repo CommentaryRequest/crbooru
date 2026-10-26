@@ -21,7 +21,7 @@ public static class MediaFileProcessor
     public static MediaAsset ProcessFile(FileStream fileStream, string imagesRoot)
     {
         // Check if it's a supported file type
-        string extension = Path.GetExtension(fileStream.Name).ToLower()[1..];
+        string extension = Path.GetExtension(fileStream.Name).ToLowerInvariant()[1..];
         if (!SUPPORTED_FILE_TYPES.Contains(extension)) {
             throw new InvalidOperationException("Unsupported file type");
         }

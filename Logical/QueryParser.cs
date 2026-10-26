@@ -34,7 +34,7 @@ public static class QueryParser
 {
     private static SearchTerm? parseToken(string token)
     {
-        token = token.ToLower();
+        token = token.ToLowerInvariant();
 
         bool isNegated = token.StartsWith('-');
         if (isNegated) {
@@ -111,7 +111,7 @@ public static class QueryParser
                 return null;
             }
             if (int.TryParse(values[0], out int min) && int.TryParse(values[1], out int max)) {
-                return new(min, max);
+                return new(Math.Min(min, max), Math.Max(min, max));
             }
             return null;
         }

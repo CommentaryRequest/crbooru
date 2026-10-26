@@ -30,6 +30,11 @@ public class PostVersion
         ParentChanged = parentChanged;
     }
 
+    public PostVersion(int postId, int userId, int number, string[]? addedTags, string[]? removedTags, PostRating? newRating, string? newSource, bool sourceChanged, int? newParent, bool parentChanged) : this(postId, userId, addedTags, removedTags, newRating, newSource, sourceChanged, newParent, parentChanged)
+    {
+        Number = number;
+    }
+
     public PostVersion(PostVersion other)
     {
         this.PostId = other.PostId;
@@ -39,6 +44,7 @@ public class PostVersion
         this.AddedTags = (string[]?)other.AddedTags?.Clone();
         this.RemovedTags = (string[]?)other.RemovedTags?.Clone();
         this.NewRating = other.NewRating;
+        this.NewSource = other.NewSource;
         this.SourceChanged = other.SourceChanged;
         this.NewParent = other.NewParent;
         this.ParentChanged = other.ParentChanged;

@@ -44,7 +44,7 @@
             }
             @if (version.NewRating != null) {
                 var isObsolete = version.Post.Rating != version.NewRating;
-                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">rating:@version.NewRating.ToString().ToLower()[0]</span>
+                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">rating:@version.NewRating.ToString().ToLowerInvariant()[0]</span>
             }
             @if (version.SourceChanged) {
                 var isObsolete = version.Post.Source != version.NewSource;
