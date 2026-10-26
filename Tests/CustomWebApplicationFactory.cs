@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Data.Sqlite;
 using CRbooru.Data;
+using CRbooru.Services;
 
 namespace CRbooru.Tests;
 
@@ -34,6 +35,8 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 var connection = container.GetRequiredService<DbConnection>();
                 options.UseSqlite(connection);
             });
+
+            services.AddScoped<UserService>();
         });
 
         builder.UseEnvironment("Testing");

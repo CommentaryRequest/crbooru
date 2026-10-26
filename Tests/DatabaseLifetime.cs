@@ -1,6 +1,5 @@
 using CRbooru;
 using CRbooru.Data;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Tests;
@@ -20,4 +19,6 @@ public abstract class DatabaseLifetime(CustomWebApplicationFactory<Program> fact
     }
 
     public Task DisposeAsync() => Task.CompletedTask;
+
+    protected T GetService<T>(IServiceScope scope) where T : notnull => scope.ServiceProvider.GetRequiredService<T>();
 }
