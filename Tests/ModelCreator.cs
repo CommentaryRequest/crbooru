@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using CRbooru.Models;
 
 namespace CRbooru.Tests;
@@ -12,8 +13,12 @@ public static class ModelCreator
         };
     }
 
-    public static MediaAsset CreateDummyMediaAsset(string md5 = "abcdefabcdefabcdefabcdefabcdefab")
+    public static MediaAsset CreateDummyMediaAsset(string md5 = "")
     {
+        if (string.IsNullOrWhiteSpace(md5)) {
+            md5 = Convert.ToHexString(MD5.HashData(RandomNumberGenerator.GetBytes(32))).ToLowerInvariant();
+        }
+
         return new MediaAsset(
             md5,
             "abcdefabcdefabcdefabcdefabcdefab",

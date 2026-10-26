@@ -82,7 +82,7 @@ public class MediaAssetServiceTests
         var service = GetService<MediaAssetService>(scope);
         var db = GetService<CRbooruContext>(scope);
 
-        var asset = ModelCreator.CreateDummyMediaAsset("44444444444444444444444444444444"); // unfair dice roll
+        var asset = ModelCreator.CreateDummyMediaAsset("44444444444444444444444444444444");
         db.MediaAssets.Add(asset);
         await db.SaveChangesAsync();
 

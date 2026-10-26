@@ -99,7 +99,7 @@ public class PostServiceTests
         var asset1 = ModelCreator.CreateDummyMediaAsset();
         await mediaAssets.AddAsync(asset1);
 
-        var asset2 = ModelCreator.CreateDummyMediaAsset("abababababababababababababababab");
+        var asset2 = ModelCreator.CreateDummyMediaAsset();
         await mediaAssets.AddAsync(asset2);
 
         var createForm = new PostFormModel {
