@@ -32,21 +32,6 @@ builder.Services.AddAuthentication("CRbooruSession")
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope()) {
-    var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
-    var postVersions = scope.ServiceProvider.GetRequiredService<PostVersionService>();
-    if (!db.PostVersions.Any()) {
-        var posts = await db.Posts
-            .Include(p => p.Tags.OrderBy(tag => tag.Name))
-            .Include(p => p.Uploader)
-            .ToListAsync();
-        foreach (var post in posts) {
-            await postVersions.Add(new PostVersion(post.Id, post.Uploader.Id, post.Tags.Select(tag => tag.Name).ToArray(), null, post.Rating, post.Source, true, null, true));
-        }
-        await db.SaveChangesAsync();
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
