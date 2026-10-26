@@ -11,7 +11,6 @@ public class PostTests
 {
     public PostTests(CustomWebApplicationFactory<Program> factory) : base(factory)
     {
-        _output = output;
     }
 
     [Fact]
@@ -130,5 +129,7 @@ public class PostTests
 
         Assert.Equal(PostRating.Questionable, post2.Rating);
         Assert.Equal("original \n1girl solo \n", TagParser.BuildTagString(post2.Tags));
+        Assert.Null(post2.ParentId);
+        Assert.Equal("https://example.com", post2.Source);
     }
 }
