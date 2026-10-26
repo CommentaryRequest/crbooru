@@ -219,6 +219,13 @@ public class PostService
         if (mediaAsset == null) {
             throw new ArgumentException($"Media asset #{form.MediaAssetId} not found");
         }
+        
+        if (form.Parent != null) {
+            var parentPost = await Get((int)form.Parent);
+            if (parentPost == null) {
+                throw new ArgumentException($"Parent post #{form.Parent} not found");
+            }
+        }
 
         string[] tags = TagParser.SplitTags(form.TagString);
 
