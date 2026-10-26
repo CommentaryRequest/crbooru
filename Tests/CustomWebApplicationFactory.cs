@@ -40,6 +40,11 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 
             services.AddScoped<MediaAssetService>();
             services.AddScoped<UserService>();
+            services.AddScoped<PostService>();
+            services.AddScoped<PostVersionService>();
+            services.AddScoped<PostUpdateService>();
+            services.AddScoped<PoolService>();
+            services.AddScoped<PoolUpdateService>();
         });
 
         builder.UseEnvironment("Testing");
