@@ -20,6 +20,13 @@ public class PoolService
         _poolPosts = poolPosts;
     }
 
+    private static void validatePoolName(PoolFormModel form)
+    {
+        if (string.IsNullOrWhiteSpace(form.Name)) {
+            throw new ArgumentException("Pool name cannot be empty");
+        }
+    }
+
     public async Task<List<Pool>> ListAsync()
     {
         return await _context.Pools.ToListAsync();
@@ -42,6 +49,8 @@ public class PoolService
 
     public async Task<Pool> CreateAsync(User creator, PoolFormModel form)
     {
+        validatePoolName(form);
+
         var pool = new Pool {
             Name = form.Name,
             Description = form.Description,
@@ -70,6 +79,8 @@ public class PoolService
 
     public async Task UpdateAsync(User updater, Pool pool, PoolFormModel form)
     {
+        validatePoolName(form);
+
         var postIds = await ValidatePostList(PostListParser.ParsePostList(form.PostIds));
         var removedPostIds = pool.PostIds.Except(postIds);
         var addedPostIds = postIds.Except(pool.PostIds).Except(removedPostIds);
