@@ -34,6 +34,12 @@ public class MediaAssetService
             .ToListAsync();
     }
 
+    public async Task AddAsync(MediaAsset asset)
+    {
+        _context.MediaAssets.Add(asset);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<MediaAsset> CreateFromFile(IFormFile file)
     {
         string tempPath = Path.GetTempFileName() + Path.GetExtension(file.FileName);
