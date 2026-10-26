@@ -100,9 +100,9 @@ public class UserServiceTests
         
         var dbUser = await service.GetCurrentUser(claimsPrincipal);
         Assert.NotNull(dbUser);
-        Assert.Equal(dbUser.Id, 1);
-        Assert.Equal(dbUser.Name, "NewUser");
-        Assert.Equal(dbUser.Role, UserRole.Member);
+        Assert.Equal(1, dbUser.Id);
+        Assert.Equal("NewUser", dbUser.Name);
+        Assert.Equal(UserRole.Member, dbUser.Role);
     }
 
     [Fact]
