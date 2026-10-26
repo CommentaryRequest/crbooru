@@ -1,14 +1,17 @@
 using CRbooru.Models;
 using CRbooru.Services;
+using CRbooru.Logical;
+using Xunit.Abstractions;
 
 namespace CRbooru.Tests.Unit.Services;
 
-public class PostServiceTests
+public class PostTests
     : DatabaseLifetime,
       IClassFixture<CustomWebApplicationFactory<Program>>
 {
     public PostTests(CustomWebApplicationFactory<Program> factory) : base(factory)
     {
+        _output = output;
     }
 
     [Fact]
@@ -85,7 +88,7 @@ public class PostServiceTests
     }
 
     [Fact]
-    public async Task EditAsync_Works()
+    public async Task EditAsync_AddTagsUpdateParentAndSource_Works()
     {
         using var scope = CreateScope();
         var posts = GetService<PostService>(scope);
@@ -119,10 +122,13 @@ public class PostServiceTests
 
         var editForm = new PostFormModel {
             Rating = PostRating.Questionable,
-            TagString = "copy:original 1girl solo",
-            Parent = null
+            TagString = "original 1girl solo",
+            Parent = null,
+            Source = "https://example.com"
         };
-
         await posts.EditAsync(user, post2, editForm);
+
+        Assert.Equal(PostRating.Questionable, post2.Rating);
+        Assert.Equal("original \n1girl solo \n", TagParser.BuildTagString(post2.Tags));
     }
 }
