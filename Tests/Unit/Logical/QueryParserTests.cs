@@ -1,6 +1,6 @@
 using CRbooru.Logical;
 
-namespace CRbooru.Tests.Unit;
+namespace CRbooru.Tests.Unit.Logical;
 
 public class QueryParserTests
 {

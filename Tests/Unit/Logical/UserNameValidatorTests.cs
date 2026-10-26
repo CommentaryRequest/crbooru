@@ -2,7 +2,7 @@ using System.Text;
 using CRbooru.Logical;
 using CRbooru.Models;
 
-namespace CRbooru.Tests.Unit;
+namespace CRbooru.Tests.Unit.Logical;
 
 public class UserNameValidatorTests
 {

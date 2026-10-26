@@ -1,9 +1,8 @@
 using System.Security.Claims;
-using CRbooru;
 using CRbooru.Models;
 using CRbooru.Services;
 
-namespace CRbooru.Tests.Unit;
+namespace CRbooru.Tests.Unit.Services;
 
 public class UserServiceTests
     : DatabaseLifetime,
