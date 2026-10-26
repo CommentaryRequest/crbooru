@@ -46,6 +46,23 @@ public class MediaAssetServiceTests
     }
 
     [Fact]
+    public async Task CreateFromFile_DuplicateFile_ReturnsExistingAsset()
+    {
+        using var tempDir = new TemporaryDirectory();
+        using var scope = CreateScope();
+        var db = GetService<CRbooruContext>(scope);
+
+        var storageOptions = new StorageOptions(tempDir.GetPath("images"));
+        var service = new MediaAssetService(db, storageOptions);
+
+        var formFile = createFormFile(FileFixture.GetFixturePath("image.jpg"));
+        var asset1 = await service.CreateFromFile(formFile);
+
+        var asset2 = await service.CreateFromFile(formFile);
+        Assert.Equal(asset1, asset2);
+    }
+
+    [Fact]
     public async Task Get_ValidId_ReturnsCorrectAsset()
     {
         using var scope = CreateScope();
