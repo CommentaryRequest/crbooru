@@ -1,7 +1,8 @@
+using Microsoft.Extensions.Time.Testing;
+using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Services;
 using CRbooru.Logical;
-using Xunit.Abstractions;
 
 namespace CRbooru.Tests.Unit.Services;
 
@@ -87,9 +88,10 @@ public class PostTests
     }
 
     [Fact]
-    public async Task EditAsync_AddTagsUpdateParentAndSource_Works()
+    public async Task EditAsync_AddTagsUpdateParentAndSource_UpdatePostAndCreatesVersion()
     {
         using var scope = CreateScope();
+        var db = GetService<CRbooruContext>(scope);
         var posts = GetService<PostService>(scope);
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
@@ -119,17 +121,39 @@ public class PostTests
         };
         var post2 = await posts.CreateAsync(user, createForm);
 
+        // Offset the 2nd post's initial version back by like a year
+        // so that it definitely doesn't merge
+        var fakeTimeProvider = new FakeTimeProvider(new DateTimeOffset(2025, 10, 26, 12, 0, 0, TimeSpan.Zero));
+        var postVersion = postVersions.List(post2.Id, null);
+        postVersion[0].CreatedAt = fakeTimeProvider.GetUtcNow().UtcDateTime;
+        await db.SaveChangesAsync();
+
         var editForm = new PostFormModel {
             Rating = PostRating.Questionable,
-            TagString = "original 1girl solo",
+            TagString = "touhou 1girl solo",
             Parent = null,
             Source = "https://example.com"
         };
         await posts.EditAsync(user, post2, editForm);
 
+        // check for post's new state
         Assert.Equal(PostRating.Questionable, post2.Rating);
-        Assert.Equal("original \n1girl solo \n", TagParser.BuildTagString(post2.Tags));
+        Assert.Equal("touhou \n1girl solo \n", TagParser.BuildTagString(post2.Tags));
         Assert.Null(post2.ParentId);
         Assert.Equal("https://example.com", post2.Source);
+
+        // check new post version
+        var newVersion = postVersions.List(post2.Id, null, true)[1];
+        Assert.NotNull(newVersion.AddedTags);
+        Assert.Equal(["touhou", "1girl", "solo"], newVersion.AddedTags);
+        Assert.NotNull(newVersion.RemovedTags);
+        Assert.Equal(["original"], newVersion.RemovedTags);
+        Assert.NotNull(newVersion.NewRating);
+        Assert.Equal(PostRating.Questionable, newVersion.NewRating);
+        Assert.True(newVersion.SourceChanged);
+        Assert.NotNull(newVersion.NewSource);
+        Assert.Equal("https://example.com", newVersion.NewSource);
+        Assert.True(newVersion.ParentChanged);
+        Assert.Null(newVersion.NewParent);
     }
 }
