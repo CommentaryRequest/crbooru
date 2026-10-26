@@ -8,12 +8,12 @@ namespace CRbooru.Services;
 public class MediaAssetService
 {
     private readonly CRbooruContext _context;
-    private readonly IWebHostEnvironment _webHostEnv;
+    private readonly StorageOptions _storageOptions;
 
-    public MediaAssetService(CRbooruContext context, IWebHostEnvironment webHostEnv)
+    public MediaAssetService(CRbooruContext context, StorageOptions storageOptions)
     {
         _context = context;
-        _webHostEnv = webHostEnv;
+        _storageOptions = storageOptions;
     }
 
     public ValueTask<MediaAsset?> Get(int id)
@@ -47,7 +47,7 @@ public class MediaAssetService
             if (assetByMd5 != null) {
                 return assetByMd5;
             }
-            var mediaAsset = MediaFileProcessor.ProcessFile(stream, Path.Combine(_webHostEnv.ContentRootPath, "Storage", "Images"));
+            var mediaAsset = MediaFileProcessor.ProcessFile(stream, _storageOptions.ImagesPath);
             _context.MediaAssets.Add(mediaAsset);
             await _context.SaveChangesAsync();
             return mediaAsset;

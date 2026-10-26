@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data Source=crbooru.db"));
 
+builder.Services.AddSingleton(new StorageOptions(Path.Combine(builder.Environment.ContentRootPath, "Storage", "Images")));
+
 // Model services
 builder.Services.AddScoped<MediaAssetService>();
 builder.Services.AddScoped<UserService>();
