@@ -11,18 +11,16 @@ public class PostService
 {
     private readonly CRbooruContext _context;
     private readonly MediaAssetService _mediaAssets;
-    private readonly UploadService _uploads;
     private readonly PostVersionService _versions;
     private readonly PostUpdateService _postUpdate;
     private readonly PoolUpdateService _poolUpdate;
 
     public const int DEFAULT_LIMIT = 20;
 
-    public PostService(CRbooruContext context, MediaAssetService mediaAssets, UploadService uploads, PostVersionService versions, PostUpdateService postUpdate, PoolUpdateService poolUpdate)
+    public PostService(CRbooruContext context, MediaAssetService mediaAssets, PostVersionService versions, PostUpdateService postUpdate, PoolUpdateService poolUpdate)
     {
         _context = context;
         _mediaAssets = mediaAssets;
-        _uploads = uploads;
         _versions = versions;
         _postUpdate = postUpdate;
         _poolUpdate = poolUpdate;
@@ -221,7 +219,6 @@ public class PostService
         if (mediaAsset == null) {
             throw new ArgumentException($"Media asset #{form.MediaAssetId} not found");
         }
-        var upload = await _uploads.Get(form.UploadId)!;
 
         string[] tags = TagParser.SplitTags(form.TagString);
 
