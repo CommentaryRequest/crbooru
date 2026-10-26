@@ -3,7 +3,7 @@ using CRbooru.Services;
 using CRbooru.Data;
 using CRbooru.Models;
 
-namespace CRbooru.Tests.Unit.Services;
+namespace CRbooru.Tests.Integration;
 
 public class MediaAssetServiceTests
     : DatabaseLifetime,
@@ -82,7 +82,7 @@ public class MediaAssetServiceTests
         var service = GetService<MediaAssetService>(scope);
         var db = GetService<CRbooruContext>(scope);
 
-        var asset = ModelCreator.CreateDummyMediaAsset("44444444444444444444444444444444");
+        var asset = ModelCreator.CreateDummyMediaAsset("44444444444444444444444444444444"); // chosen by unfair dice roll
         db.MediaAssets.Add(asset);
         await db.SaveChangesAsync();
 
