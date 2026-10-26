@@ -87,7 +87,7 @@ public class PostTests
     }
 
     [Fact]
-    public async Task EditAsync_AddTagsUpdateParentAndSource_UpdatePostAndCreatesVersion()
+    public async Task EditAsync_UpdateTagsParentAndSource_UpdatePostAndCreatesVersion()
     {
         using var scope = CreateScope();
         var db = GetService<CRbooruContext>(scope);
@@ -153,5 +153,62 @@ public class PostTests
         Assert.Equal("https://example.com", newVersion.NewSource);
         Assert.True(newVersion.ParentChanged);
         Assert.Null(newVersion.NewParent);
+    }
+
+    [Fact]
+    public async Task EditAsync_AddMetaTags_Works()
+    {
+        using var scope = CreateScope();
+        var db = GetService<CRbooruContext>(scope);
+        var posts = GetService<PostService>(scope);
+        var users = GetService<UserService>(scope);
+        var mediaAssets = GetService<MediaAssetService>(scope);
+        var postVersions = GetService<PostVersionService>(scope);
+        var pools = GetService<PoolService>(scope);
+        var poolPosts = GetService<PoolPostService>(scope);
+
+        var user = ModelCreator.CreateUser("NewUser", UserRole.Member);
+        await users.Add(user);
+
+        var poolFormModel = new PoolFormModel {
+            Name = "a",
+            Description = "",
+            PostIds = ""
+        };
+        var pool = await pools.CreateAsync(user, poolFormModel);
+
+        var asset1 = ModelCreator.CreateDummyMediaAsset();
+        await mediaAssets.AddAsync(asset1);
+
+        var asset2 = ModelCreator.CreateDummyMediaAsset();
+        await mediaAssets.AddAsync(asset2);
+
+        var createForm = new PostFormModel {
+            MediaAssetId = asset1.Id,
+            Rating = PostRating.General,
+            TagString = "copy:touhou"
+        };
+        var post1 = await posts.CreateAsync(user, createForm);
+
+        createForm = new PostFormModel {
+            MediaAssetId = asset2.Id,
+            Rating = PostRating.General,
+            TagString = "copy:original",
+            Parent = post1.Id
+        };
+        var post2 = await posts.CreateAsync(user, createForm);
+
+        var editForm = new PostFormModel {
+            Rating = PostRating.General,
+            TagString = "parent:none rating:e source:source123 pool:1"
+        };
+        await posts.EditAsync(user, post2, editForm);
+
+        var postPools = await poolPosts.GetPostPools(post2.Id);
+
+        Assert.Equal(null, post2.ParentId);
+        Assert.Equal(PostRating.Explicit, post2.Rating);
+        Assert.Equal("source123", post2.Source);
+        Assert.Equal(pool, postPools[0]);
     }
 }
