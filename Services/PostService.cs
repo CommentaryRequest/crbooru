@@ -29,6 +29,7 @@ public class PostService
     public IQueryable<Post> Query()
     {
         return _context.Posts
+            .AsSplitQuery()
             .Include(p => p.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.MediaAsset)
             .Include(p => p.Uploader)
