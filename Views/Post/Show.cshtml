@@ -109,7 +109,7 @@
 
         @if (User.Identity?.IsAuthenticated == true) {
         <div id="edit">
-            <a href="#edit" id="post-edit-link">Edit</a>
+            <a href="#edit" id="post-edit-link" data-shortcut="e">Edit</a>
             <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form" style="display: none">
                 <input type="hidden" name="postid" value="@Model.Post.Id">
                 <partial name="_PostFields" model="formModel" />

@@ -6,7 +6,7 @@
     <div id="post-list-sidebar">
         <h4>Search</h4>
         <form asp-controller="Post" asp-action="Index" method="get">
-            <input type="text" name="tags" placeholder="Search posts" value="@ViewData["Tags"]">
+            <input type="text" name="tags" value="@ViewData["Tags"]" data-shortcut="q">
             <input type="submit" value="Search">
         </form>
         <br>

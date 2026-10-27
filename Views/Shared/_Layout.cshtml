@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | CRbooru</title>
     <script type="importmap"></script>
+    <script src="/js/shortcuts.js"></script>
     <link rel="stylesheet" href="/styles/common.css">
     <link rel="stylesheet" href="/styles/@(ViewData["Controller"].ToString().ToLowerInvariant()).css">
 </head>
@@ -55,7 +56,7 @@
                 </text>
                 if (Model is PoolViewModel) {
                 <text>
-                | <a asp-controller="Pool" asp-action="ShowEdit" asp-route-id="@Model.Pool.Id">Edit</a>
+                | <a asp-controller="Pool" asp-action="ShowEdit" asp-route-id="@Model.Pool.Id" data-shortcut="e">Edit</a>
                 | <a asp-controller="PoolVersion" asp-action="Index" asp-route-poolid="@Model.Pool.Id">History</a>
                 </text>
                 } else {
