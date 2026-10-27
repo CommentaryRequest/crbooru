@@ -33,14 +33,14 @@ public class PoolUpdateService
         await _poolVersions.AddAsync(version, true);
     }
 
-    public async Task AppendAsync(User updater, Pool pool, int postId)
+    public async Task AppendAsync(Pool pool, int postId)
     {
         await _poolPosts.AddPoolPostAsync(pool.Id, postId);
         pool.PostIds.Add(postId);
         await _context.SaveChangesAsync();
     }
 
-    public async Task RemoveAsync(User updater, Pool pool, int postId)
+    public async Task RemoveAsync(Pool pool, int postId)
     {
         await _poolPosts.RemovePoolPostAsync(pool.Id, postId);
         pool.PostIds.Remove(postId);
@@ -52,7 +52,7 @@ public class PoolUpdateService
         if (update.ClearPools) {
             var pools = await _poolPosts.GetPostPools(postId);
             foreach (var pool in pools) {
-                await RemoveAsync(updater, pool, postId);
+                await RemoveAsync(pool, postId);
                 await createPoolVersion(updater, pool);
             }
             return;
@@ -63,7 +63,7 @@ public class PoolUpdateService
             if (pool == null) {
                 continue;
             }
-            await AppendAsync(updater, pool, postId);
+            await AppendAsync(pool, postId);
             await createPoolVersion(updater, pool);
         }
     }
