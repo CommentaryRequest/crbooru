@@ -68,6 +68,7 @@ public class PoolService
         var version = new PoolVersion {
             UpdaterId = creator.Id,
             PoolId = pool.Id,
+            Pool = pool,
             NewState = pool.PostIds,
             NewName = pool.Name,
             NewDescription = pool.Description,
