@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CRbooru.Data;
 using CRbooru.Models;
+using CRbooru.Logical;
 
 namespace CRbooru.Services;
 
@@ -56,6 +57,21 @@ public class PoolVersionService
             !version.DescriptionChanged &&
             version.NewState == pool.PostIds) {
             return;
+        }
+
+        var versions = List(pool.Id, null, true);
+        if (versions.Any()) {
+            var lastVersion = versions[^1];
+            if (lastVersion.UpdaterId == version.UpdaterId &&
+                DateTime.UtcNow - lastVersion.CreatedAt < TimeSpan.FromHours(1)) {
+                PoolVersion mergedVersion = PoolVersionMerger.Merge(lastVersion, version, versions);
+                lastVersion.NewState = mergedVersion.NewState;
+                lastVersion.NewName = mergedVersion.NewName;
+                lastVersion.NewDescription = mergedVersion.NewDescription;
+                lastVersion.DescriptionChanged = mergedVersion.DescriptionChanged;
+                await _context.SaveChangesAsync();
+                return;
+            }
         }
 
         _context.PoolVersions.Add(version);

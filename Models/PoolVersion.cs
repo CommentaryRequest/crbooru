@@ -12,4 +12,18 @@ public class PoolVersion
     public string? NewDescription { get; set; }
     public bool DescriptionChanged { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public PoolVersion()
+    {
+    }
+
+    public PoolVersion(PoolVersion other)
+    {
+        PoolId = other.PoolId;
+        UpdaterId = other.UpdaterId;
+        NewState = other.NewState;
+        NewName = other.NewName;
+        NewDescription = other.NewDescription;
+        DescriptionChanged = other.DescriptionChanged;
+    }
 }

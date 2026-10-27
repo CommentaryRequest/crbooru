@@ -60,7 +60,7 @@ public class PostVersionService
         }
 
         var versions = List(version.PostId, null, true);
-        if (versions.Count() > 0) {
+        if (versions.Any()) {
             var lastVersion = versions[^1];
             if (lastVersion.UserId == version.UserId && DateTime.UtcNow - lastVersion.CreatedAt < TimeSpan.FromHours(1)) {
                 PostVersion mergedVersion = PostVersionMerger.Merge(lastVersion, version, versions);
