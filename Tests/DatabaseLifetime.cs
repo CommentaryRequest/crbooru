@@ -15,7 +15,7 @@ public abstract class DatabaseLifetime(CustomWebApplicationFactory<Program> fact
         using var scope = CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
         await db.Database.EnsureDeletedAsync();
-        await db.Database.MigrateAsync();
+        await db.Database.EnsureCreatedAsync();
     }
 
     public Task DisposeAsync() => Task.CompletedTask;

@@ -14,7 +14,7 @@ public class CRbooruContext : DbContext
     {
         modelBuilder.Entity<User>()
             .Property(u => u.Name)
-            .HasColumnType("TEXT COLLATE NOCASE"); // TODO this is sqlite only
+            .HasColumnType("citext");
 
         modelBuilder.Entity<Post>()
             .HasMany(p => p.Tags)

@@ -8,7 +8,10 @@ using CRbooru.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<CRbooruContext>(options => options.UseSqlite("Data Source=crbooru.db"));
+
+// Configure database
+var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContext<CRbooruContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddSingleton(new StorageOptions(Path.Combine(builder.Environment.ContentRootPath, "Storage", "Images")));
 

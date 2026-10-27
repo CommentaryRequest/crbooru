@@ -486,3 +486,7 @@ crbooru.db*
 
 # Local image files
 Storage/Images/
+
+# Configuration containing database credentials
+appsettings.Production.json
+appsettings.Development.json
