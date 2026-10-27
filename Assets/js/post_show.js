@@ -2,9 +2,11 @@ const postEditLink = document.querySelector("#post-edit-link");
 const postEditForm = document.querySelector("#post-edit-form");
 const tagBox = document.querySelector("#tag-string");
 
-postEditLink.addEventListener("click", () => {
+postEditLink.addEventListener("click", () =>
+{
     postEditForm.style.display = "block";
-    setTimeout(() => {
+    setTimeout(() =>
+    {
         tagBox.focus();
         const textLength = tagBox.value.length;
         tagBox.setSelectionRange(textLength, textLength);
