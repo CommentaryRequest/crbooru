@@ -96,6 +96,42 @@ namespace CRbooru.Migrations
                     b.ToTable("PoolPosts");
                 });
 
+            modelBuilder.Entity("CRbooru.Models.PoolVersion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("DescriptionChanged")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("NewDescription")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NewName")
+                        .HasColumnType("TEXT");
+
+                    b.PrimitiveCollection<string>("NewState")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PoolId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UpdaterId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PoolId");
+
+                    b.HasIndex("UpdaterId");
+
+                    b.ToTable("PoolVersions");
+                });
+
             modelBuilder.Entity("CRbooru.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -299,6 +335,25 @@ namespace CRbooru.Migrations
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CRbooru.Models.PoolVersion", b =>
+                {
+                    b.HasOne("CRbooru.Models.Pool", "Pool")
+                        .WithMany()
+                        .HasForeignKey("PoolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CRbooru.Models.User", "Updater")
+                        .WithMany()
+                        .HasForeignKey("UpdaterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pool");
+
+                    b.Navigation("Updater");
                 });
 
             modelBuilder.Entity("CRbooru.Models.Post", b =>

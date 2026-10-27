@@ -56,6 +56,16 @@ public class CRbooruContext : DbContext
 
         modelBuilder.Entity<PoolPost>()
             .HasIndex(p => p.PostId);
+
+        modelBuilder.Entity<PoolVersion>()
+            .HasOne(v => v.Pool)
+            .WithMany()
+            .HasForeignKey(v => v.PoolId);
+
+        modelBuilder.Entity<PoolVersion>()
+            .HasOne(v => v.Updater)
+            .WithMany()
+            .HasForeignKey(v => v.UpdaterId);
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }
@@ -66,4 +76,5 @@ public class CRbooruContext : DbContext
     public DbSet<PostVersion> PostVersions { get; set; }
     public DbSet<Pool> Pools { get; set; }
     public DbSet<PoolPost> PoolPosts { get; set; }
+    public DbSet<PoolVersion> PoolVersions { get; set; }
 }

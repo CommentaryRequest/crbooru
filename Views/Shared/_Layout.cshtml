@@ -56,8 +56,18 @@
                 if (Model is PoolViewModel) {
                 <text>
                 | <a asp-controller="Pool" asp-action="ShowEdit" asp-route-id="@Model.Pool.Id">Edit</a>
+                | <a asp-controller="PoolVersion" asp-action="Index" asp-route-poolid="@Model.Pool.Id">History</a>
+                </text>
+                } else {
+                <text>
+                | <a asp-controller="PoolVersion" asp-action="Index">History</a>
                 </text>
                 }
+                break;
+            case "PoolVersion":
+                <text>
+                <a asp-controller="PoolVersion" asp-action="Index">History</a>
+                </text>
                 break;
         }
     }

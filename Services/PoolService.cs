@@ -11,13 +11,15 @@ public class PoolService
     private readonly PostService _posts;
     private readonly PoolUpdateService _poolUpdate;
     private readonly PoolPostService _poolPosts;
+    private readonly PoolVersionService _poolVersions;
 
-    public PoolService(CRbooruContext context, PostService posts, PoolUpdateService poolUpdate, PoolPostService poolPosts)
+    public PoolService(CRbooruContext context, PostService posts, PoolUpdateService poolUpdate, PoolPostService poolPosts, PoolVersionService poolVersions)
     {
         _context = context;
         _posts = posts;
         _poolUpdate = poolUpdate;
         _poolPosts = poolPosts;
+        _poolVersions = poolVersions;
     }
 
     private static void validatePoolName(PoolFormModel form)
@@ -62,6 +64,17 @@ public class PoolService
         foreach (var postId in pool.PostIds) {
             await _poolPosts.AddPoolPostAsync(pool.Id, postId);
         }
+
+        var version = new PoolVersion {
+            UpdaterId = creator.Id,
+            PoolId = pool.Id,
+            NewState = pool.PostIds,
+            NewName = pool.Name,
+            NewDescription = pool.Description,
+            DescriptionChanged = true
+        };
+        await _poolVersions.AddAsync(version);
+
         return pool;
     }
 
@@ -92,6 +105,18 @@ public class PoolService
         foreach (var postId in addedPostIds) {
             await _poolPosts.AddPoolPostAsync(pool.Id, postId);
         }
+
+        var descriptionChanged = pool.Description != form.Description;
+        var version = new PoolVersion {
+            UpdaterId = updater.Id,
+            PoolId = pool.Id,
+            Pool = pool,
+            NewState = pool.PostIds.SequenceEqual(postIds) ? null : postIds,
+            NewName = form.Name != pool.Name ? form.Name : null,
+            NewDescription = descriptionChanged ? form.Description : null,
+            DescriptionChanged = descriptionChanged
+        };
+        await _poolVersions.AddAsync(version);
 
         pool.Name = form.Name;
         pool.Description = form.Description;

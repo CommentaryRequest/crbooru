@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Pool Versions";
+}
+
+@if (Model.Pool != null) {
+<h1>Pool History: <a asp-controller="Pool" asp-action="Show" asp-route-id="@Model.Pool.Id">@Model.Pool.Name</a></h1>
+} else if (Model.User != null) {
+<h1>Pool History: <partial name="_UserLink" model="@Model.User" /></h1>
+} else {
+<h1>Pool History</h1>
+}
+
+<table class="striped">
+    <tr>
+        <th>Pool</th>
+        <th>Changes</th>
+        <th>User</th>
+        <th>Updated at</th>
+    </tr>
+    @foreach (var version in Model.Versions) {
+    <tr>
+        <td>
+            <a asp-controller="Pool" asp-action="Show" asp-route-id="@version.Pool.Id">@version.Pool.Name</a>
+        </td>
+        <td>
+            @if (version.NewState != null) {
+            <b>Posts:</b>
+                foreach (var post in version.NewState) {
+                <a asp-controller="Post" asp-action="Show" asp-route-id="@post">@post</a>
+                }
+            <br>
+            }
+            @if (version.NewName != null) {
+            <b>Name:</b> @version.NewName<br>
+            }
+            @if (version.DescriptionChanged) {
+            <b>Description:</b>
+                @if (string.IsNullOrWhiteSpace(version.NewDescription)) {
+                <i>None</i>
+                } else {
+                @version.NewDescription
+                }
+            }
+        </td>
+        <td>
+            <partial name="_UserLink" model="@version.Updater" />
+        </td>
+        <td>
+            @version.CreatedAt
+        </td>
+    </tr>
+    }
+</table>
