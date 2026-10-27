@@ -37,17 +37,17 @@ public class PostVersion
 
     public PostVersion(PostVersion other)
     {
-        this.PostId = other.PostId;
-        this.Post = other.Post;
-        this.UserId = other.UserId;
-        this.User = other.User;
-        this.AddedTags = (string[]?)other.AddedTags?.Clone();
-        this.RemovedTags = (string[]?)other.RemovedTags?.Clone();
-        this.NewRating = other.NewRating;
-        this.NewSource = other.NewSource;
-        this.SourceChanged = other.SourceChanged;
-        this.NewParent = other.NewParent;
-        this.ParentChanged = other.ParentChanged;
+        PostId = other.PostId;
+        Post = other.Post;
+        UserId = other.UserId;
+        User = other.User;
+        AddedTags = (string[]?)other.AddedTags?.Clone();
+        RemovedTags = (string[]?)other.RemovedTags?.Clone();
+        NewRating = other.NewRating;
+        NewSource = other.NewSource;
+        SourceChanged = other.SourceChanged;
+        NewParent = other.NewParent;
+        ParentChanged = other.ParentChanged;
     }
 
     public bool IsEmpty()
