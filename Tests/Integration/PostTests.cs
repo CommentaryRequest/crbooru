@@ -206,7 +206,7 @@ public class PostTests
 
         var postPools = await poolPosts.GetPostPools(post2.Id);
 
-        Assert.Equal(null, post2.ParentId);
+        Assert.Null(post2.ParentId);
         Assert.Equal(PostRating.Explicit, post2.Rating);
         Assert.Equal("source123", post2.Source);
         Assert.Equal(pool, postPools[0]);
