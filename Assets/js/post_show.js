@@ -4,5 +4,9 @@ const tagBox = document.querySelector("#tag-string");
 
 postEditLink.addEventListener("click", () => {
     postEditForm.style.display = "block";
-    setTimeout(() => {tagBox.focus();}, 10);
+    setTimeout(() => {
+        tagBox.focus();
+        const textLength = tagBox.value.length;
+        tagBox.setSelectionRange(textLength, textLength);
+    }, 10);
 });
