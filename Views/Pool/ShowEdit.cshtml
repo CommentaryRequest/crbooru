@@ -10,6 +10,6 @@
 
 <h1>Edit Pool</h1>
 <form asp-controller="Pool" asp-action="Edit" asp-route-id="@Model.Id" method="post">
-    <partial name="_PoolFields" model="formModel">
+    <partial name="_PoolFields" model="formModel" />
     <input type="submit" value="Submit">
 </form>
