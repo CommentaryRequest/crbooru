@@ -68,6 +68,12 @@
                 <li><a asp-controller="PostVersion" asp-action="Index" asp-route-postid="@Model.Post.Id">Tags</a></li>
             </ul>
         </div>
+        <div id="post-options">
+            <h3>Options</h3>
+            <ul>
+                <li><a href="@Model.Post.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Original)" download="@(Model.Post.MediaAsset.Md5).@Model.Post.MediaAsset.FileType">Download</a></li>
+            </ul>
+        </div>
     </div>
 
     <div id="post-image">
