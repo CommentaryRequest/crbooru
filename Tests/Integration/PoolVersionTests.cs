@@ -20,7 +20,6 @@ public class PoolVersionTests
         var pools = GetService<PoolService>(scope);
         var poolVersions = GetService<PoolVersionService>(scope);
         var users = GetService<UserService>(scope);
-        var posts = GetService<PostService>(scope);
 
         var user = ModelCreator.CreateUser("NewUser", UserRole.Member);
         await users.Add(user);
@@ -50,7 +49,6 @@ public class PoolVersionTests
         var pools = GetService<PoolService>(scope);
         var poolVersions = GetService<PoolVersionService>(scope);
         var users = GetService<UserService>(scope);
-        var posts = GetService<PostService>(scope);
 
         var user = ModelCreator.CreateUser("NewUser", UserRole.Member);
         await users.Add(user);
@@ -66,7 +64,7 @@ public class PoolVersionTests
         });
 
         var initialVersion = poolVersions.List(pool.Id, null)[0];
-        initialVersion.CreatedAt = new DateTime(2025, 10, 26, 12, 0, 0);;
+        initialVersion.CreatedAt = new DateTime(2025, 10, 26, 12, 0, 0);
         await db.SaveChangesAsync();
 
         await pools.UpdateAsync(user, pool, new PoolFormModel {
@@ -80,7 +78,7 @@ public class PoolVersionTests
         Assert.Null(newVersion.NewName);
         Assert.Null(newVersion.NewDescription);
         Assert.False(newVersion.DescriptionChanged);
-        Assert.Equal(new List<int> {}, newVersion.NewState);
+        Assert.Equal(new List<int>(), newVersion.NewState);
     }
 
     [Fact]
@@ -91,7 +89,6 @@ public class PoolVersionTests
         var pools = GetService<PoolService>(scope);
         var poolVersions = GetService<PoolVersionService>(scope);
         var users = GetService<UserService>(scope);
-        var posts = GetService<PostService>(scope);
 
         var user = ModelCreator.CreateUser("NewUser", UserRole.Member);
         await users.Add(user);
@@ -107,7 +104,7 @@ public class PoolVersionTests
         });
 
         var initialVersion = poolVersions.List(pool.Id, null)[0];
-        initialVersion.CreatedAt = new DateTime(2025, 10, 26, 12, 0, 0);;
+        initialVersion.CreatedAt = new DateTime(2025, 10, 26, 12, 0, 0);
         await db.SaveChangesAsync();
 
         await pools.UpdateAsync(user, pool, new PoolFormModel {
@@ -122,5 +119,56 @@ public class PoolVersionTests
         Assert.Equal("lorem", newVersion.NewDescription);
         Assert.True(newVersion.DescriptionChanged);
         Assert.Null(newVersion.NewState);
+    }
+
+    [Fact]
+    public async Task EditPost_PoolMetaTag_CreatesPoolVersion()
+    {
+        using var scope = CreateScope();
+        var db = GetService<CRbooruContext>(scope);
+        var pools = GetService<PoolService>(scope);
+        var poolVersions = GetService<PoolVersionService>(scope);
+        var users = GetService<UserService>(scope);
+        var posts = GetService<PostService>(scope);
+        
+        var user = ModelCreator.CreateUser("NewUser", UserRole.Member);
+        await users.Add(user);
+        
+        var post = ModelCreator.CreatePost(user, PostRating.General, null, null);
+        db.Posts.Add(post);
+        await db.SaveChangesAsync();
+
+        var pool = await pools.CreateAsync(user, new PoolFormModel {
+            Name = "new pool",
+            Description = "Lorem ipsum",
+            PostIds = ""
+        });
+        
+        var initialVersion = poolVersions.List(pool.Id, null)[0];
+        initialVersion.CreatedAt = new DateTime(2025, 10, 26, 12, 0, 0);
+        await db.SaveChangesAsync();
+
+        await posts.EditAsync(user, post, new PostFormModel {
+            Rating = PostRating.General,
+            TagString = $"pool:{pool.Id}"
+        });
+
+        var newVersion = poolVersions.List(pool.Id, null, true)[1];
+        newVersion.CreatedAt =  new DateTime(2025, 10, 27, 12, 0, 0);
+        Assert.Null(newVersion.NewName);
+        Assert.Null(newVersion.NewDescription);
+        Assert.NotNull(newVersion.NewState);
+        Assert.True(newVersion.NewState.SequenceEqual([1]));
+        
+        await posts.EditAsync(user, post, new PostFormModel {
+            Rating = PostRating.General,
+            TagString = $"pool:none"
+        });
+
+        newVersion = poolVersions.List(pool.Id, null, true)[2];
+        Assert.Null(newVersion.NewName);
+        Assert.Null(newVersion.NewDescription);
+        Assert.NotNull(newVersion.NewState);
+        Assert.Empty(newVersion.NewState);
     }
 }

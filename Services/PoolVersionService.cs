@@ -48,10 +48,13 @@ public class PoolVersionService
         return query.ToList();
     }
 
-    public async Task AddAsync(PoolVersion version)
+    public async Task AddAsync(PoolVersion version, bool bypassValidation = false)
     {
         var pool = version.Pool;
-        if (version.NewName == null && !version.DescriptionChanged && version.NewState == pool.PostIds) {
+        if (!bypassValidation &&
+            version.NewName == null &&
+            !version.DescriptionChanged &&
+            version.NewState == pool.PostIds) {
             return;
         }
 

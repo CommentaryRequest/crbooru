@@ -9,11 +9,28 @@ public class PoolUpdateService
 {
     private readonly CRbooruContext _context;
     private readonly PoolPostService _poolPosts;
+    private readonly PoolVersionService _poolVersions;
 
-    public PoolUpdateService(CRbooruContext context, PoolPostService poolPosts)
+    public PoolUpdateService(CRbooruContext context, PoolPostService poolPosts, PoolVersionService poolVersions)
     {
         _context = context;
         _poolPosts = poolPosts;
+        _poolVersions = poolVersions;
+    }
+    
+    private async Task createPoolVersion(User updater, Pool pool)
+    {
+        var version = new PoolVersion {
+            UpdaterId = updater.Id,
+            Updater = updater,
+            PoolId = pool.Id,
+            Pool = pool,
+            NewState = pool.PostIds,
+            NewName = null,
+            NewDescription = null,
+            DescriptionChanged = false
+        };
+        await _poolVersions.AddAsync(version, true);
     }
 
     public async Task AppendAsync(User updater, Pool pool, int postId)
@@ -36,6 +53,7 @@ public class PoolUpdateService
             var pools = await _poolPosts.GetPostPools(postId);
             foreach (var pool in pools) {
                 await RemoveAsync(updater, pool, postId);
+                await createPoolVersion(updater, pool);
             }
             return;
         }
@@ -46,6 +64,7 @@ public class PoolUpdateService
                 continue;
             }
             await AppendAsync(updater, pool, postId);
+            await createPoolVersion(updater, pool);
         }
     }
 }
