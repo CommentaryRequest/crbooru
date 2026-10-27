@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Logging;
 using Microsoft.Data.Sqlite;
 using CRbooru.Data;
 using CRbooru.Services;
@@ -25,7 +24,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 services.Remove(dbConnectionDescriptor);
             }
 
-            services.AddSingleton<DbConnection>(container => {
+            services.AddSingleton<DbConnection>(_ => {
                 var connection = new SqliteConnection("Data Source=:memory:");
                 connection.Open();
                 return connection;
