@@ -14,13 +14,15 @@ public class UserController : Controller
     private readonly UserService _service;
     private readonly PostService _posts;
     private readonly PostVersionService _postVersions;
+    private readonly PoolVersionService _poolVersions;
     private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserController(UserService service, PostService posts, PostVersionService postVersions, IPasswordHasher<User> passwordHasher)
+    public UserController(UserService service, PostService posts, PostVersionService postVersions, PoolVersionService poolVersions, IPasswordHasher<User> passwordHasher)
     {
         _service = service;
         _posts = posts;
         _postVersions = postVersions;
+        _poolVersions = poolVersions;
         _passwordHasher = passwordHasher;
     }
 
@@ -38,11 +40,16 @@ public class UserController : Controller
             return NotFound();
         }
 
-        ViewData["PostCount"] = _posts.ByUser(id).Count();
-        ViewData["PostChangeCount"] = _postVersions.Query(null, id).Count();
-        ViewData["RecentPosts"] = _posts.ByUser(id).OrderByDescending(p => p.Id).Take(6).ToList();
+        var model = new UserViewModel {
+            User = user,
+            PostCount = _posts.ByUser(id).Count(),
+            PostChangeCount = _postVersions.Query(null, id).Count(),
+            PoolChangeCount = _poolVersions.Query(null, id).Count(),
+            RecentPosts = _posts.ByUser(id).OrderByDescending(p => p.Id).Take(6).ToList()
+        };
 
-        return View("Show", user);
+        // Specyfing view name explicitly for Profile endpoint
+        return View("Show", model);
     }
 
     [HttpGet("profile")]

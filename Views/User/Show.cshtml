@@ -1,35 +1,40 @@
+@model UserViewModel
 @{
-    ViewData["Title"] = $"@{Model.Name}";
+    ViewData["Title"] = $"@{Model.User.Name}";
 }
 
-<h1><partial name="_UserLink" model="Model" /></h1>
+<h1><partial name="_UserLink" model="Model.User" /></h1>
 <h3>Statistics</h3>
 <table>
     <tr>
         <td><b>ID</b></td>
-        <td>@Model.Id</td>
+        <td>@Model.User.Id</td>
     </tr>
     <tr>
         <td><b>Join Date</b></td>
-        <td>@Model.CreatedAt</td>
+        <td>@Model.User.CreatedAt</td>
     </tr>
     <tr>
         <td><b>Role</b></td>
-        <td>@Model.Role</td>
+        <td>@Model.User.Role</td>
     </tr>
     <tr>
         <td><b>Posts</b></td>
-        <td><a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.Name">@ViewData["PostCount"]</a></td>
+        <td><a asp-controller="Post" asp-action="Index" asp-route-tags="user:@Model.User.Name">@Model.PostCount</a></td>
     </tr>
     <tr>
         <td><b>Post Changes</b></td>
-        <td><a asp-controller="PostVersion" asp-action="Index" asp-route-userid="@Model.Id">@ViewData["PostChangeCount"]</a></td>
+        <td><a asp-controller="PostVersion" asp-action="Index" asp-route-userid="@Model.User.Id">@Model.PostChangeCount</a></td>
+    </tr>
+    <tr>
+        <td><b>Pool Changes</b></td>
+        <td><a asp-controller="PoolVersion" asp-action="Index" asp-route-userid="@Model.User.Id">@Model.PoolChangeCount</a></td>
     </tr>
 </table>
-@if (((List<Post>)ViewData["RecentPosts"]).Count != 0) {
+@if (Model.RecentPosts.Count != 0) {
     <h2>Recent Posts:</h2>
     <div class="post-list">
-    @foreach (var post in (List<Post>)ViewData["RecentPosts"]) {
+    @foreach (var post in Model.RecentPosts) {
     <partial name="_PostThumbnail" model="post" />
     }
     </div>
