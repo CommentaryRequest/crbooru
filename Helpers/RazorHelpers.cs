@@ -5,7 +5,7 @@ namespace CRbooru.Helpers;
 
 public static class RazorHelpers
 {
-    public static string MediaAssetSize(this IHtmlHelper html, MediaAsset asset)
+    public static string MediaAssetSize(this IHtmlHelper _, MediaAsset asset)
     {
         string[] suffixes = { "Bytes", "KB", "MB", "GB", "TB" };
         int counter = 0;
@@ -17,6 +17,6 @@ public static class RazorHelpers
             counter++;
         }
 
-        return $"{asset.Width}x{asset.Height} {number:n2} {suffixes[counter]}";
+        return $"{asset.Width}x{asset.Height} {number:n2} {suffixes[counter]} .{asset.FileType}";
     }
 }
