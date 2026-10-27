@@ -1,3 +1,4 @@
+using CRbooru.Models;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 
@@ -18,12 +19,13 @@ public class PostVersionController : Controller
     public IActionResult Index(int? postId, int? userId)
     {
         var postVersions = _service.List(postId, userId);
-        ViewData["PostId"] = postId;
-        ViewData["UserId"] = userId;
-        if (userId != null) {
-            ViewData["User"] = postVersions[0].User;
-        }
-        return View(postVersions);
+
+        var model = new PostVersionListViewModel {
+            Versions = postVersions,
+            PostId = postId,
+            User = userId == null ? null : postVersions[0].User
+        };
+        return View(model);
     }
 
     [Route("{id:int}/undo")]

@@ -1,11 +1,12 @@
+@model PostVersionListViewModel
 @{
     ViewData["Title"] = "Post History";
 }
 
-@if (ViewData["PostId"] != null) {
-<h1>Post History: <a asp-controller="Post" asp-action="Show" asp-route-id="@ViewData["PostId"]">post #@ViewData["PostId"]</a></h1>
-} else if (ViewData["UserId"] != null) {
-<h1>Post History: <partial name="_UserLink" model="@ViewData["User"]" /></h1>
+@if (Model.PostId != null) {
+<h1>Post History: <a asp-controller="Post" asp-action="Show" asp-route-id="@Model.PostId">post #@Model.PostId</a></h1>
+} else if (Model.User != null) {
+<h1>Post History: <partial name="_UserLink" model="@Model.User" /></h1>
 } else {
 <h1>Post History</h1>
 }
@@ -19,8 +20,8 @@
         <th>Updated at</th>
         <th>Actions</th>
     </tr>
-    @for (var i = 0; i < Model.Count; i++) {
-    var version = Model[i];
+    @for (var i = 0; i < Model.Versions.Count; i++) {
+    var version = Model.Versions[i];
     var tags = (IEnumerable<Tag>)version.Post.Tags;
     <tr>
         <td>
