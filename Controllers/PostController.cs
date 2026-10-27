@@ -53,12 +53,15 @@ public class PostController : Controller
             .Take(20)
             .Select(x => x.Tag);
 
-        ViewData["Tags"] = tags;
-        ViewData["Page"] = page;
-        ViewData["TotalPages"] = totalPages;
-        ViewData["RelatedTags"] = relatedTags;
-
-        return View(posts);
+        var model = new PostListViewModel {
+            Posts = posts,
+            SearchQuery = tags,
+            RelatedTags = relatedTags,
+            Page = page,
+            TotalPages = totalPages
+        };
+        
+        return View(model);
     }
 
     [HttpGet("{id:int}")]
