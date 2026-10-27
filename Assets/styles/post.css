@@ -46,21 +46,6 @@
     max-height: 180px;
 }
 
-.post-parent img {
-    border: 2px solid lime;
-}
-
-.post-child img {
-    border: 2px solid orange;
-}
-
-.post-parent.post-child img {
-    border-top: 2px solid lime;
-    border-left: 2px solid lime;
-    border-right: 2px solid orange;
-    border-bottom: 2px solid orange;
-}
-
 .thumbnail-row div {
     display: inline-block;
 }
