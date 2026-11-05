@@ -13,7 +13,8 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<CRbooruContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddSingleton(new StorageOptions(Path.Combine(builder.Environment.ContentRootPath, "Storage", "Images")));
+var imagesRoot = Path.Combine(builder.Environment.ContentRootPath, "Storage", "Images");
+builder.Services.AddSingleton(new StorageOptions(imagesRoot));
 
 // Model services
 builder.Services.AddScoped<MediaAssetService>();
@@ -58,10 +59,9 @@ app.UseStaticFiles(new StaticFileOptions {
     RequestPath = ""
 });
 
+Directory.CreateDirectory(imagesRoot);
 app.UseStaticFiles(new StaticFileOptions {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.ContentRootPath, "Storage", "Images")
-    ),
+    FileProvider = new PhysicalFileProvider(imagesRoot),
     RequestPath = "/images"
 });
 
