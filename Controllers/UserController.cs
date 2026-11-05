@@ -81,6 +81,8 @@ public class UserController : Controller
             return RedirectToAction("Index", "Post");
         }
 
+        model.Username = model.Username.Trim();
+
         // Does the user exist?
         var user = await _service.ByName(model.Username);
         if (user == null) {
@@ -143,6 +145,8 @@ public class UserController : Controller
     [HttpPost("signup")]
     public async Task<IActionResult> Signup(SignupModel model)
     {
+        model.Username = model.Username.Trim();
+        
         // Is the username taken?
         if (await _service.ByName(model.Username) != null) {
             Response.StatusCode = 400;
