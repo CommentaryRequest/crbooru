@@ -48,7 +48,7 @@ public class UserController : Controller
             RecentPosts = _posts.ByUser(id).OrderByDescending(p => p.Id).Take(6).ToList()
         };
 
-        // Specyfing view name explicitly for Profile endpoint
+        // Specifying view name explicitly for Profile endpoint
         return View("Show", model);
     }
 
