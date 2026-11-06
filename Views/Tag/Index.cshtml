@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Tags";
+}
+
+<table class="striped">
+    <tr>
+        <th>Name</th>
+        <th>Post count</th>
+    </tr>
+    @foreach (var tag in Model) {
+    <tr>
+        <td><a asp-controller="Post" asp-action="Index" asp-route-tags="@tag.Name" class="tag-@tag.Category.ToString().ToLowerInvariant()">@tag.Name</a></td>
+        <td>@tag.PostCount</td>
+    </tr>
+    }
+</table>

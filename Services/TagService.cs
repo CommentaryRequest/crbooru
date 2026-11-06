@@ -19,6 +19,11 @@ public class TagService
         return _context.Tags.FirstOrDefaultAsync(t => name.ToLowerInvariant() == t.Name);
     }
 
+    public async Task<List<Tag>> ListAsync()
+    {
+        return await _context.Tags.ToListAsync();
+    }
+
     public async Task<ICollection<Tag>> ResolveTags(IEnumerable<string> names, bool createNew = true)
     {
         IEnumerable<string> uniqueNames = names.Distinct();

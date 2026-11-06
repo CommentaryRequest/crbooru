@@ -18,6 +18,7 @@
     }
     | <a asp-controller="Post" asp-action="Index">Posts</a>
     | <a asp-controller="Pool" asp-action="Index">Pools</a>
+    | <a asp-controller="Tag" asp-action="Index">Tags</a>
     <hr>
     @{
         switch (ViewData["Controller"]) {
@@ -67,7 +68,12 @@
                 break;
             case "PoolVersion":
                 <text>
-                <a asp-controller="PoolVersion" asp-action="Index">History</a>
+                <a asp-controller="PoolVersion" asp-action="Index">Listing</a>
+                </text>
+                break;
+            case "Tag":
+                <text>
+                <a asp-controller="Tag" asp-action="Index">Listing</a>
                 </text>
                 break;
         }
