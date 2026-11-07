@@ -23,12 +23,14 @@ public class PostUpdateService
 {
     private readonly CRbooruContext _context;
     private readonly TagService _tags;
+    private readonly TagImplicationService _tagImplications;
     private readonly ILogger<PostUpdateService> _logger;
 
-    public PostUpdateService(CRbooruContext context, TagService tags, ILogger<PostUpdateService> logger)
+    public PostUpdateService(CRbooruContext context, TagService tags, TagImplicationService tagImplications, ILogger<PostUpdateService> logger)
     {
         _context = context;
         _tags = tags;
+        _tagImplications = tagImplications;
         _logger = logger;
     }
 
@@ -79,19 +81,60 @@ public class PostUpdateService
         addedTagNames = addedTagNames.Select(tag => tag.ToLowerInvariant()).Except(postTagNames);
         removedTagNames = removedTagNames.Select(tag => tag.ToLowerInvariant()).Where(tag => postTagNames.Contains(tag));
 
-        var addedTags = await _tags.ResolveTags(addedTagNames);
-        var removedTags = await _tags.ResolveTags(removedTagNames);
+        var addedTags = (await _tags.ResolveTags(addedTagNames)).ToList();
+        var removedTags = (await _tags.ResolveTags(removedTagNames)).ToList();
 
         foreach (var tag in addedTagNames.Concat(removedTagNames)) {
             TagParser.ValidateTagName(tag);
         }
 
-        foreach (var tag in addedTags) {
+        var addedQueue = new Queue<Tag>(addedTags);
+        var addedProcessed = new HashSet<int>();
+        while (addedQueue.TryDequeue(out var tag)) {
+            if (!addedProcessed.Add(tag.Id)) {
+                continue;
+            }
+
             tag.PostCount++;
+
+            var implications = await _tagImplications.ByAntecedent(tag.Id);
+            foreach (var implication in implications) {
+                var consequent = implication.Consequent;
+                if (post.Tags.Contains(consequent)) {
+                    continue;
+                }
+                addedTags.Add(consequent);
+                addedQueue.Enqueue(consequent);
+            }
+        }
+
+        var removedQueue = new Queue<Tag>(removedTags);
+        var removedProcessed = new HashSet<int>();
+        while (removedQueue.TryDequeue(out var tag)) {
+            if (!removedProcessed.Add(tag.Id)) {
+                continue;
+            }
+
+            var implications = await _tagImplications.ByConsequent(tag.Id);
+            if (implications.Count != 0) {
+                var canRemove = true;
+                foreach (var implication in implications) {
+                    var antecedent = implication.Antecedent;
+                    if (post.Tags.Contains(antecedent) && !removedTags.Contains(antecedent)) {
+                        canRemove = false;
+                        break;
+                    }
+                }
+                if (!canRemove) {
+                    removedTags.Remove(tag);
+                    removedTagNames = removedTagNames.Where(n => n != tag.Name);
+                    continue;
+                }
+            } else {
+            }
         }
 
         foreach (var tag in removedTags) {
-            if (tag.PostCount == 0) continue;
             tag.PostCount--;
         }
 

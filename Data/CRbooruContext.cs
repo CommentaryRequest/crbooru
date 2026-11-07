@@ -66,6 +66,16 @@ public class CRbooruContext : DbContext
             .HasOne(v => v.Updater)
             .WithMany()
             .HasForeignKey(v => v.UpdaterId);
+
+        modelBuilder.Entity<TagImplication>()
+            .HasOne(t => t.Antecedent)
+            .WithMany()
+            .HasForeignKey(t => t.AntecedentId);
+
+        modelBuilder.Entity<TagImplication>()
+            .HasOne(t => t.Consequent)
+            .WithMany()
+            .HasForeignKey(t => t.ConsequentId);
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }
@@ -77,4 +87,5 @@ public class CRbooruContext : DbContext
     public DbSet<Pool> Pools { get; set; }
     public DbSet<PoolPost> PoolPosts { get; set; }
     public DbSet<PoolVersion> PoolVersions { get; set; }
+    public DbSet<TagImplication> TagImplications { get; set; }
 }

@@ -38,4 +38,9 @@ public class Tag
         var unqualifiedName = Regex.Replace(Name, pattern, "");
         return string.Join(' ', unqualifiedName.Split("_"));
     }
+
+    public override string ToString()
+    {
+        return $"{Category} Tag #{Id} '{Name}' ({PostCount} posts, depreacted: {IsDeprecated})";
+    }
 }

@@ -258,6 +258,29 @@ namespace CRbooru.Migrations
                     b.ToTable("Tags");
                 });
 
+            modelBuilder.Entity("CRbooru.Models.TagImplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AntecedentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ConsequentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AntecedentId");
+
+                    b.HasIndex("ConsequentId");
+
+                    b.ToTable("TagImplications");
+                });
+
             modelBuilder.Entity("CRbooru.Models.Upload", b =>
                 {
                     b.Property<int>("Id")
@@ -421,6 +444,25 @@ namespace CRbooru.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CRbooru.Models.TagImplication", b =>
+                {
+                    b.HasOne("CRbooru.Models.Tag", "Antecedent")
+                        .WithMany()
+                        .HasForeignKey("AntecedentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CRbooru.Models.Tag", "Consequent")
+                        .WithMany()
+                        .HasForeignKey("ConsequentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Antecedent");
+
+                    b.Navigation("Consequent");
                 });
 
             modelBuilder.Entity("CRbooru.Models.Upload", b =>

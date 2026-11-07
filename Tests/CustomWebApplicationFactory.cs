@@ -44,6 +44,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             services.AddScoped<PostUpdateService>();
             services.AddScoped<PoolService>();
             services.AddScoped<PoolUpdateService>();
+            services.AddScoped<TagImplicationService>();
         });
 
         builder.UseEnvironment("Testing");
