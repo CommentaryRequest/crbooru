@@ -23,7 +23,7 @@
             <h4 class="category-heading">@categoryName</h4>
             <ul>
             @foreach (var tag in tagList) {
-                <li><partial name="_TagLink" model="tag" /></li>
+                <li><partial name="_TagLinkCount" model="tag" /></li>
             }
             </ul>
         }

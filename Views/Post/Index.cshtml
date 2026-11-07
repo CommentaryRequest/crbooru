@@ -14,7 +14,7 @@
         <h4>Tags</h4>
         <ul>
             @foreach (var tag in (IEnumerable<Tag>)(Model.RelatedTags)) {
-                <li><partial name="_TagLink" model="tag" /></li>
+                <li><partial name="_TagLinkCount" model="tag" /></li>
             }
         </ul>
     </div>

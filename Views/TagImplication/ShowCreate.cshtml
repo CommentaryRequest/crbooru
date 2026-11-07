@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "New Tag Implication";
+}
+
+<h1>New Tag Implication</h1>
+<form asp-controller="TagImplication" asp-action="Create" method="post">
+    <label for="antecedent">Antecedent</label>
+    <input type="text" name="antecedent">
+    <p></p>
+    <label for="consequent">Consequent</label>
+    <input type="text" name="consequent">
+    <p></p>
+    <input type="submit" value="Submit">
+</form>

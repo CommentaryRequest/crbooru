@@ -1,0 +1,17 @@
+@model List<TagImplication>
+@{
+    ViewData["Title"] = "Tag Implications";
+}
+
+<table class="striped">
+    <tr>
+        <th>Antecedent</th>
+        <th>Consequent</th>
+    </tr>
+    @foreach (var implication in Model) {
+    <tr>
+        <td><partial name="_TagLink" model="implication.Antecedent" /></td>
+        <td><partial name="_TagLink" model="implication.Consequent" /></td>
+    </tr>
+    }
+</table>

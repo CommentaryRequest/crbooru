@@ -9,7 +9,7 @@
     </tr>
     @foreach (var tag in Model) {
     <tr>
-        <td><a asp-controller="Post" asp-action="Index" asp-route-tags="@tag.Name" class="tag-@tag.Category.ToString().ToLowerInvariant()">@tag.DisplayName()</a></td>
+        <td><partial name="_TagLink" model="tag" /></td>
         <td>@tag.PostCount</td>
     </tr>
     }
