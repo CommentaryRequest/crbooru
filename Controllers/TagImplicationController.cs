@@ -10,12 +10,14 @@ public class TagImplicationController : Controller
     private readonly TagImplicationService _service;
     private readonly UserService _users;
     private readonly TagService _tags;
+    private readonly PostService _posts;
 
-    public TagImplicationController(TagImplicationService service, UserService users, TagService tags)
+    public TagImplicationController(TagImplicationService service, UserService users, TagService tags, PostService posts)
     {
         _service = service;
         _users = users;
         _tags = tags;
+        _posts = posts;
     }
 
     public async Task<IActionResult> Index()
@@ -68,12 +70,15 @@ public class TagImplicationController : Controller
         var antecedent = tags.ElementAt(0);
         var consequent = tags.ElementAt(1);
 
+        TagImplication? implication;
         try {
-            await _service.AddAsync(antecedent, consequent);
+            implication = await _service.AddAsync(antecedent, consequent);
         } catch (TagImplicationException exc) {
             TempData["Error"] = exc.Message;
             return RedirectToAction("ShowCreate");
         }
+
+        await _posts.UpdateImplicationsAsync(implication);
 
         TempData["Information"] = $"Implied '{form.Antecedent}' to '{form.Consequent}'";
         return RedirectToAction("Index");

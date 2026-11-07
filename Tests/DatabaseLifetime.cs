@@ -1,5 +1,6 @@
 using CRbooru;
 using CRbooru.Data;
+using CRbooru.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Tests;
@@ -16,9 +17,20 @@ public abstract class DatabaseLifetime(CustomWebApplicationFactory<Program> fact
         var db = scope.ServiceProvider.GetRequiredService<CRbooruContext>();
         await db.Database.EnsureDeletedAsync();
         await db.Database.EnsureCreatedAsync();
+
     }
 
     public Task DisposeAsync() => Task.CompletedTask;
 
     protected T GetService<T>(IServiceScope scope) where T : notnull => scope.ServiceProvider.GetRequiredService<T>();
+
+    protected async Task CreateSystemUser(IServiceScope scope)
+    {
+        var db = GetService<CRbooruContext>(scope);
+        db.Users.Add(new User {
+            Name = User.SYSTEM_USER_NAME,
+            Role = UserRole.System
+        });
+        await db.SaveChangesAsync();
+    }
 }

@@ -1,5 +1,6 @@
 using CRbooru.Models;
 using CRbooru.Services;
+using CRbooru.Data;
 
 namespace CRbooru.Tests.Integration;
 
@@ -57,5 +58,31 @@ public class TagImplicationTests
         Assert.Contains(tags.ElementAt(0), post.Tags);
         Assert.DoesNotContain(tags.ElementAt(1), post.Tags);
         Assert.DoesNotContain(tags.ElementAt(2), post.Tags);
+    }
+
+    [Fact]
+    public async Task AddTags_ImplyAfterCreatePost_AddImpliedTags()
+    {
+        using var scope = CreateScope();
+        var db = GetService<CRbooruContext>(scope);
+        var tagService = GetService<TagService>(scope);
+        var postUpdate = GetService<PostUpdateService>(scope);
+        var tagImplications = GetService<TagImplicationService>(scope);
+        var posts = GetService<PostService>(scope);
+
+        await CreateSystemUser(scope);
+        var user = ModelCreator.CreateUser("test", UserRole.Member);
+        var tags = await tagService.ResolveTags(["1girl", "solo", "blonde_hair"]);
+        var post = ModelCreator.CreatePost(user, PostRating.General, null, null);
+        db.Posts.Add(post);
+        await postUpdate.UpdateTags(post, ["solo"], []);
+
+        var implication1 = await tagImplications.AddAsync(tags.ElementAt(1), tags.ElementAt(0)); // imply solo -> 1girl
+        var implication2 = await tagImplications.AddAsync(tags.ElementAt(0), tags.ElementAt(2)); // imply 1girl -> blonde_hair
+        await posts.UpdateImplicationsAsync(implication1);
+        await posts.UpdateImplicationsAsync(implication2);
+
+        Assert.Contains(tags.ElementAt(0), post.Tags);
+        Assert.Contains(tags.ElementAt(2), post.Tags);
     }
 }

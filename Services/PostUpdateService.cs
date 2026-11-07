@@ -26,7 +26,7 @@ public class PostUpdateService
     private readonly TagImplicationService _tagImplications;
     private readonly ILogger<PostUpdateService> _logger;
 
-    public PostUpdateService(CRbooruContext context, TagService tags, TagImplicationService tagImplications, ILogger<PostUpdateService> logger)
+    public PostUpdateService(CRbooruContext context, TagService tags, TagImplicationService tagImplications, UserService _users, ILogger<PostUpdateService> logger)
     {
         _context = context;
         _tags = tags;

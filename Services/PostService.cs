@@ -14,16 +14,18 @@ public class PostService
     private readonly PostVersionService _versions;
     private readonly PostUpdateService _postUpdate;
     private readonly PoolUpdateService _poolUpdate;
+    private readonly UserService _users;
 
     public const int DEFAULT_LIMIT = 20;
 
-    public PostService(CRbooruContext context, MediaAssetService mediaAssets, PostVersionService versions, PostUpdateService postUpdate, PoolUpdateService poolUpdate)
+    public PostService(CRbooruContext context, MediaAssetService mediaAssets, PostVersionService versions, PostUpdateService postUpdate, PoolUpdateService poolUpdate, UserService users)
     {
         _context = context;
         _mediaAssets = mediaAssets;
         _versions = versions;
         _postUpdate = postUpdate;
         _poolUpdate = poolUpdate;
+        _users = users;
     }
 
     public IQueryable<Post> Query()
@@ -212,6 +214,27 @@ public class PostService
                 oldParent != post.ParentId
             )
         );
+    }
+
+    public async Task UpdateImplicationsAsync(TagImplication implication)
+    {
+        var user = await _users.GetSystemUserAsync();
+        var antecedent = implication.Antecedent;
+        var consequent = implication.Consequent;
+
+        var query = Query().Where(p => p.Tags.Contains(antecedent));
+        await foreach (var post in query.AsAsyncEnumerable()) {
+            var diff = await _postUpdate.UpdateTags(post, [consequent.Name], []);
+            await _versions.Add(
+                new PostVersion(
+                    post.Id,
+                    user.Id,
+                    diff.Added,
+                    diff.Removed,
+                    null, null, false, null, false
+                )
+            );
+        }
     }
 
     public async Task<Post> CreateAsync(User uploader, PostFormModel form)

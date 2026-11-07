@@ -37,6 +37,12 @@ public class UserService
         return await Get(int.Parse(userId));
     }
 
+    public async Task<User> GetSystemUserAsync()
+    {
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.Role == UserRole.System);
+        return user ?? throw new InvalidOperationException("System user does not exist, run dotnet ef database update.");
+    }
+
     public bool Any()
     {
         return _context.Users.Any();
