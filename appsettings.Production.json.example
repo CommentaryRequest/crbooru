@@ -6,7 +6,6 @@
       "Microsoft.EntityFrameworkCore.Database.Command": "Warning"
     }
   },
-  "DatabaseProvider": "Postgres",
   "ConnectionStrings": {
     "Default": "Host=localhost;Port=5432;Database=crbooru;Username=crbooru;Password=yourpasswordhere"
   }
