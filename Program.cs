@@ -11,7 +11,25 @@ builder.Services.AddControllersWithViews();
 
 // Configure database
 var connectionString = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContext<CRbooruContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<CRbooruContext>(options => options.UseNpgsql(connectionString)
+    .UseSeeding((context, _) => {
+        if (!context.Set<User>().Any(u => u.Role == UserRole.System)) {
+            context.Set<User>().Add(new User {
+                Name = User.SYSTEM_USER_NAME,
+                Role = UserRole.System
+            });
+            context.SaveChanges();
+        }
+    })
+    .UseAsyncSeeding(async (context, _, cancellationToken) => {
+        if (!await context.Set<User>().AnyAsync(u => u.Role == UserRole.System, cancellationToken)) {
+            context.Set<User>().Add(new User {
+                Name = User.SYSTEM_USER_NAME,
+                Role = UserRole.System
+            });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+    }));
 
 var imagesRoot = Path.Combine(builder.Environment.ContentRootPath, "Storage", "Images");
 builder.Services.AddSingleton(new StorageOptions(imagesRoot));

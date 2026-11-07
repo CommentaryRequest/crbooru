@@ -89,6 +89,10 @@ a:hover {
     color: red;
 }
 
+.user-system {
+    color: darkblue;
+}
+
 #tag-string {
     font-family: monospace;
 }
