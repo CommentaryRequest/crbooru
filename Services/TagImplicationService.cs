@@ -31,6 +31,7 @@ public class TagImplicationService
     public IQueryable<TagImplication> Query()
     {
         return _context.TagImplications
+            .OrderByDescending(t => t.Id)
             .Include(t => t.Antecedent)
             .Include(t => t.Consequent);
     }

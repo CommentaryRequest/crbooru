@@ -21,7 +21,7 @@ public class TagService
 
     public async Task<List<Tag>> ListAsync()
     {
-        return await _context.Tags.ToListAsync();
+        return await _context.Tags.OrderByDescending(t => t.Id).ToListAsync();
     }
 
     public async Task<ICollection<Tag>> ResolveTags(IEnumerable<string> names, bool createNew = true)

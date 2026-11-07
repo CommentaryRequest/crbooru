@@ -50,6 +50,6 @@ public class UserService
 
     public async Task<List<User>> ListAsync()
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users.OrderByDescending(u => u.Id).ToListAsync();
     }
 }

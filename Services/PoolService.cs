@@ -31,7 +31,7 @@ public class PoolService
 
     public async Task<List<Pool>> ListAsync()
     {
-        return await _context.Pools.ToListAsync();
+        return await _context.Pools.OrderByDescending(p => p.Id).ToListAsync();
     }
 
     public async Task<Pool?> GetAsync(int id)
