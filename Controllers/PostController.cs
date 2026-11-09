@@ -34,6 +34,7 @@ public class PostController : Controller
             if (queryLimit != IPaginatedViewModel.DEFAULT_PAGE_LIMIT && limit == IPaginatedViewModel.DEFAULT_PAGE_LIMIT) {
                 limit = queryLimit;
             }
+            limit = Math.Min(Math.Max(1, limit), IPaginatedViewModel.MAX_PAGE_LIMIT);
             total = postQuery.Count();
             posts = postQuery
                 .Skip((page - 1) * limit)
@@ -43,6 +44,7 @@ public class PostController : Controller
             ViewData["SearchError"] = exc.Message;
             return View("SearchError");
         }
+
 
         var totalPages = (int)Math.Ceiling(total / (double)limit);
 
