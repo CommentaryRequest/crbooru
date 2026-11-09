@@ -1,5 +1,8 @@
+using CRbooru.Logical;
+using CRbooru.Models;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Controllers;
 
@@ -15,10 +18,17 @@ public class MediaAssetController : Controller
         _webHostEnv = webHostEnv;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
-        var mediaAssets = await _service.ListAsync(20);
-        return View(mediaAssets);
+        var query = _service.Query();
+        var total = await query.CountAsync();
+        var pagination = new PaginationInfo(page, total, limit);
+        var mediaAssets = await query.PaginateAsync(pagination);
+        var model = new MediaAssetListViewModel {
+            MediaAssets = mediaAssets,
+            PaginationInfo = pagination
+        };
+        return View(model);
     }
 
     [HttpGet("{id:int}")]

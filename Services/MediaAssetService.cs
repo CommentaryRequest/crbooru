@@ -26,6 +26,12 @@ public class MediaAssetService
         return _context.MediaAssets.FirstOrDefaultAsync(m => md5 == m.Md5);
     }
 
+    public IQueryable<MediaAsset> Query()
+    {
+        return _context.MediaAssets
+            .OrderByDescending(p => p.Id);
+    }
+
     public async Task<List<MediaAsset>> ListAsync(int limit)
     {
         return await _context.MediaAssets
