@@ -56,19 +56,55 @@ public class TagImplicationService
         return await Query().Where(t => t.ConsequentId == id).ToListAsync();
     }
 
-    public async Task<TagImplication> AddAsync(Tag Antecedent, Tag Consequent)
+    public async Task<bool> HasLoopedImplications(Tag antecedent, Tag consequent)
     {
-        if (Antecedent.Id == Consequent.Id) {
+        var visited = new HashSet<int>();
+        var pending = new Stack<int>();
+        pending.Push(consequent.Id);
+
+        while (pending.TryPop(out var current)) {
+            if (current == antecedent.Id) {
+                return true;
+            }
+
+            if (!visited.Add(current)) {
+                continue;
+            }
+
+            var implications = await Query()
+                .Where(t => t.AntecedentId == current)
+                .Select(t => t.ConsequentId)
+                .ToListAsync();
+
+            foreach (var c in implications) {
+                pending.Push(c);
+            }
+        }
+
+        return false;
+    }
+
+    public async Task<TagImplication> AddAsync(Tag antecedent, Tag consequent)
+    {
+        if (antecedent.Id == consequent.Id) {
             throw new TagImplicationException("Cannot imply a tag to itself");
         }
 
-        if (Antecedent.Category != Consequent.Category) {
+        if (antecedent.Category != consequent.Category) {
             throw new TagImplicationException("Cannot imply tags with different categories");
         }
 
+        if (Query().Any(t => t.AntecedentId == antecedent.Id && t.ConsequentId == consequent.Id)) {
+            throw new TagImplicationException("Implication already exists");
+        }
+
+        if (await HasLoopedImplications(antecedent, consequent)) {
+            throw new TagImplicationException("Implication would create a loop");
+        }
+
         var implication = new TagImplication {
-            AntecedentId = Antecedent.Id,
-            ConsequentId = Consequent.Id
+            AntecedentId = antecedent.Id,
+            ConsequentId = consequent.Id
         };
         _context.TagImplications.Add(implication);
         await _context.SaveChangesAsync();
