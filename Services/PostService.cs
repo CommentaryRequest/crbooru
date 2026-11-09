@@ -89,14 +89,6 @@ public class PostService
         return Query().Where(p => p.Uploader.Id == userId);
     }
 
-    public async Task<List<Post>> ListAsync(int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
-    {
-        return await Query()
-            .OrderByDescending(p => p.Id)
-            .Take(limit)
-            .ToListAsync();
-    }
-
     public async Task<(IQueryable<Post>, int)> QuerySearchAsync(List<SearchTerm> terms)
     {
         int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT;

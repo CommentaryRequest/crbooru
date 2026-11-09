@@ -32,14 +32,6 @@ public class MediaAssetService
             .OrderByDescending(p => p.Id);
     }
 
-    public async Task<List<MediaAsset>> ListAsync(int limit)
-    {
-        return await _context.MediaAssets
-            .OrderByDescending(p => p.Id)
-            .Take(limit)
-            .ToListAsync();
-    }
-
     public async Task AddAsync(MediaAsset asset)
     {
         _context.MediaAssets.Add(asset);
