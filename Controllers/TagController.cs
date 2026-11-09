@@ -19,7 +19,7 @@ public class TagController : Controller
     public async Task<IActionResult> Index(int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
         var query = _service.Query();
-        var total = query.Count();
+        var total = await query.CountAsync();
         var pagination = new PaginationInfo(page, total, limit);
         var tags = await query
             .Skip(pagination.SkipAmount())

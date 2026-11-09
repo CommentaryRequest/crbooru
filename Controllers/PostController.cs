@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using CRbooru.Models;
 using CRbooru.Logical;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Controllers;
 
@@ -35,7 +36,7 @@ public class PostController : Controller
                 limit = queryLimit;
             }
 
-            var total = postQuery.Count();
+            var total = await postQuery.CountAsync();
             pagination = new(page, total, limit);
             posts = postQuery
                 .Skip(pagination.SkipAmount())
