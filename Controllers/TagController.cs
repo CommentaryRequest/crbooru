@@ -1,3 +1,4 @@
+using CRbooru.Logical;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using CRbooru.Models;
@@ -17,20 +18,16 @@ public class TagController : Controller
 
     public async Task<IActionResult> Index(int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
-        page = Math.Max(1, page); // TODO this thing too
-        limit = Math.Min(Math.Max(1, limit), IPaginatedViewModel.MAX_PAGE_LIMIT);
         var query = _service.Query();
-        // TODO write some kind of thing that paginates and gives total for a query
         var total = query.Count();
+        var pagination = new PaginationInfo(page, total, limit);
         var tags = await query
-            .Skip((page - 1) * limit)
-            .Take(limit)
+            .Skip(pagination.SkipAmount())
+            .Take(pagination.ClampedLimit())
             .ToListAsync();
         var model = new TagListViewModel {
             Tags = tags,
-            Page = page,
-            Limit = limit,
-            TotalPages = (int)Math.Ceiling(total / (double)limit), // TODO write a constructor to calculate this
+            PaginationInfo = pagination
         };
         return View(model);
     }

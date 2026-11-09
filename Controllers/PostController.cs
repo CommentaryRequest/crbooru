@@ -27,26 +27,24 @@ public class PostController : Controller
     {
         page = Math.Max(1, page);
         List<Post> posts;
-        int total;
+        PaginationInfo pagination;
         try {
             var parsedQuery = QueryParser.ParseQuery(tags);
             var (postQuery, queryLimit) = await _service.QuerySearchAsync(parsedQuery);
             if (queryLimit != IPaginatedViewModel.DEFAULT_PAGE_LIMIT && limit == IPaginatedViewModel.DEFAULT_PAGE_LIMIT) {
                 limit = queryLimit;
             }
-            limit = Math.Min(Math.Max(1, limit), IPaginatedViewModel.MAX_PAGE_LIMIT);
-            total = postQuery.Count();
+
+            var total = postQuery.Count();
+            pagination = new(page, total, limit);
             posts = postQuery
-                .Skip((page - 1) * limit)
-                .Take(limit)
+                .Skip(pagination.SkipAmount())
+                .Take(pagination.ClampedLimit())
                 .ToList();
         } catch (QueryParserException exc) {
             ViewData["SearchError"] = exc.Message;
             return View("SearchError");
         }
-
-
-        var totalPages = (int)Math.Ceiling(total / (double)limit);
 
         var relatedTags = posts
             .SelectMany(p => p.Tags)
@@ -60,9 +58,7 @@ public class PostController : Controller
             Posts = posts,
             SearchQuery = tags,
             RelatedTags = relatedTags,
-            Page = page,
-            TotalPages = totalPages,
-            Limit = limit,
+            PaginationInfo = pagination,
             RouteValues = new() {
                 ["tags"] = tags
             }
