@@ -16,8 +16,6 @@ public class PostService
     private readonly PoolUpdateService _poolUpdate;
     private readonly UserService _users;
 
-    public const int DEFAULT_LIMIT = 20;
-
     public PostService(CRbooruContext context, MediaAssetService mediaAssets, PostVersionService versions, PostUpdateService postUpdate, PoolUpdateService poolUpdate, UserService users)
     {
         _context = context;
@@ -91,7 +89,7 @@ public class PostService
         return Query().Where(p => p.Uploader.Id == userId);
     }
 
-    public async Task<List<Post>> ListAsync(int limit = DEFAULT_LIMIT)
+    public async Task<List<Post>> ListAsync(int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
         return await Query()
             .OrderByDescending(p => p.Id)
@@ -101,7 +99,7 @@ public class PostService
 
     public async Task<(IQueryable<Post>, int)> QuerySearchAsync(List<SearchTerm> terms)
     {
-        int limit = DEFAULT_LIMIT;
+        int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT;
         IQueryable<Post> posts = Query();
         foreach (var term in terms) {
             switch (term.Type) {

@@ -1,3 +1,4 @@
+@model TagListViewModel
 @{
     ViewData["Title"] = "Tags";
 }
@@ -7,10 +8,12 @@
         <th>Name</th>
         <th>Post count</th>
     </tr>
-    @foreach (var tag in Model) {
-    <tr>
-        <td><partial name="_TagLink" model="tag" /></td>
-        <td>@tag.PostCount</td>
-    </tr>
+    @foreach (var tag in Model.Tags) {
+        <tr>
+            <td><partial name="_TagLink" model="tag" /></td>
+            <td>@tag.PostCount</td>
+        </tr>
     }
 </table>
+
+<partial name="_Paginator" model="@Model" />

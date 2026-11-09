@@ -23,16 +23,17 @@ public class PostController : Controller
         _poolPosts = poolPosts;
     }
 
-    public async Task<IActionResult> Index(string tags = "", int page = 1)
+    public async Task<IActionResult> Index(string tags = "", int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
         page = Math.Max(1, page);
-        var posts = new List<Post>();
-        var total = 0;
-        var limit = PostService.DEFAULT_LIMIT;
+        List<Post> posts;
+        int total;
         try {
             var parsedQuery = QueryParser.ParseQuery(tags);
             var (postQuery, queryLimit) = await _service.QuerySearchAsync(parsedQuery);
-            limit = queryLimit;
+            if (queryLimit != IPaginatedViewModel.DEFAULT_PAGE_LIMIT && limit == IPaginatedViewModel.DEFAULT_PAGE_LIMIT) {
+                limit = queryLimit;
+            }
             total = postQuery.Count();
             posts = postQuery
                 .Skip((page - 1) * limit)
@@ -59,6 +60,7 @@ public class PostController : Controller
             RelatedTags = relatedTags,
             Page = page,
             TotalPages = totalPages,
+            Limit = limit,
             RouteValues = new() {
                 ["tags"] = tags
             }

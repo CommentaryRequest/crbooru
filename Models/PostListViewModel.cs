@@ -7,5 +7,6 @@ public class PostListViewModel : IPaginatedViewModel
     public required IEnumerable<Tag> RelatedTags { get; init; }
     public required int Page { get; init; }
     public required int TotalPages { get; init; }
+    public required int Limit { get; init; }
     public required Dictionary<string, string> RouteValues { get; init; }
 }

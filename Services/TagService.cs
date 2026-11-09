@@ -14,6 +14,11 @@ public class TagService
         _context = context;
     }
 
+    public IQueryable<Tag> Query()
+    {
+        return _context.Tags.OrderByDescending(t => t.Id);
+    }
+
     public Task<Tag?> ByName(string name)
     {
         return _context.Tags.FirstOrDefaultAsync(t => name.ToLowerInvariant() == t.Name);
