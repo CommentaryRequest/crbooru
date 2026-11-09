@@ -154,12 +154,12 @@ public class PostService
                 case SearchTermType.Child:
                     if (term.Value == "none") {
                         posts = term.IsNegated
-                            ? posts.Where(p => p.Children.Count() != 0)
+                            ? posts.Where(p => p.Children.Any())
                             : posts.Where(p => !p.Children.Any());
                     } else if (term.Value == "any") {
                         posts = term.IsNegated
                             ? posts.Where(p => !p.Children.Any())
-                            : posts.Where(p => p.Children.Count() != 0);
+                            : posts.Where(p => p.Children.Any());
                     }
                     break;
                 default:
