@@ -1,4 +1,3 @@
-using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Services;
 using CRbooru.Logical;
@@ -14,14 +13,14 @@ public class PostQueryTests
     {
     }
 
-    private async Task<User> CreateUserAsync(UserService users, string name)
+    private async Task<User> createUserAsync(UserService users, string name)
     {
         var user = ModelCreator.CreateUser(name, UserRole.Member);
         await users.Add(user);
         return user;
     }
 
-    private async Task<Post> CreatePostAsync(
+    private async Task<Post> createPostAsync(
         PostService posts,
         MediaAssetService mediaAssets,
         User uploader,
@@ -42,11 +41,11 @@ public class PostQueryTests
         });
     }
 
-    private static async Task<(List<int> Ids, int Limit)> SearchAsync(
+    private static async Task<(List<int> Ids, int Limit)> searchAsync(
         PostService posts,
         params SearchTerm[] terms)
     {
-        var (query, limit) = await posts.QuerySearchAsync(terms.ToList());
+        var (query, limit) = posts.QuerySearch(terms.ToList());
         var ids = await query.Select(p => p.Id).ToListAsync();
 
         return (ids, limit);
@@ -60,13 +59,13 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var post1 = await CreatePostAsync(posts, mediaAssets, user);
-        var post2 = await CreatePostAsync(posts, mediaAssets, user);
-        var post3 = await CreatePostAsync(posts, mediaAssets, user);
+        var post1 = await createPostAsync(posts, mediaAssets, user);
+        var post2 = await createPostAsync(posts, mediaAssets, user);
+        var post3 = await createPostAsync(posts, mediaAssets, user);
 
-        var (ids, limit) = await SearchAsync(posts);
+        var (ids, limit) = await searchAsync(posts);
 
         Assert.Equal([post3.Id, post2.Id, post1.Id], ids);
         Assert.True(limit > 0);
@@ -80,29 +79,29 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var matching = await CreatePostAsync(
+        var matching = await createPostAsync(
             posts, mediaAssets, user, "touhou cirno 1girl");
-        await CreatePostAsync(posts, mediaAssets, user, "touhou reimu 1girl");
-        var excluded = await CreatePostAsync(
+        await createPostAsync(posts, mediaAssets, user, "touhou reimu 1girl");
+        var excluded = await createPostAsync(
             posts, mediaAssets, user, "vocaloid miku 1girl");
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Tag, "touhou", false),
             new SearchTerm(SearchTermType.Tag, "cirno", false));
 
         Assert.Equal([matching.Id], ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Tag, "touhou", true),
             new SearchTerm(SearchTermType.Tag, "cirno", false));
 
         Assert.Empty(ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Tag, "touhou", true));
 
@@ -118,20 +117,20 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var general = await CreatePostAsync(
+        var general = await createPostAsync(
             posts, mediaAssets, user, rating: PostRating.General);
-        var explicitPost = await CreatePostAsync(
+        var explicitPost = await createPostAsync(
             posts, mediaAssets, user, rating: PostRating.Explicit);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Rating, "g", false));
 
         Assert.Equal([general.Id], ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Rating, "g", true));
 
@@ -147,19 +146,19 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var post1 = await CreatePostAsync(posts, mediaAssets, user);
-        var post2 = await CreatePostAsync(posts, mediaAssets, user);
-        var post3 = await CreatePostAsync(posts, mediaAssets, user);
+        var post1 = await createPostAsync(posts, mediaAssets, user);
+        var post2 = await createPostAsync(posts, mediaAssets, user);
+        var post3 = await createPostAsync(posts, mediaAssets, user);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Id, post2.Id.ToString(), false));
 
         Assert.Equal([post2.Id], ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Id, post2.Id.ToString(), true));
 
@@ -176,22 +175,22 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var post1 = await CreatePostAsync(posts, mediaAssets, user);
-        var post2 = await CreatePostAsync(posts, mediaAssets, user);
-        var post3 = await CreatePostAsync(posts, mediaAssets, user);
-        var post4 = await CreatePostAsync(posts, mediaAssets, user);
+        var post1 = await createPostAsync(posts, mediaAssets, user);
+        var post2 = await createPostAsync(posts, mediaAssets, user);
+        var post3 = await createPostAsync(posts, mediaAssets, user);
+        var post4 = await createPostAsync(posts, mediaAssets, user);
 
         var range = $"{post2.Id}..{post3.Id}";
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Id, range, false));
 
         Assert.Equal([post3.Id, post2.Id], ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Id, range, true));
 
@@ -209,19 +208,19 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user1 = await CreateUserAsync(users, "SearchUser1");
-        var user2 = await CreateUserAsync(users, "SearchUser2");
+        var user1 = await createUserAsync(users, "SearchUser1");
+        var user2 = await createUserAsync(users, "SearchUser2");
 
-        var post1 = await CreatePostAsync(posts, mediaAssets, user1);
-        await CreatePostAsync(posts, mediaAssets, user2);
+        var post1 = await createPostAsync(posts, mediaAssets, user1);
+        await createPostAsync(posts, mediaAssets, user2);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.User, user1.Name, false));
 
         Assert.Equal([post1.Id], ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.User, user1.Name, true));
 
@@ -236,12 +235,12 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var post1 = await CreatePostAsync(posts, mediaAssets, user);
-        var post2 = await CreatePostAsync(posts, mediaAssets, user);
+        var post1 = await createPostAsync(posts, mediaAssets, user);
+        var post2 = await createPostAsync(posts, mediaAssets, user);
 
-        var (ids, limit) = await SearchAsync(
+        var (ids, limit) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Limit, "1", false));
 
@@ -257,14 +256,14 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var parent = await CreatePostAsync(posts, mediaAssets, user);
-        var child = await CreatePostAsync(
+        var parent = await createPostAsync(posts, mediaAssets, user);
+        var child = await createPostAsync(
             posts, mediaAssets, user, parent: parent.Id);
-        var unrelated = await CreatePostAsync(posts, mediaAssets, user);
+        var unrelated = await createPostAsync(posts, mediaAssets, user);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Parent, parent.Id.ToString(), false));
 
@@ -272,7 +271,7 @@ public class PostQueryTests
         Assert.Contains(child.Id, ids);
         Assert.DoesNotContain(unrelated.Id, ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Parent, parent.Id.ToString(), true));
 
@@ -289,20 +288,20 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var parent = await CreatePostAsync(posts, mediaAssets, user);
-        var child = await CreatePostAsync(
+        var parent = await createPostAsync(posts, mediaAssets, user);
+        var child = await createPostAsync(
             posts, mediaAssets, user, parent: parent.Id);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Parent, "none", false));
 
         Assert.Contains(parent.Id, ids);
         Assert.DoesNotContain(child.Id, ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Parent, "any", false));
 
@@ -317,19 +316,19 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var parent = await CreatePostAsync(posts, mediaAssets, user);
-        var child = await CreatePostAsync(
+        var parent = await createPostAsync(posts, mediaAssets, user);
+        var child = await createPostAsync(
             posts, mediaAssets, user, parent: parent.Id);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Child, "any", false));
 
         Assert.Equal([parent.Id], ids);
 
-        (ids, _) = await SearchAsync(
+        (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Child, "none", false));
 
@@ -344,12 +343,12 @@ public class PostQueryTests
         var users = GetService<UserService>(scope);
         var mediaAssets = GetService<MediaAssetService>(scope);
 
-        var user = await CreateUserAsync(users, "SearchUser");
+        var user = await createUserAsync(users, "SearchUser");
 
-        var post1 = await CreatePostAsync(posts, mediaAssets, user);
-        var post2 = await CreatePostAsync(posts, mediaAssets, user);
+        var post1 = await createPostAsync(posts, mediaAssets, user);
+        var post2 = await createPostAsync(posts, mediaAssets, user);
 
-        var (ids, _) = await SearchAsync(
+        var (ids, _) = await searchAsync(
             posts,
             new SearchTerm(SearchTermType.Rating, "not-a-rating", false),
             new SearchTerm(SearchTermType.Id, "not-an-id", false));

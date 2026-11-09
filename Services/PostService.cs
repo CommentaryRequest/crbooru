@@ -44,20 +44,20 @@ public class PostService
             .Include(p => p.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.MediaAsset)
             .Include(p => p.Uploader)
-            .Include(p => p!.Children)
+            .Include(p => p.Children)
                 .ThenInclude(p => p.Tags.OrderBy(tag => tag.Name))
-            .Include(p => p!.Children)
+            .Include(p => p.Children)
                 .ThenInclude(p => p.MediaAsset)
-            .Include(p => p!.Children)
+            .Include(p => p.Children)
                 .ThenInclude(p => p.Uploader)
-            .Include(p => p!.Children)
+            .Include(p => p.Children)
                 .ThenInclude(p => p.Children)
             .Include(p => p.Parent)
-                .ThenInclude(p => p.Tags.OrderBy(tag => tag.Name))
+                .ThenInclude(p => p!.Tags.OrderBy(tag => tag.Name))
             .Include(p => p.Parent)
-                .ThenInclude(p => p.MediaAsset)
+                .ThenInclude(p => p!.MediaAsset)
             .Include(p => p.Parent)
-                .ThenInclude(p => p.Uploader)
+                .ThenInclude(p => p!.Uploader)
             .Include(p => p.Parent)
                 .ThenInclude(p => p!.Children)
                     .ThenInclude(p => p.Tags.OrderBy(tag => tag.Name))
@@ -89,15 +89,15 @@ public class PostService
         return Query().Where(p => p.Uploader.Id == userId);
     }
 
-    public async Task<(IQueryable<Post>, int)> QuerySearchAsync(List<SearchTerm> terms)
+    public (IQueryable<Post>, int) QuerySearch(List<SearchTerm> terms)
     {
-        int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT;
-        IQueryable<Post> posts = Query();
+        var limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT;
+        var posts = Query();
         foreach (var term in terms) {
             switch (term.Type) {
                 case SearchTermType.Tag:
                     posts = term.IsNegated
-                        ? posts.Where(p => !p.Tags.Any(t => t.Name == term.Value))
+                        ? posts.Where(p => p.Tags.All(t => t.Name != term.Value))
                         : posts.Where(p => p.Tags.Any(t => t.Name == term.Value));
                     break;
                 case SearchTermType.Rating:
@@ -162,6 +162,8 @@ public class PostService
                             : posts.Where(p => p.Children.Count() != 0);
                     }
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         return (posts

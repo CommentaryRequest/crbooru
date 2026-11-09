@@ -31,7 +31,7 @@ public class PostController : Controller
         PaginationInfo pagination;
         try {
             var parsedQuery = QueryParser.ParseQuery(tags);
-            var (postQuery, queryLimit) = await _service.QuerySearchAsync(parsedQuery);
+            var (postQuery, queryLimit) = _service.QuerySearch(parsedQuery);
             if (queryLimit != IPaginatedViewModel.DEFAULT_PAGE_LIMIT && limit == IPaginatedViewModel.DEFAULT_PAGE_LIMIT) {
                 limit = queryLimit;
             }
