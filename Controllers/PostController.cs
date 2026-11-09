@@ -38,10 +38,7 @@ public class PostController : Controller
 
             var total = await postQuery.CountAsync();
             pagination = new(page, total, limit);
-            posts = postQuery
-                .Skip(pagination.SkipAmount())
-                .Take(pagination.ClampedLimit())
-                .ToList();
+            posts = await postQuery.PaginateAsync(pagination);
         } catch (QueryParserException exc) {
             ViewData["SearchError"] = exc.Message;
             return View("SearchError");

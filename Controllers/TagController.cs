@@ -21,10 +21,7 @@ public class TagController : Controller
         var query = _service.Query();
         var total = await query.CountAsync();
         var pagination = new PaginationInfo(page, total, limit);
-        var tags = await query
-            .Skip(pagination.SkipAmount())
-            .Take(pagination.ClampedLimit())
-            .ToListAsync();
+        var tags = await query.PaginateAsync(pagination);
         var model = new TagListViewModel {
             Tags = tags,
             PaginationInfo = pagination
