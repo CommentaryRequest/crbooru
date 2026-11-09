@@ -101,7 +101,7 @@ public class PostService
                         : posts.Where(p => p.Tags.Any(t => t.Name == term.Value));
                     break;
                 case SearchTermType.Rating:
-                    PostRating? rating = TagParser.ParseRatingValue(term.Value);
+                    var rating = TagParser.ParseRatingValue(term.Value);
                     if (rating != null) {
                         posts = term.IsNegated
                             ? posts.Where(p => p.Rating != rating)
@@ -109,7 +109,7 @@ public class PostService
                     }
                     break;
                 case SearchTermType.Id:
-                    IdRange? range = QueryParser.ParseIdRange(term.Value);
+                    var range = QueryParser.ParseIdRange(term.Value);
                     if (range != null) {
                         posts = term.IsNegated
                             ? posts.Where(p => !(
@@ -155,10 +155,10 @@ public class PostService
                     if (term.Value == "none") {
                         posts = term.IsNegated
                             ? posts.Where(p => p.Children.Count() != 0)
-                            : posts.Where(p => p.Children.Count() == 0);
+                            : posts.Where(p => !p.Children.Any());
                     } else if (term.Value == "any") {
                         posts = term.IsNegated
-                            ? posts.Where(p => p.Children.Count() == 0)
+                            ? posts.Where(p => !p.Children.Any())
                             : posts.Where(p => p.Children.Count() != 0);
                     }
                     break;
