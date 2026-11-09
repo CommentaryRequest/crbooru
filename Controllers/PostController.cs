@@ -58,7 +58,10 @@ public class PostController : Controller
             SearchQuery = tags,
             RelatedTags = relatedTags,
             Page = page,
-            TotalPages = totalPages
+            TotalPages = totalPages,
+            RouteValues = new() {
+                ["tags"] = tags
+            }
         };
         
         return View(model);

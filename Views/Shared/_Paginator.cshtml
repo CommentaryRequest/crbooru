@@ -1,0 +1,22 @@
+@using Microsoft.EntityFrameworkCore.Migrations.Internal
+@model IPaginatedViewModel
+
+<div id="paginator">
+    <p>
+        @if (Model.TotalPages > 1) {
+            @if (Model.Page > 1) {
+                <a asp-action="Index" asp-all-route-data="@Model.RouteValues" asp-route-page="@(Model.Page - 1)">&lt;</a>
+                <a asp-action="Index" asp-all-route-data="@Model.RouteValues" asp-route-page="1">First</a>
+            }
+
+            <text>
+            @Model.Page / @Model.TotalPages
+            </text>
+            
+            @if (Model.Page < Model.TotalPages) {
+                <a asp-action="Index" asp-all-route-data="@Model.RouteValues" asp-route-page="@Model.TotalPages">Last</a>
+                <a asp-action="Index" asp-all-route-data="@Model.RouteValues" asp-route-page="@(Model.Page + 1)">&gt;</a>
+            }
+        }
+    </p>
+</div>
