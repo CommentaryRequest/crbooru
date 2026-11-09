@@ -42,21 +42,25 @@ public class MediaAssetService
 
     public async Task<MediaAsset> CreateFromFile(IFormFile file)
     {
-        string tempPath = Path.GetTempFileName() + Path.GetExtension(file.FileName);
-        using (var stream = new FileStream(tempPath, FileMode.Create)) {
+        var tempPath = Path.GetTempFileName() + Path.GetExtension(file.FileName);
+        await using (var stream = new FileStream(tempPath, FileMode.Create)) {
             await file.CopyToAsync(stream);
         }
 
-        using (var stream = File.OpenRead(tempPath)) {
+        try {
+            await using var stream = File.OpenRead(tempPath);
             var md5 = MediaFileProcessor.ComputeFileMd5(stream);
             var assetByMd5 = await ByMd5(md5);
             if (assetByMd5 != null) {
                 return assetByMd5;
             }
+
             var mediaAsset = MediaFileProcessor.ProcessFile(stream, _storageOptions.ImagesPath);
             _context.MediaAssets.Add(mediaAsset);
             await _context.SaveChangesAsync();
             return mediaAsset;
+        } finally {
+            File.Delete(tempPath);
         }
     }
 }
