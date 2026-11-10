@@ -27,7 +27,10 @@
             <input type="hidden" name="mediaassetid" value="@Model.MediaAsset.Id">
             <input type="hidden" name="uploadid" value="@Model.Upload.Id">
             <partial name="_PostFields" model="formModel" />
-            <partial name="_ArtistCommentaryFields" model="commentaryModel" />
+            <details>
+                <summary>Artist commentary</summary>
+                <partial name="_ArtistCommentaryFields" model="commentaryModel"/>
+            </details>
             <input type="submit" value="Post">
         </form>
     </div>
