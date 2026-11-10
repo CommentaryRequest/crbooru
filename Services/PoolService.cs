@@ -29,6 +29,12 @@ public class PoolService
         }
     }
 
+    public IQueryable<Pool> Query()
+    {
+        return _context.Pools
+            .OrderByDescending(p => p.Id);
+    }
+
     public async Task<List<Pool>> ListAsync()
     {
         return await _context.Pools.OrderByDescending(p => p.Id).ToListAsync();

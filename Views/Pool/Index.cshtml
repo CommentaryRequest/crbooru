@@ -1,3 +1,4 @@
+@model PoolListViewModel
 @{
     ViewData["Title"] = "Pools";
 }
@@ -7,10 +8,12 @@
         <th>Name</th>
         <th>Post count</th>
     </tr>
-    @foreach (var pool in Model) {
+    @foreach (var pool in Model.Pools) {
     <tr>
         <td><a asp-action="Show" asp-route-id="@pool.Id">@pool.Name</a></td>
         <td>@pool.PostIds.Count</td>
     </tr>
     }
 </table>
+
+<partial name="_Paginator" model="@Model" />

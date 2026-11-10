@@ -1,6 +1,8 @@
+using CRbooru.Logical;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using CRbooru.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Controllers;
 
@@ -16,10 +18,17 @@ public class PoolController : Controller
         _users = users;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
-        var pools = await _service.ListAsync();
-        return View(pools);
+        var query = _service.Query();
+        var total = await query.CountAsync();
+        var pagination = new PaginationInfo(page, total, limit);
+        var pools = await query.PaginateAsync(pagination);
+        var model = new PoolListViewModel {
+            Pools = pools,
+            PaginationInfo = pagination
+        };
+        return View(model);
     }
 
     [Route("new")]
