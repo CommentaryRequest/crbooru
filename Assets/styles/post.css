@@ -71,6 +71,10 @@
     margin-top: 5px;
 }
 
+#artist-commentary p {
+    white-space: pre-line;
+}
+
 #original-commentary {
     margin-bottom: 4px;
 }

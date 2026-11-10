@@ -1,0 +1,13 @@
+@model CRbooru.Models.FormModels.ArtistCommentaryFormModel
+<label for="originaltitle">Original title</label><br>
+<input type="text" name="originaltitle" id="originaltitle" value="@Model.OriginalTitle">
+<p></p>
+<label for="originaldescription">Original description</label><br>
+<textarea name="originaldescription" id="originaldescription" rows="10" cols="50">@Model.OriginalDescription</textarea>
+<p></p>
+<label for="translatedtitle">Translated title</label><br>
+<input type="text" name="translatedtitle" id="translatedtitle" value="@Model.TranslatedTitle">
+<p></p>
+<label for="translateddescription">Translated description</label><br>
+<textarea name="translateddescription" id="translateddescription" rows="10" cols="50">@Model.TranslatedDescription</textarea>
+<p></p>

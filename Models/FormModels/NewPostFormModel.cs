@@ -2,14 +2,14 @@ namespace CRbooru.Models.FormModels;
 
 public class NewPostFormModel : PostFormModel
 {
-    public string? CommentaryOriginalTitle { get; init; }
-    public string? CommentaryOriginalDescription { get; init; }
-    public string? CommentaryTranslatedTitle { get; init; }
-    public string? CommentaryTranslatedDescription { get; init; }
+    public string? OriginalTitle { get; init; }
+    public string? OriginalDescription { get; init; }
+    public string? TranslatedTitle { get; init; }
+    public string? TranslatedDescription { get; init; }
 
     public bool HasCommentary() =>
-        CommentaryOriginalTitle != null ||
-        CommentaryOriginalDescription != null ||
-        CommentaryTranslatedTitle != null ||
-        CommentaryTranslatedDescription != null;
+        OriginalTitle != null ||
+        OriginalDescription != null ||
+        TranslatedTitle != null ||
+        TranslatedDescription != null;
 }

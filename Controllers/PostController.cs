@@ -131,7 +131,7 @@ public class PostController : Controller
             
             // Add a commentary to the post, if present
             if (model.HasCommentary()) {
-                await _commentaries.CreateOrUpdateAsync(currentUser, post.Id, model.CommentaryOriginalTitle, model.CommentaryOriginalDescription, model.CommentaryTranslatedTitle, model.CommentaryTranslatedDescription);
+                await _commentaries.CreateOrUpdateAsync(currentUser, post.Id, model.OriginalTitle, model.OriginalDescription, model.TranslatedTitle, model.TranslatedDescription);
             }
             
             return RedirectToAction("Show", new { id = post.Id });

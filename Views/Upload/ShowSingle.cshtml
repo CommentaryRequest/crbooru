@@ -7,6 +7,8 @@
         Rating = PostRating.General,
         TagString = ""
     };
+
+    var commentaryModel = new ArtistCommentaryFormModel();
 }
 
 @if (Model.Upload.Status == UploadStatus.Pending) {
@@ -25,18 +27,7 @@
             <input type="hidden" name="mediaassetid" value="@Model.MediaAsset.Id">
             <input type="hidden" name="uploadid" value="@Model.Upload.Id">
             <partial name="_PostFields" model="formModel" />
-            <label for="commentaryoriginaltitle">Original title</label><br>
-            <input type="text" name="commentaryoriginaltitle" id="commentaryoriginaltitle">
-            <p></p>
-            <label for="commentaryoriginaldescription">Original description</label><br>
-            <textarea name="commentaryoriginaldescription" id="commentaryoriginaldescription" rows="10" cols="50"></textarea>
-            <p></p>
-            <label for="commentarytranslatedtitle">Translated title</label><br>
-            <input type="text" name="commentarytranslatedtitle" id="commentarytranslatedtitle">
-            <p></p>
-            <label for="commentarytranslateddescription" id="commentarytranslateddescription">Translated description</label><br>
-            <textarea name="commentarytranslateddescription" id="commentarytranslateddescription" rows="10" cols="50"></textarea>
-            <p></p>
+            <partial name="_ArtistCommentaryFields" model="commentaryModel" />
             <input type="submit" value="Post">
         </form>
     </div>

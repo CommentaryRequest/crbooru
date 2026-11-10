@@ -18,6 +18,15 @@
         Parent = Model.Post.ParentId
     };
 
+    var commentaryModel = Model.Commentary == null
+        ? new ArtistCommentaryFormModel()
+        : new ArtistCommentaryFormModel {
+            OriginalTitle = Model.Commentary.OriginalTitle,
+            OriginalDescription = Model.Commentary.OriginalDescription,
+            TranslatedTitle = Model.Commentary.TranslatedTitle,
+            TranslatedDescription = Model.Commentary.TranslatedDescription
+        };
+
     async Task RenderTagList(string categoryName, IEnumerable<Tag> tagList)
     {
         @if (tagList.Count() != 0) {
@@ -143,16 +152,26 @@
                 }
             </div>
         }
+        <p></p>
 
         @if (User.Identity?.IsAuthenticated == true) {
-        <div id="edit">
-            <a href="#edit" id="post-edit-link" data-shortcut="e">Edit</a>
-            <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form" style="display: none">
-                <input type="hidden" name="postid" value="@Model.Post.Id">
-                <partial name="_PostFields" model="formModel" />
-                <input type="submit" value="Submit">
-            </form>
-        </div>
+            <text>
+                <a href="#edit" id="post-edit-link" data-shortcut="e">Edit</a>
+                | <a href="#add-commentary" id="add-commentary-link" data-shortcut="c">Add commentary</a>
+            </text>
+            <div id="edit">
+                <form asp-controller="Post" asp-action="Edit" method="post" id="post-edit-form" style="display: none">
+                    <input type="hidden" name="postid" value="@Model.Post.Id">
+                    <partial name="_PostFields" model="formModel" />
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+            <div id="add-commentary">
+                <form asp-controller="ArtistCommentary" asp-action="CreateOrUpdate" asp-route-postid="@Model.Post.Id" method="post" id="add-commentary-form" style="display: none">
+                    <partial name="_ArtistCommentaryFields" model="commentaryModel" />
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
         } else {
         <p><a asp-controller="User" asp-action="Login">Log in</a> to edit posts.</p>
         }
