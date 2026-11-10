@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Logical;
+using CRbooru.Models.FormModels;
 
 namespace CRbooru.Services;
 

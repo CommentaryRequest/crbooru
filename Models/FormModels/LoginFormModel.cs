@@ -1,6 +1,6 @@
-namespace CRbooru.Models;
+namespace CRbooru.Models.FormModels;
 
-public class LoginModel
+public class LoginFormModel
 {
     public required string Username { get; set; }
     public required string Password { get; set; }

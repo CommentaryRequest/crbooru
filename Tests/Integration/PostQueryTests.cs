@@ -1,6 +1,7 @@
 using CRbooru.Models;
 using CRbooru.Services;
 using CRbooru.Logical;
+using CRbooru.Models.FormModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Tests.Integration;

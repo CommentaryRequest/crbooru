@@ -1,5 +1,6 @@
 using CRbooru.Data;
 using CRbooru.Models;
+using CRbooru.Models.FormModels;
 using CRbooru.Services;
 
 namespace CRbooru.Tests.Integration;

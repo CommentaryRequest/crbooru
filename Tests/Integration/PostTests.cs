@@ -2,6 +2,7 @@ using CRbooru.Data;
 using CRbooru.Models;
 using CRbooru.Services;
 using CRbooru.Logical;
+using CRbooru.Models.FormModels;
 
 namespace CRbooru.Tests.Unit.Services;
 

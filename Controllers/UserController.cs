@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using CRbooru.Services;
 using CRbooru.Models;
 using CRbooru.Logical;
+using CRbooru.Models.FormModels;
 using CRbooru.Models.ViewModels;
 
 namespace CRbooru.Controllers;
@@ -83,16 +84,16 @@ public class UserController : Controller
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginModel model)
+    public async Task<IActionResult> Login(LoginFormModel formModel)
     {
         if (User.Identity?.IsAuthenticated == true) {
             return RedirectToAction("Index", "Post");
         }
 
-        model.Username = model.Username.Trim();
+        formModel.Username = formModel.Username.Trim();
 
         // Does the user exist?
-        var user = await _service.ByName(model.Username);
+        var user = await _service.ByName(formModel.Username);
         if (user == null) {
             Response.StatusCode = 400;
             TempData["Error"] = "User does not exist";
@@ -110,7 +111,7 @@ public class UserController : Controller
         var result = _passwordHasher.VerifyHashedPassword(
             user,
             user.PasswordHash,
-            model.Password);
+            formModel.Password);
         if (result == PasswordVerificationResult.Failed) {
             Response.StatusCode = 401;
             TempData["Error"] = "Incorrect password";
@@ -151,19 +152,19 @@ public class UserController : Controller
     }
 
     [HttpPost("signup")]
-    public async Task<IActionResult> Signup(SignupModel model)
+    public async Task<IActionResult> Signup(SignupFormModel formModel)
     {
-        model.Username = model.Username.Trim();
+        formModel.Username = formModel.Username.Trim();
         
         // Is the username taken?
-        if (await _service.ByName(model.Username) != null) {
+        if (await _service.ByName(formModel.Username) != null) {
             Response.StatusCode = 400;
             TempData["Error"] = "Name is already taken";
             return View();
         }
 
         // Is the username valid?
-        string? validationResult = UserNameValidator.Validate(model.Username);
+        string? validationResult = UserNameValidator.Validate(formModel.Username);
         if (validationResult != null) {
             Response.StatusCode = 400;
             TempData["Error"] = validationResult;
@@ -171,7 +172,7 @@ public class UserController : Controller
         }
 
         // Password confirmation check
-        if (model.Password != model.PasswordConfirmation) {
+        if (formModel.Password != formModel.PasswordConfirmation) {
             Response.StatusCode = 400;
             TempData["Error"] = "Passwords do not match";
             return View();
@@ -179,10 +180,10 @@ public class UserController : Controller
 
         // Create a new user
         var user = new User() {
-            Name = model.Username,
+            Name = formModel.Username,
             Role = _service.Any() ? UserRole.Member : UserRole.Admin
         };
-        user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+        user.PasswordHash = _passwordHasher.HashPassword(user, formModel.Password);
         await _service.Add(user);
 
         // Log the user in

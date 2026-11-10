@@ -1,6 +1,7 @@
 @model CRbooru.Models.ViewModels.PostViewModel
 @using System.Linq
 @using CRbooru.Logical
+@using CRbooru.Models.FormModels
 @{
     var artistTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.Artist);
     var copyrightTags = Model.Post.Tags.Where(tag => tag.Category == TagCategory.Copyright);
