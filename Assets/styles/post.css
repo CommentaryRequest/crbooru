@@ -58,3 +58,26 @@
     width: 100%;
     text-align: center;
 }
+
+#artist-commentary {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.3rem;
+    width: fit-content;
+}
+
+#artist-commentary h3, h4, p {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#original-commentary {
+    margin-bottom: 4px;
+}
+
+.commentary-section {
+    background-color: #eee;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+    padding: 0.05rem;
+}

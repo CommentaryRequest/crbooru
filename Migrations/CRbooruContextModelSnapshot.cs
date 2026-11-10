@@ -24,6 +24,37 @@ namespace CRbooru.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "citext");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CRbooru.Models.ArtistCommentary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("OriginalDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginalTitle")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TranslatedDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TranslatedTitle")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
+
+                    b.ToTable("ArtistCommentaries");
+                });
+
             modelBuilder.Entity("CRbooru.Models.MediaAsset", b =>
                 {
                     b.Property<int>("Id")
@@ -368,6 +399,17 @@ namespace CRbooru.Migrations
                     b.ToTable("PostTags", (string)null);
                 });
 
+            modelBuilder.Entity("CRbooru.Models.ArtistCommentary", b =>
+                {
+                    b.HasOne("CRbooru.Models.Post", "Post")
+                        .WithOne("Commentary")
+                        .HasForeignKey("CRbooru.Models.ArtistCommentary", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("CRbooru.Models.PoolPost", b =>
                 {
                     b.HasOne("CRbooru.Models.Pool", null)
@@ -509,6 +551,8 @@ namespace CRbooru.Migrations
             modelBuilder.Entity("CRbooru.Models.Post", b =>
                 {
                     b.Navigation("Children");
+
+                    b.Navigation("Commentary");
                 });
 #pragma warning restore 612, 618
         }

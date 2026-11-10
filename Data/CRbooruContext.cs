@@ -76,6 +76,11 @@ public class CRbooruContext : DbContext
             .HasOne(t => t.Consequent)
             .WithMany()
             .HasForeignKey(t => t.ConsequentId);
+
+        modelBuilder.Entity<Post>()
+            .HasOne(p => p.Commentary)
+            .WithOne(c => c.Post)
+            .HasForeignKey<ArtistCommentary>(c => c.PostId);
     }
 
     public DbSet<MediaAsset> MediaAssets { get; set; }
@@ -88,4 +93,5 @@ public class CRbooruContext : DbContext
     public DbSet<PoolPost> PoolPosts { get; set; }
     public DbSet<PoolVersion> PoolVersions { get; set; }
     public DbSet<TagImplication> TagImplications { get; set; }
+    public DbSet<ArtistCommentary> ArtistCommentaries { get; set; }
 }

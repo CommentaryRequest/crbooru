@@ -112,7 +112,37 @@
             </div>
         </div>
         }
+        
         <img src="@Model.Post.MediaAsset.GetFilePath("/images", MediaAssetVariantType.Sample)">
+        
+        @if (Model.Commentary != null && !Model.Commentary.Empty()) {
+            <div id="artist-commentary">
+                <h3>Artist commentary</h3>
+                @if (Model.Commentary.HasOriginal()) {
+                    <div id="original-commentary" class="commentary-section">
+                        <h4>Original</h4>
+                        @if (Model.Commentary.HasOriginalTitle()) {
+                            <h4>@Model.Commentary.OriginalTitle</h4>
+                        }
+                        @if (Model.Commentary.HasOriginalDescription()) {
+                            <p>@Model.Commentary.OriginalDescription</p>
+                        }
+                    </div>
+                }
+                @if (Model.Commentary.HasTranslated()) {
+                    <div id="translated-commentary" class="commentary-section">
+                        <h4>Translated</h4>
+                        @if (Model.Commentary.HasTranslatedTitle()) {
+                            <h4>@Model.Commentary.TranslatedTitle</h4>
+                        }
+
+                        @if (Model.Commentary.HasTranslatedDescription()) {
+                            <p>@Model.Commentary.TranslatedDescription</p>
+                        }
+                    </div>
+                }
+            </div>
+        }
 
         @if (User.Identity?.IsAuthenticated == true) {
         <div id="edit">

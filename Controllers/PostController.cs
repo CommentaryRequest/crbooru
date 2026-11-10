@@ -16,14 +16,16 @@ public class PostController : Controller
     private readonly UploadService _uploads;
     private readonly MediaAssetService _mediaAssets;
     private readonly PoolPostService _poolPosts;
+    private readonly ArtistCommentaryService _commentaries;
 
-    public PostController(PostService service, UserService users, UploadService uploads, MediaAssetService mediaAssets, PoolPostService poolPosts)
+    public PostController(PostService service, UserService users, UploadService uploads, MediaAssetService mediaAssets, PoolPostService poolPosts, ArtistCommentaryService commentaries)
     {
         _service = service;
         _users = users;
         _uploads = uploads;
         _mediaAssets = mediaAssets;
         _poolPosts = poolPosts;
+        _commentaries = commentaries;
     }
 
     public async Task<IActionResult> Index(string tags = "", int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
@@ -76,14 +78,15 @@ public class PostController : Controller
         }
 
         var pools = await _poolPosts.GetPostPools(id);
+        var commentary = await _commentaries.ByPost(id);
 
-        PostViewModel model = new(post, pools);
+        PostViewModel model = new(post, pools, commentary);
 
         return View(model);
     }
 
     [HttpPost("new")]
-    public async Task<IActionResult> Create(PostFormModel model)
+    public async Task<IActionResult> Create(NewPostFormModel model)
     {
         var currentUser = await _users.GetCurrentUser(this.User);
         if (currentUser == null) {
@@ -121,10 +124,16 @@ public class PostController : Controller
                 return RedirectToAction("Show", "Upload", new { id = upload.Id });
             }
         }
-
+        
         // Create the post
         try {
             var post = await _service.CreateAsync(currentUser, model);
+            
+            // Add a commentary to the post, if present
+            if (model.HasCommentary()) {
+                await _commentaries.CreateOrUpdateAsync(currentUser, post.Id, model.CommentaryOriginalTitle, model.CommentaryOriginalDescription, model.CommentaryTranslatedTitle, model.CommentaryTranslatedDescription);
+            }
+            
             return RedirectToAction("Show", new { id = post.Id });
         } catch (Exception exc) {
             TempData["Error"] = exc.Message;

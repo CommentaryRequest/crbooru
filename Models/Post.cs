@@ -12,14 +12,15 @@ public class Post
 {
     public int Id { get; private set; }
     public User Uploader { get; private set; } = null!;
-    public MediaAsset MediaAsset { get; set; } = null!;
+    public MediaAsset MediaAsset { get; init; } = null!;
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public PostRating Rating { get; set; } = PostRating.General;
     public string? Source { get; set; } = "";
     public int? ParentId { get; set; }
     public Post? Parent { get; set; }
     public ICollection<Post> Children { get; set; } = [];
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public ArtistCommentary? Commentary { get; set; }
 
     private Post()
     {

@@ -47,6 +47,7 @@ builder.Services.AddScoped<PoolUpdateService>();
 builder.Services.AddScoped<PoolPostService>();
 builder.Services.AddScoped<PoolVersionService>();
 builder.Services.AddScoped<TagImplicationService>();
+builder.Services.AddScoped<ArtistCommentaryService>();
 
 // Authentication
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
