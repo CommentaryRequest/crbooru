@@ -1,6 +1,9 @@
+using CRbooru.Logical;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Models;
+using CRbooru.Models.ViewModels;
 using CRbooru.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Controllers;
 
@@ -20,10 +23,17 @@ public class TagImplicationController : Controller
         _posts = posts;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
-        var implications = await _service.ListAsync();
-        return View(implications);
+        var query = _service.Query();
+        var totalCount = await query.CountAsync();
+        var pagination = new PaginationInfo(page, totalCount, limit);
+        var implications = await query.PaginateAsync(pagination);
+        var model = new TagImplicationListViewModel {
+            TagImplications = implications,
+            PaginationInfo = pagination
+        };
+        return View(model);
     }
 
     [Route("new")]

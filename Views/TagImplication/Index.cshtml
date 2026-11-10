@@ -1,4 +1,4 @@
-@model List<TagImplication>
+@model CRbooru.Models.ViewModels.TagImplicationListViewModel
 @{
     ViewData["Title"] = "Tag Implications";
 }
@@ -8,10 +8,12 @@
         <th>Antecedent</th>
         <th>Consequent</th>
     </tr>
-    @foreach (var implication in Model) {
+    @foreach (var implication in Model.TagImplications) {
     <tr>
         <td><partial name="_TagLink" model="implication.Antecedent" /></td>
         <td><partial name="_TagLink" model="implication.Consequent" /></td>
     </tr>
     }
 </table>
+
+<partial name="_Paginator" model="@Model" />
