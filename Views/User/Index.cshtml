@@ -1,3 +1,4 @@
+@model UserListViewModel
 @{
     ViewData["Title"] = "Users";
 }
@@ -9,7 +10,7 @@
         <th>Role</th>
         <th>Joined</th>
     </tr>
-    @foreach (var user in Model) {
+    @foreach (var user in Model.Users) {
     <tr>
         <td>@user.Id</td>
         <td><partial name="_UserLink" model="user" /></td>
@@ -18,3 +19,5 @@
     </tr>
     }
 </table>
+
+<partial name="_Paginator" model="@Model" />

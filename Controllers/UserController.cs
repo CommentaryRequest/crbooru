@@ -26,10 +26,17 @@ public class UserController : Controller
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
-        var users = await _service.ListAsync();
-        return View(users);
+        var query = _service.Query();
+        var totalCount = query.Count();
+        var pagination = new PaginationInfo(page, totalCount, limit);
+        var users = await query.PaginateAsync(pagination);
+        var model = new UserListViewModel {
+            Users = users,
+            PaginationInfo = pagination
+        };
+        return View(model);
     }
 
     [HttpGet("{id:int}")]

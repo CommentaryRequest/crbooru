@@ -24,6 +24,11 @@ public class UserService
         return await _context.Users.FirstOrDefaultAsync(u => name == u.Name);
     }
 
+    public IQueryable<User> Query()
+    {
+        return _context.Users.OrderByDescending(u => u.Id);
+    }
+
     public async Task<User?> GetCurrentUser(ClaimsPrincipal user)
     {
         if (user.Identity?.IsAuthenticated != true) {
