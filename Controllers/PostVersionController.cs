@@ -1,6 +1,8 @@
+using CRbooru.Logical;
 using CRbooru.Models;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Controllers;
 
@@ -16,14 +18,19 @@ public class PostVersionController : Controller
         _users = users;
     }
 
-    public IActionResult Index(int? postId, int? userId)
+    public async Task<IActionResult> Index(int? postId, int? userId, int page = 1, int limit = IPaginatedViewModel.DEFAULT_PAGE_LIMIT)
     {
-        var postVersions = _service.List(postId, userId);
+        var query = _service.Query(postId, userId)
+            .OrderByDescending(p => p.Id);
+        var totalCount = await query.CountAsync();
+        var pagination = new PaginationInfo(page, totalCount, limit);
+        var postVersions = await query.PaginateAsync(pagination);
 
         var model = new PostVersionListViewModel {
             Versions = postVersions,
             PostId = postId,
-            User = userId == null ? null : postVersions[0].User
+            User = userId == null ? null : postVersions[0].User,
+            PaginationInfo = pagination
         };
         return View(model);
     }

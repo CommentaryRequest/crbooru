@@ -20,61 +20,63 @@
         <th>Updated at</th>
         <th>Actions</th>
     </tr>
-    @for (var i = 0; i < Model.Versions.Count; i++) {
-    var version = Model.Versions[i];
-    var tags = (IEnumerable<Tag>)version.Post.Tags;
-    <tr>
-        <td>
-            <partial name="_PostThumbnail" model="@version.Post" />
-        </td>
-        <td>
-            @(version.PostId).@version.Number
-        </td>
-        <td>
-            @if (version.AddedTags != null) {
-                @foreach (var tag in version.AddedTags) {
-                    var isObsolete = !tags.Any(t => t.Name == tag);
-                <span class="added-tag @(isObsolete ? "obsolete-tag" : "")">+@tag</span>
+    @foreach (var version in Model.Versions) {
+        var tags = (IEnumerable<Tag>)version.Post.Tags;
+        <tr>
+            <td>
+                <partial name="_PostThumbnail" model="@version.Post" />
+            </td>
+            <td>
+                @(version.PostId).@version.Number
+            </td>
+            <td>
+                @if (version.AddedTags != null) {
+                    foreach (var tag in version.AddedTags) {
+                        var isObsolete = !tags.Any(t => t.Name == tag);
+                        <span class="added-tag @(isObsolete ? "obsolete-tag" : "")">+@tag</span>
+                    }
                 }
-            }
-            @if (version.RemovedTags != null) {
-                @foreach (var tag in version.RemovedTags) {
-                    var isObsolete = tags.Any(t => t.Name == tag);
-                <span class="removed-tag @(isObsolete ? "obsolete-tag" : "")">-@tag</span>
+                @if (version.RemovedTags != null) {
+                    foreach (var tag in version.RemovedTags) {
+                        var isObsolete = tags.Any(t => t.Name == tag);
+                        <span class="removed-tag @(isObsolete ? "obsolete-tag" : "")">-@tag</span>
+                    }
                 }
-            }
-            @if (version.NewRating != null) {
-                var isObsolete = version.Post.Rating != version.NewRating;
-                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">rating:@version.NewRating.ToString().ToLowerInvariant()[0]</span>
-            }
-            @if (version.SourceChanged) {
-                var isObsolete = version.Post.Source != version.NewSource;
-                @if (version.NewSource == null) {
-                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">source:none</span>
-                } else {
-                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">source:@version.NewSource</span>
+                @if (version.NewRating != null) {
+                    var isObsolete = version.Post.Rating != version.NewRating;
+                    <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">rating:@version.NewRating.ToString().ToLowerInvariant()[0]</span>
                 }
-            }
-            @if (version.ParentChanged) {
-                var isObsolete = version.Post.ParentId != version.NewParent;
-                @if (version.NewParent == null) {
-                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">parent:none</span>
-                } else {
-                <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">parent:@version.NewParent</span>
+                @if (version.SourceChanged) {
+                    var isObsolete = version.Post.Source != version.NewSource;
+                    if (version.NewSource == null) {
+                        <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">source:none</span>
+                    } else {
+                        <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">source:@version.NewSource</span>
+                    }
                 }
-            }
-        </td>
-        <td>
-            <partial name="_UserLink" model="version.User" />
-        </td>
-        <td>
-            @version.CreatedAt
-        </td>
-        <td>
-            @if (version.Number != 1) {
-                <a asp-action="Undo" asp-route-id="@version.Id">Undo</a>
-            }
-        </td>
-    </tr>
+                @if (version.ParentChanged) {
+                    var isObsolete = version.Post.ParentId != version.NewParent;
+                    if (version.NewParent == null) {
+                        <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">parent:none</span>
+                    } else {
+                        <span class="changed-tag @(isObsolete ? "obsolete-tag" : "")">parent:@version.NewParent</span>
+                    }
+                }
+            </td>
+            <td>
+                <partial name="_UserLink" model="version.User" />
+            </td>
+            <td>
+                @version.CreatedAt
+            </td>
+            <td>
+                @if (version.Number != 1) {
+                    var version1 = version;
+                    <a asp-action="Undo" asp-route-id="@version1.Id">Undo</a>
+                }
+            </td>
+        </tr>
     }
 </table>
+
+<partial name="_Paginator" model="@Model" />
