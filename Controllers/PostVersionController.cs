@@ -32,6 +32,12 @@ public class PostVersionController : Controller
             User = userId == null ? null : postVersions[0].User,
             PaginationInfo = pagination
         };
+        if (postId != null) {
+            model.RouteValues["postid"] = postId.ToString()!;
+        }
+        if (userId != null) {
+            model.RouteValues["userid"] = userId.ToString()!;
+        }
         return View(model);
     }
 
