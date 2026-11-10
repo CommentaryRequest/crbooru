@@ -2,9 +2,9 @@ namespace CRbooru.Models;
 
 public class PoolVersionListViewModel : IPaginatedViewModel
 {
-    public required List<PoolVersion> Versions { get; set; }
-    public Pool? Pool { get; set; }
-    public User? User { get; set; }
+    public required List<PoolVersion> Versions { get; init; }
+    public Pool? Pool { get; init; }
+    public User? User { get; init; }
     public required PaginationInfo PaginationInfo { get; init; }
     public Dictionary<string, string> RouteValues { get; init; } = new();
 }
