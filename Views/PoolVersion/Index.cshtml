@@ -1,3 +1,4 @@
+@model PoolVersionsViewModel
 @{
     ViewData["Title"] = "Pool Versions";
 }
@@ -51,3 +52,5 @@
     </tr>
     }
 </table>
+
+<partial name="_Paginator" model="@Model" />
