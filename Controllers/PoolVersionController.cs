@@ -30,7 +30,7 @@ public class PoolVersionController : Controller
         var pool = poolId == null ? null : await _pools.GetAsync((int)poolId);
         var user = userId == null ? null : await _users.Get((int)userId);
 
-        var viewModel = new PoolVersionsViewModel {
+        var viewModel = new PoolVersionListViewModel {
             Versions = poolVersions,
             Pool = pool,
             User = user,

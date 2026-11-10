@@ -1,6 +1,6 @@
 namespace CRbooru.Models;
 
-public class PoolVersionsViewModel : IPaginatedViewModel
+public class PoolVersionListViewModel : IPaginatedViewModel
 {
     public required List<PoolVersion> Versions { get; set; }
     public Pool? Pool { get; set; }
