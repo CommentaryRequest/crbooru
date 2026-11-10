@@ -1,4 +1,4 @@
-namespace CRbooru.Models;
+namespace CRbooru.Models.ViewModels;
 
 public class UserViewModel
 {

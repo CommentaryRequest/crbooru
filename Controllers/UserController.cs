@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using CRbooru.Services;
 using CRbooru.Models;
 using CRbooru.Logical;
+using CRbooru.Models.ViewModels;
 
 namespace CRbooru.Controllers;
 

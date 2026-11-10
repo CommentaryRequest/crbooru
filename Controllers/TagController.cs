@@ -2,6 +2,7 @@ using CRbooru.Logical;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using CRbooru.Models;
+using CRbooru.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRbooru.Controllers;

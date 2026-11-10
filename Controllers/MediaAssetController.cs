@@ -1,5 +1,6 @@
 using CRbooru.Logical;
 using CRbooru.Models;
+using CRbooru.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using Microsoft.EntityFrameworkCore;

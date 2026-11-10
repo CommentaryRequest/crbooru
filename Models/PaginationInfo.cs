@@ -1,3 +1,5 @@
+using CRbooru.Models.ViewModels;
+
 namespace CRbooru.Models;
 
 public record PaginationInfo(int Page, int TotalCount, int Limit)

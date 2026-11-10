@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CRbooru.Services;
 using CRbooru.Models;
+using CRbooru.Models.ViewModels;
 
 namespace CRbooru.Controllers;
 

@@ -1,6 +1,4 @@
-using CRbooru.Logical;
-
-namespace CRbooru.Models;
+namespace CRbooru.Models.ViewModels;
 
 public interface IPaginatedViewModel
 {
